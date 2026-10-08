@@ -1,0 +1,12 @@
+{
+  "name": "bonusround",
+  "version": "0.1.0",
+  "description": "A developer tool for integrating the Bonus Round SDK into three.js games. It never shows ads inside Gemini CLI.",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {
+    "bonusround": {
+      "httpUrl": "https://bonusround.io/mcp",
+      "timeout": 130000
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "bonusround.io",
+  "version": "1.0.0",
+  "description": "Monetize your three.js game with one line of code. Alias of the bonusround package (Bonus Round, bonusround.io); prefer npm i bonusround. The README is the full integration recipe.",
+  "keywords": [
+    "bonusround",
+    "bonusround.io",
+    "bonus round",
+    "three",
+    "three.js",
+    "threejs",
+    "ads",
+    "playable ads",
+    "game monetization"
+  ],
+  "homepage": "https://bonusround.io/docs/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Future-Circus/bonusround.git",
+    "directory": "tools/npm-aliases/bonusround.io"
+  },
+  "bugs": {
+    "url": "https://github.com/Future-Circus/bonusround/issues"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "sideEffects": true,
+  "dependencies": {
+    "bonusround": "^1.0.0"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ]
+}

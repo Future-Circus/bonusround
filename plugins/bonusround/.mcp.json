@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "bonusround": {
+      "type": "http",
+      "url": "https://bonusround.io/mcp"
+    }
+  }
+}

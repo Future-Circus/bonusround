@@ -1,0 +1,21 @@
+{
+  "name": "bonusround",
+  "displayName": "Bonus Round",
+  "version": "0.1.0",
+  "description": "A developer tool for integrating the Bonus Round SDK into three.js games. It never shows ads inside Cursor.",
+  "author": {
+    "name": "Bonus Round",
+    "url": "https://bonusround.io"
+  },
+  "homepage": "https://bonusround.io/docs/agents",
+  "repository": "https://github.com/Future-Circus/bonusround",
+  "license": "MIT",
+  "keywords": [
+    "threejs",
+    "ads",
+    "monetization",
+    "webgl",
+    "games",
+    "mcp"
+  ]
+}

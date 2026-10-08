@@ -1,0 +1,14 @@
+{
+  "name": "bonusround",
+  "owner": { "name": "Bonus Round", "url": "https://bonusround.io" },
+  "metadata": { "description": "Bonus Round for AI coding agents: monetize three.js games with Ad-labelled, playable Bonus Rounds." },
+  "plugins": [
+    {
+      "name": "bonusround",
+      "source": "./plugins/bonusround",
+      "description": "Integrate the Bonus Round ad SDK into a three.js game, verify it's live and manage the game, from Claude Code.",
+      "category": "monetization",
+      "keywords": ["threejs", "three.js", "ads", "monetization", "playable-ads", "webgl", "games", "mcp"]
+    }
+  ]
+}

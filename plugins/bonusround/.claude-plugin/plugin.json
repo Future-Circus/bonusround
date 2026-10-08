@@ -1,0 +1,29 @@
+{
+  "name": "bonusround",
+  "displayName": "Bonus Round",
+  "version": "0.1.0",
+  "description": "A developer tool for integrating the Bonus Round SDK into three.js games: a skill that adds the SDK (script tag, attach line, break() at natural breaks) plus the hosted MCP server to register the game, check it's live and read stats. It never shows ads inside Claude.",
+  "author": {
+    "name": "Bonus Round",
+    "url": "https://bonusround.io"
+  },
+  "homepage": "https://bonusround.io/docs/agents",
+  "repository": "https://github.com/Future-Circus/bonusround",
+  "license": "MIT",
+  "keywords": [
+    "threejs",
+    "three.js",
+    "ads",
+    "monetization",
+    "playable-ads",
+    "rewarded",
+    "webgl",
+    "html5-games",
+    "mcp"
+  ],
+  "icon": "./icon.png",
+  "documentationUrl": "https://bonusround.io/docs/agents",
+  "supportUrl": "https://bonusround.io/docs/faq",
+  "privacyPolicyUrl": "https://bonusround.io/privacy",
+  "termsOfServiceUrl": "https://bonusround.io/terms"
+}

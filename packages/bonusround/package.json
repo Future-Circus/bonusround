@@ -1,0 +1,84 @@
+{
+  "name": "bonusround",
+  "version": "1.0.0",
+  "description": "Monetize your three.js game with one line of code. Bonus Round (bonusround.io): playable 15-second brand rounds at natural breaks; developers keep 70% of net ad revenue. npm i bonusround, then BonusRound.attach({ THREE, scene, camera, renderer }) and await BonusRound.break() as the upgrade. SDK + TypeScript types + `npx bonusround init` CLI; works offline with a bundled test round.",
+  "keywords": [
+    "bonusround",
+    "bonusround.io",
+    "bonus round",
+    "three",
+    "three.js",
+    "threejs",
+    "webgl",
+    "react-three-fiber",
+    "r3f",
+    "ads",
+    "ad network",
+    "playable ads",
+    "rewarded ads",
+    "game monetization",
+    "monetize",
+    "html5 games",
+    "web games",
+    "sdk",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "game-monetization",
+    "playable-ads",
+    "claude",
+    "cursor",
+    "monetization",
+    "game-ads",
+    "vite",
+    "html5-games"
+  ],
+  "homepage": "https://bonusround.io/docs/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Future-Circus/bonusround.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Future-Circus/bonusround/issues"
+  },
+  "license": "MIT",
+  "author": "Bonus Round (https://bonusround.io)",
+  "type": "module",
+  "main": "./index.js",
+  "module": "./index.js",
+  "browser": "./index.js",
+  "types": "./index.d.ts",
+  "jsdelivr": "./br.js",
+  "unpkg": "./br.js",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./br.js": "./br.js",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": true,
+  "bin": {
+    "bonusround": "bin.js"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "br.js",
+    "dist/",
+    "bin.js",
+    "lib/",
+    "README.md",
+    "AGENTS.md",
+    "llms.txt",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/build-sdk.mjs",
+    "prepack": "node scripts/build-sdk.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

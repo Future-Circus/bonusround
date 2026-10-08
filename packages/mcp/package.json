@@ -1,0 +1,54 @@
+{
+  "name": "@bonusround/mcp",
+  "version": "0.2.0",
+  "mcpName": "io.bonusround/bonusround",
+  "description": "MCP server for Bonus Round (bonusround.io): monetize your three.js game with one line of code. Lets AI coding agents register a game (no account needed), get the install snippet and verify the integration. The SDK is the bonusround npm package.",
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "bonusround",
+    "bonusround.io",
+    "threejs",
+    "three.js",
+    "game-monetization",
+    "ads",
+    "playable-ads",
+    "webgl",
+    "claude",
+    "cursor"
+  ],
+  "homepage": "https://bonusround.io/docs/agents",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Future-Circus/bonusround.git",
+    "directory": "tools/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/Future-Circus/bonusround/issues"
+  },
+  "license": "MIT",
+  "author": "Bonus Round (https://bonusround.io)",
+  "type": "module",
+  "bin": {
+    "bonusround-mcp": "server.js"
+  },
+  "files": [
+    "server.js",
+    "tools.js",
+    "client.js",
+    "integrate.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^4.6.5"
+  }
+}

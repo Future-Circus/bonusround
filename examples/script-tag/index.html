@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- Bonus Round with one line of HTML (the script tag) and the command queue. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Bonus Round · script tag example</title>
+  <script async src="https://bonusround.io/v1/br.js" data-pub="pub_XXXXXXXX"></script>
+  <!-- the same SDK from the npm CDN (also carries the offline test round):
+  <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_XXXXXXXX"></script> -->
+  <style>html, body { margin: 0; height: 100%; overflow: hidden; background: #111827; } button { position: fixed; left: 16px; top: 12px; font-weight: 700; padding: 8px 14px; border-radius: 999px; border: 0; }</style>
+</head>
+<body>
+  <button id="over">Game over → break()</button>
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    document.body.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 200);
+    camera.position.set(0, 3, 8);
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshNormalMaterial()));
+    // br.js loads async: the queue runs this whenever it arrives (and never, harmlessly, if an ad blocker stops it)
+    (window.bonusround = window.bonusround || []).push((BR) => BR.attach({ THREE, scene, camera, renderer }));
+    document.getElementById('over').onclick = async () => { await window.BonusRound?.break('intermission'); };
+    renderer.setAnimationLoop(() => renderer.render(scene, camera));
+  </script>
+</body>
+</html>

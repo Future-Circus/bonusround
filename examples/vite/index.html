@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bonus Round · Vite example</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #111827; color: #fff; font-family: system-ui, sans-serif; }
+    #hud { position: fixed; left: 16px; top: 12px; font-weight: 700; }
+    #over { position: fixed; inset: 0; display: none; place-items: center; font-size: 32px; font-weight: 900; background: rgba(0,0,0,.4); }
+  </style>
+</head>
+<body>
+  <div id="hud">Score <span id="score">0</span> · <span id="time">20</span>s · WASD</div>
+  <div id="over">Game over!</div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

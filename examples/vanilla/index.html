@@ -1,0 +1,53 @@
+<!doctype html>
+<!-- Bonus Round, vanilla three.js with an import map (no build step). Open with any static server: npx serve . -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bonus Round · vanilla example</title>
+  <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "bonusround": "https://cdn.jsdelivr.net/npm/bonusround@1/index.js"
+    } }
+  </script>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #111827; color: #fff; font-family: system-ui, sans-serif; }
+    #ui { position: fixed; left: 16px; top: 12px; display: flex; gap: 8px; }
+    button { font: inherit; font-weight: 700; padding: 8px 14px; border-radius: 999px; border: 0; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="ui"><button id="over">Game over → break()</button></div>
+  <script type="module">
+    import * as THREE from 'three';
+    import { BonusRound } from 'bonusround';
+
+    BonusRound.init({ pub: 'pub_XXXXXXXX' });   // your publisher id from https://bonusround.io/app/games/
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    document.body.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x87ceeb);
+    const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 200);
+    camera.position.set(0, 3, 8);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 2));
+    const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshStandardMaterial({ color: 0xff7043 }));
+    scene.add(cube);
+
+    BonusRound.attach({ THREE, scene, camera, renderer });   // once, after all four exist
+
+    let paused = false;
+    async function gameOver() {
+      paused = true;
+      await BonusRound.break('intermission');   // the round plays here; resolves right away if there's no ad
+      paused = false;
+    }
+    document.getElementById('over').onclick = gameOver;
+
+    renderer.setAnimationLoop(() => { if (!paused) cube.rotation.y += 0.01; renderer.render(scene, camera); });
+    addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+  </script>
+</body>
+</html>
