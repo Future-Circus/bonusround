@@ -219,7 +219,8 @@ await browser.close();
   const r = await BonusRound.break('intermission');
   if (r.reason !== 'busy') resume();                          // pause() / resume() must be safe to call twice
   ```
-- **Pointer lock (FPS games):** the SDK frees the mouse for anything clickable (the end card, the offer card), and Continue re-locks your game from that click. If the card times out, a "Click to resume" chip does it. If your game had the lock, `end` carries `pointerLock: 'restored'` or `'was-locked'` (free now: re-lock on your next canvas click). The SDK never fights a lock your game takes back itself.
+- **Pointer lock (FPS games):** the SDK frees the mouse only while its clickable UI is on screen (the end card, the offer card), never at `start`, in the countdown or during the round. In-world and native rounds keep your lock throughout. If the browser drops it, a "Click to look around" chip re-locks from one click. Overlay pocket-arena rounds take the lock from the player's first click inside the round. Continue re-locks your game from that click; if the card times out, a "Click to resume" chip does it. If your game had the lock, `end` carries `pointerLock: 'restored'` or `'was-locked'` (free now: re-lock on your next canvas click). The SDK never fights a lock your game takes back itself.
+- **Your CSS can't leak in:** all SDK UI renders in shadow roots with its own fonts and spacing.
 - **Native takeover** (the round runs in the game's own world with its own controls): pass `host: { getPlayerPosition, teleport, setBounds, onFrame }` and `worldRoot` to `attach()`. See https://bonusround.io/docs/attach. Use it only if you can implement all four correctly; otherwise overlay mode is the right default.
 
 ## API

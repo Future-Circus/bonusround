@@ -1,4 +1,4 @@
-/*! Bonus Round SDK 1.0.5 (npm: bonusround) · <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_…"></script> */
+/*! Bonus Round SDK 1.0.6 (npm: bonusround) · <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_…"></script> */
 (function () {
   var s = document.currentScript, dir = s && s.src ? s.src.replace(/[?#].*$/, '').replace(/\/[^\/]*$/, '') : '';
   var cfg = (window.bonusroundConfig = window.bonusroundConfig || {});
@@ -15,7 +15,7 @@
 (function () {
   'use strict';
   if (window.BonusRound && window.BonusRound.__loader) return;
-  var VERSION = '1.0.5';
+  var VERSION = '1.0.6';
 
   // ---------- who am I ----------
   var script = document.currentScript;
@@ -286,7 +286,8 @@
         host.setAttribute('data-bonusround-devbadge', '');
         host.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:2147483645;';
         var root = host.attachShadow ? host.attachShadow({ mode: 'open' }) : host;
-        root.innerHTML = '<style>.b{box-sizing:border-box;width:min(300px,calc(100vw - 24px));padding:10px 12px;border-radius:14px;background:rgba(10,11,16,.92);color:#fff;font:500 12px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.16)}'
+        // the host page's `*` rules can't restyle the badge (same reset as sdk/ui-reset.js UI_RESET: keep in sync)
+        root.innerHTML = '<style>:host{all:initial}:host{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif!important;font-size:16px!important;font-weight:400!important;font-style:normal!important;font-variant:normal!important;font-stretch:normal!important;font-feature-settings:normal!important;font-kerning:auto!important;line-height:normal!important;letter-spacing:normal!important;word-spacing:normal!important;text-transform:none!important;text-indent:0!important;text-align:left!important;text-shadow:none!important;text-decoration:none!important;white-space:normal!important;direction:ltr!important;writing-mode:horizontal-tb!important;visibility:visible!important;cursor:auto!important;color:initial!important;-webkit-text-stroke:0!important}.b{box-sizing:border-box;width:min(300px,calc(100vw - 24px));padding:10px 12px;border-radius:14px;background:rgba(10,11,16,.92);color:#fff;font:500 12px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.16)}'
           + '.t{display:flex;align-items:center;gap:7px;font-weight:700;font-size:12.5px}.mk{display:inline-flex;width:18px;height:18px}.mk:empty{display:none}.mk img,.mk svg{width:18px;height:18px}.t .d{color:#ffd66b}.x{all:unset;margin-left:auto;cursor:pointer;width:20px;height:20px;text-align:center;border-radius:50%;background:rgba(255,255,255,.12);font-size:14px;line-height:20px}'
           + '.w{margin-top:5px;opacity:.88}.n{margin-top:4px;opacity:.65}.p{all:unset;box-sizing:border-box;margin-top:8px;display:inline-block;cursor:pointer;padding:6px 12px;border-radius:999px;background:#ffb000;color:#1b1d33;font-weight:800;font-size:12px}.p[disabled]{opacity:.5;cursor:default}.c{display:block;margin-top:6px;color:#ffd66b;font-weight:700;text-decoration:none}.c[hidden]{display:none}</style>'
           + '<div class="b" role="status"><div class="t"><span class="mk"></span><span>Bonus Round · <span class="d">dev</span></span><button class="x" type="button" aria-label="Dismiss">×</button></div>'

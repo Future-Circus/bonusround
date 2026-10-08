@@ -1,4 +1,4 @@
-// Bonus Round SDK core 1.0.5 (bundled from sdk/br-core.js). https://bonusround.io/docs/
+// Bonus Round SDK core 1.0.6 (bundled from sdk/br-core.js). https://bonusround.io/docs/
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __esm = (fn, res, err) => function __init() {
@@ -14,7 +14,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// ../../sdk/builders.js
+// sdk/builders.js
 function luminance(h) {
   const n = h.length === 4 ? h.replace(/#(.)(.)(.)/, "#$1$1$2$2$3$3") : h;
   const [r4, g, b] = [1, 3, 5].map((i) => parseInt(n.substr(i, 2), 16) / 255).map((c) => c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
@@ -883,7 +883,7 @@ function buildInWorld(THREE, m, A, pal, statueGltf) {
 }
 var isHex, hex, readableOn, initials, brand, DRINK, clampN;
 var init_builders = __esm({
-  "../../sdk/builders.js"() {
+  "sdk/builders.js"() {
     isHex = (v) => typeof v === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v);
     hex = (v, fb) => isHex(v) ? v : fb;
     readableOn = (bg, preferred) => {
@@ -898,7 +898,7 @@ var init_builders = __esm({
   }
 });
 
-// ../../sdk/audio.js
+// sdk/audio.js
 function unlockAudio() {
   gestured = true;
   ac();
@@ -1099,14 +1099,22 @@ function createAudio(urls, volume = 0.5) {
 }
 var NOTES, ctx, gestured;
 var init_audio = __esm({
-  "../../sdk/audio.js"() {
+  "sdk/audio.js"() {
     NOTES = { collect: [880, 1320], start: [523, 659, 784], win: [523, 659, 784, 1047], shoot: [520, 392] };
     ctx = null;
     gestured = false;
   }
 });
 
-// ../../sdk/countdown.js
+// sdk/ui-reset.js
+var UI_RESET;
+var init_ui_reset = __esm({
+  "sdk/ui-reset.js"() {
+    UI_RESET = ':host{all:initial}:host{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif!important;font-size:16px!important;font-weight:400!important;font-style:normal!important;font-variant:normal!important;font-stretch:normal!important;font-feature-settings:normal!important;font-kerning:auto!important;line-height:normal!important;letter-spacing:normal!important;word-spacing:normal!important;text-transform:none!important;text-indent:0!important;text-align:left!important;text-shadow:none!important;text-decoration:none!important;white-space:normal!important;direction:ltr!important;writing-mode:horizontal-tb!important;visibility:visible!important;cursor:auto!important;color:initial!important;-webkit-text-stroke:0!important}';
+  }
+});
+
+// sdk/countdown.js
 function resolveCountdownSec({ config, publisher, manifest, trigger, userInitiated } = {}) {
   const c = num(config);
   if (c !== null && c <= 0) return 0;
@@ -1535,8 +1543,9 @@ function serverCountdown(rt, m) {
 }
 var DEFAULT_COUNTDOWN_SEC, USER_COUNTDOWN_SEC, MAX_SEC, MAX_HIDDEN_MS, clamp, num, esc, BR_MARK_SVG, ZONES, overlap, OURS, SKIP_TAGS, CSS, RING_C, active, history, MIN_FIXED_MS, done0, isNum, toEpochMs, countdownActive, DEFAULT_MIN_BREAK_GAP_SEC, DEFAULT_MAX_PER_SESSION, absUrl;
 var init_countdown = __esm({
-  "../../sdk/countdown.js"() {
+  "sdk/countdown.js"() {
     init_audio();
+    init_ui_reset();
     DEFAULT_COUNTDOWN_SEC = 5;
     USER_COUNTDOWN_SEC = 3;
     MAX_SEC = 10;
@@ -1552,7 +1561,7 @@ var init_countdown = __esm({
     CSS = `
 .mk{display:inline-flex;width:22px;height:22px;flex:none;margin:-2px 0}.mk svg,.mk img{width:22px;height:22px;display:block}
 .dom{font:800 13px/1 Sora,Inter,system-ui,-apple-system,sans-serif;letter-spacing:-.01em;color:#fff;white-space:nowrap}
-:host{all:initial}
+${UI_RESET}
 .cd{position:fixed;left:0;top:0;width:260px;height:64px;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:8px 9px 8px 13px;
   border-radius:18px;background:rgba(18,16,36,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);
   box-shadow:0 10px 30px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.08);color:#fff;font:600 13px/1.15 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -1620,7 +1629,7 @@ var init_countdown = __esm({
   }
 });
 
-// ../../sdk/overlay.js
+// sdk/overlay.js
 function createOverlay(m, pal, logoUrl, opts = {}) {
   if (!document.getElementById("sa-style")) {
     const st = document.createElement("style");
@@ -1655,7 +1664,17 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
     <div class="sa-toast">+1</div>
     <div class="sa-cap" aria-live="polite"><div class="sa-line"><b>${esc2(m.brand.name)}</b><span class="sa-cap-t"></span></div><button type="button" class="sa-cc" title="Captions on/off" aria-pressed="true">CC</button></div>
     <div class="sa-board"></div>`;
-  document.body.appendChild(root);
+  const host = document.createElement("div");
+  host.setAttribute("data-bonusround-ui", "overlay");
+  host.style.cssText = "position:fixed;inset:0;pointer-events:none;z-index:50;";
+  const shadow = host.attachShadow ? host.attachShadow({ mode: "open" }) : null;
+  if (shadow) {
+    const st = document.createElement("style");
+    st.textContent = CSS2;
+    shadow.appendChild(st);
+    shadow.appendChild(root);
+    document.body.appendChild(host);
+  } else document.body.appendChild(root);
   const q = (s) => root.querySelector(s);
   const fadeEl = q(".sa-fade"), bar = q(".sa-bar"), intro = q(".sa-intro"), board = q(".sa-board"), toast = q(".sa-toast");
   const timerEl = q(".sa-timer"), countEl = q(".sa-count"), countChip = countEl.parentElement, timeChip = timerEl.parentElement;
@@ -1841,15 +1860,17 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
     },
     dispose() {
       root.remove();
+      host.remove();
     }
   };
 }
 var CSS2, esc2;
 var init_overlay = __esm({
-  "../../sdk/overlay.js"() {
+  "sdk/overlay.js"() {
     init_builders();
     init_countdown();
-    CSS2 = `
+    init_ui_reset();
+    CSS2 = `${UI_RESET}
 .sa-root{position:fixed;inset:0;pointer-events:none;z-index:50;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--sa-ink)}
 .sa-root *{box-sizing:border-box}
 .sa-fade{position:absolute;inset:0;opacity:0;transition:opacity .3s ease;background:radial-gradient(circle at 50% 45%,var(--sa-primary),var(--sa-bg) 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--sa-on-primary)}
@@ -1970,14 +1991,14 @@ var init_overlay = __esm({
   }
 });
 
-// ../../sdk/mechanics/collect.js
+// sdk/mechanics/collect.js
 var collect_exports = {};
 __export(collect_exports, {
   default: () => collect_default
 });
 var PICK_R, collect_default;
 var init_collect = __esm({
-  "../../sdk/mechanics/collect.js"() {
+  "sdk/mechanics/collect.js"() {
     PICK_R = 1.2;
     collect_default = {
       name: "collect",
@@ -2026,7 +2047,7 @@ var init_collect = __esm({
   }
 });
 
-// ../../sdk/mechanics/shoot.js
+// sdk/mechanics/shoot.js
 var shoot_exports = {};
 __export(shoot_exports, {
   default: () => shoot_default
@@ -2044,7 +2065,7 @@ function crosshair(color) {
 }
 var SPEED, GRAV, LIFE, COOLDOWN, TRAIL, frac, rand01, shoot_default;
 var init_shoot = __esm({
-  "../../sdk/mechanics/shoot.js"() {
+  "sdk/mechanics/shoot.js"() {
     SPEED = 24;
     GRAV = 7;
     LIFE = 1.5;
@@ -2208,7 +2229,7 @@ var init_shoot = __esm({
   }
 });
 
-// ../../sdk/mechanics/physics.js
+// sdk/mechanics/physics.js
 function rng(seed) {
   let a = seed >>> 0;
   return () => {
@@ -2359,7 +2380,7 @@ function claimIndex(elements) {
 }
 var STEP_UP, clamp2, num2, wrapAngle, CLAIM_TYPES, isClaim;
 var init_physics = __esm({
-  "../../sdk/mechanics/physics.js"() {
+  "sdk/mechanics/physics.js"() {
     STEP_UP = 0.35;
     clamp2 = (v, a, b) => Math.max(a, Math.min(b, v));
     num2 = (v, d) => v !== null && v !== "" && v !== void 0 && Number.isFinite(+v) ? +v : d;
@@ -2369,7 +2390,7 @@ var init_physics = __esm({
   }
 });
 
-// ../../sdk/mechanics/race-rules.js
+// sdk/mechanics/race-rules.js
 function trackFrom(layout) {
   const els = layout?.elements || [], m = layout?.meta?.track || {};
   const seq = [];
@@ -2518,12 +2539,12 @@ function raceDisplay(score, T) {
   return total ? `${Math.floor(score / 100)}/${total}` : `${Math.floor(score / 100)}`;
 }
 var init_race_rules = __esm({
-  "../../sdk/mechanics/race-rules.js"() {
+  "sdk/mechanics/race-rules.js"() {
     init_physics();
   }
 });
 
-// ../../sdk/mechanics/course-kit.js
+// sdk/mechanics/course-kit.js
 function ink(hex2) {
   const n = parseInt(String(hex2 || "#000").slice(1).padEnd(6, "0").slice(0, 6), 16);
   const l = (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255;
@@ -2767,7 +2788,7 @@ function cleanup(ctx2, objs, k) {
 }
 var css, esc3, claimsOf;
 var init_course_kit = __esm({
-  "../../sdk/mechanics/course-kit.js"() {
+  "sdk/mechanics/course-kit.js"() {
     init_physics();
     css = (el, s) => {
       el.style.cssText = s;
@@ -2778,7 +2799,7 @@ var init_course_kit = __esm({
   }
 });
 
-// ../../sdk/mechanics/race.js
+// sdk/mechanics/race.js
 var race_exports = {};
 __export(race_exports, {
   default: () => race_default,
@@ -2790,7 +2811,7 @@ __export(race_exports, {
 });
 var usable, race_default, K_brand, claimOf;
 var init_race = __esm({
-  "../../sdk/mechanics/race.js"() {
+  "sdk/mechanics/race.js"() {
     init_collect();
     init_race_rules();
     init_physics();
@@ -3022,7 +3043,7 @@ var init_race = __esm({
   }
 });
 
-// ../../sdk/mechanics/platform-rules.js
+// sdk/mechanics/platform-rules.js
 function courseFrom(layout) {
   const els = layout?.elements || [];
   const surfs = surfacesFrom(els);
@@ -3118,13 +3139,13 @@ function platformDisplay(score, total) {
 }
 var pathIndex;
 var init_platform_rules = __esm({
-  "../../sdk/mechanics/platform-rules.js"() {
+  "sdk/mechanics/platform-rules.js"() {
     init_physics();
     pathIndex = (C, s) => s ? C.path.indexOf(s) : -1;
   }
 });
 
-// ../../sdk/mechanics/platform.js
+// sdk/mechanics/platform.js
 var platform_exports = {};
 __export(platform_exports, {
   courseFrom: () => courseFrom,
@@ -3161,7 +3182,7 @@ function addBridge(ctx2, s, hop) {
 }
 var usable2, brandOf, platform_default;
 var init_platform = __esm({
-  "../../sdk/mechanics/platform.js"() {
+  "sdk/mechanics/platform.js"() {
     init_collect();
     init_platform_rules();
     init_physics();
@@ -3426,7 +3447,7 @@ var init_platform = __esm({
   }
 });
 
-// ../../sdk/mechanics/sports-rules.js
+// sdk/mechanics/sports-rules.js
 function pitchFrom(layout) {
   const els = layout?.elements || [];
   const goal = els.find((e) => e.type === "goal") || null;
@@ -3589,14 +3610,14 @@ function simulateGoals(layout, P, { seconds = 13, sprint = true, ballIndex = 0, 
 }
 var sportsScore, sportsDisplay;
 var init_sports_rules = __esm({
-  "../../sdk/mechanics/sports-rules.js"() {
+  "sdk/mechanics/sports-rules.js"() {
     init_physics();
     sportsScore = (goals) => goals;
     sportsDisplay = (score) => `${score} goal${score === 1 ? "" : "s"}`;
   }
 });
 
-// ../../sdk/mechanics/sports.js
+// sdk/mechanics/sports.js
 var sports_exports = {};
 __export(sports_exports, {
   default: () => sports_default,
@@ -3637,7 +3658,7 @@ function ballTexture(K, pal) {
 }
 var usable3, brandOf2, sports_default;
 var init_sports = __esm({
-  "../../sdk/mechanics/sports.js"() {
+  "sdk/mechanics/sports.js"() {
     init_collect();
     init_sports_rules();
     init_physics();
@@ -3845,7 +3866,7 @@ var init_sports = __esm({
   }
 });
 
-// ../../sdk/mechanics/smash-rules.js
+// sdk/mechanics/smash-rules.js
 function targetsFrom(layout) {
   return (layout?.elements || []).filter((e) => e.type === "target").map((e, i) => ({
     i,
@@ -3918,14 +3939,14 @@ function simulateSweep(layout, P, { sprint = true } = {}) {
 }
 var smashScore, smashDisplay;
 var init_smash_rules = __esm({
-  "../../sdk/mechanics/smash-rules.js"() {
+  "sdk/mechanics/smash-rules.js"() {
     init_physics();
     smashScore = (points) => points;
     smashDisplay = (score) => `${score} pts`;
   }
 });
 
-// ../../sdk/mechanics/smash.js
+// sdk/mechanics/smash.js
 var smash_exports = {};
 __export(smash_exports, {
   default: () => smash_default,
@@ -3939,7 +3960,7 @@ __export(smash_exports, {
 });
 var usable4, brandOf3, smash_default;
 var init_smash = __esm({
-  "../../sdk/mechanics/smash.js"() {
+  "sdk/mechanics/smash.js"() {
     init_collect();
     init_smash_rules();
     init_physics();
@@ -4064,7 +4085,7 @@ var init_smash = __esm({
   }
 });
 
-// ../../sdk/mechanics/index.js
+// sdk/mechanics/index.js
 async function loadMechanic(name) {
   const want = KNOWN.includes(name) ? ALIAS[name] || name : "collect";
   if (!cache.has(want)) {
@@ -4078,7 +4099,7 @@ async function loadMechanic(name) {
 }
 var BUNDLED, KNOWN, ALIAS, cache;
 var init_mechanics = __esm({
-  "../../sdk/mechanics/index.js"() {
+  "sdk/mechanics/index.js"() {
     BUNDLED = { "collect": () => Promise.resolve().then(() => (init_collect(), collect_exports)), "shoot": () => Promise.resolve().then(() => (init_shoot(), shoot_exports)), "race": () => Promise.resolve().then(() => (init_race(), race_exports)), "platform": () => Promise.resolve().then(() => (init_platform(), platform_exports)), "sports": () => Promise.resolve().then(() => (init_sports(), sports_exports)), "smash": () => Promise.resolve().then(() => (init_smash(), smash_exports)) };
     KNOWN = ["collect", "shoot", "race", "platform", "sports", "smash", "gates"];
     ALIAS = { gates: "collect" };
@@ -4086,7 +4107,7 @@ var init_mechanics = __esm({
   }
 });
 
-// ../../sdk/viewability.js
+// sdk/viewability.js
 function ambientRule(inWorld = {}) {
   return inWorld && (inWorld.video || inWorld.animated === true || inWorld.surface === "video") ? RULES.video : RULES.display;
 }
@@ -4466,7 +4487,7 @@ function takeoverSample(showing, tabVisible) {
 }
 var IIG_STD, POLL_MS, RULES, EPS, round, mul, EDGES, clamp01;
 var init_viewability = __esm({
-  "../../sdk/viewability.js"() {
+  "sdk/viewability.js"() {
     IIG_STD = "iig2";
     POLL_MS = 200;
     RULES = Object.freeze({
@@ -4482,7 +4503,7 @@ var init_viewability = __esm({
   }
 });
 
-// ../../sdk/inworld/props.js
+// sdk/inworld/props.js
 function trimmedLogo(img) {
   if (!img?.width) return null;
   if (trimmed.has(img)) return trimmed.get(img);
@@ -4980,13 +5001,13 @@ function createProps({ T, m, pal, logoImg, collectible }) {
 }
 var trimmed;
 var init_props = __esm({
-  "../../sdk/inworld/props.js"() {
+  "sdk/inworld/props.js"() {
     init_builders();
     trimmed = /* @__PURE__ */ new WeakMap();
   }
 });
 
-// ../../sdk/click-params.js
+// sdk/click-params.js
 function triggerFor(format, tokenTrigger) {
   if (format === "zone") return "zone";
   if (format === "prop" || format === "portal") return "proximity";
@@ -5076,7 +5097,7 @@ function buildDestination(spec = {}, click = {}) {
 }
 var CLICK_FORMATS, PLACEMENTS, MACROS, PER_CLICK_MACROS, HOUSE_REF, pick;
 var init_click_params = __esm({
-  "../../sdk/click-params.js"() {
+  "sdk/click-params.js"() {
     CLICK_FORMATS = ["inworld", "brandworld", "zone", "prop", "portal", "arena"];
     PLACEMENTS = ["endcard", "prop", "portal", "toast"];
     MACROS = ["click_id", "campaign_id", "creative_id", "game", "format", "trigger", "placement", "score", "device", "country", "ts"];
@@ -5086,7 +5107,7 @@ var init_click_params = __esm({
   }
 });
 
-// ../../sdk/click.js
+// sdk/click.js
 function noteApi(ok) {
   S.down = !ok;
 }
@@ -5157,7 +5178,7 @@ function openCta(url, hints = {}) {
 }
 var S, clickToken, isClickUrl, deviceGuess;
 var init_click = __esm({
-  "../../sdk/click.js"() {
+  "sdk/click.js"() {
     init_click_params();
     S = globalThis.__brClick || (globalThis.__brClick = { down: false, ctas: /* @__PURE__ */ new Map() });
     clickToken = (url) => {
@@ -5183,7 +5204,7 @@ var init_click = __esm({
   }
 });
 
-// ../../sdk/proximity.js
+// sdk/proximity.js
 function usedKeys(world) {
   const list = [...world?.controls || [], ...world?.gameplayHooks?.controls || []];
   const used = /* @__PURE__ */ new Set();
@@ -5422,12 +5443,13 @@ function createProximity(o) {
 }
 var clamp3, esc4, isTouch, CSS3;
 var init_proximity = __esm({
-  "../../sdk/proximity.js"() {
+  "sdk/proximity.js"() {
     init_click();
+    init_ui_reset();
     clamp3 = (v, a, b) => Math.max(a, Math.min(b, v));
     esc4 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
     isTouch = () => typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches || (navigator.maxTouchPoints || 0) > 1 && !matchMedia?.("(pointer: fine)")?.matches;
-    CSS3 = `:host{all:initial}
+    CSS3 = `${UI_RESET}
 .c{position:fixed;left:0;top:0;z-index:2147483646;pointer-events:auto;cursor:pointer;display:flex;align-items:center;gap:9px;max-width:340px;
   padding:8px 12px 8px 8px;border-radius:14px;background:rgba(18,16,34,.9);color:#fff;font:700 13px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif;
   box-shadow:0 8px 26px rgba(0,0,0,.35),inset 0 0 0 2px var(--p,#6b4dff);opacity:0;transform:translateY(6px) scale(.96);transition:opacity .25s,transform .25s}
@@ -5442,7 +5464,7 @@ kbd{font:900 12px/1 system-ui,sans-serif;display:inline-block;min-width:16px;tex
   }
 });
 
-// ../../sdk/inworld/scan.js
+// sdk/inworld/scan.js
 function worldPos(o, out = v3()) {
   try {
     o.updateWorldMatrix ? o.updateWorldMatrix(true, false) : o.updateMatrixWorld?.(true);
@@ -6081,7 +6103,7 @@ function segPointDist(a, b, c) {
 }
 var v3, dist, distXZ, matHex, hexDist, levelCache, sameMatrix, triCount, Level, TRIS_PER_RUN, RUNS_PER_GROUP, _rb, PLAYER_NAME;
 var init_scan = __esm({
-  "../../sdk/inworld/scan.js"() {
+  "sdk/inworld/scan.js"() {
     v3 = (x = 0, y = 0, z = 0) => ({ x, y, z });
     dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
     distXZ = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
@@ -6221,7 +6243,7 @@ var init_scan = __esm({
   }
 });
 
-// ../../sdk/inworld/takeover.js
+// sdk/inworld/takeover.js
 function drawFit2(g, img, cx, cy, w, h) {
   const k = Math.min(w / img.width, h / img.height);
   g.drawImage(img, cx - img.width * k / 2, cy - img.height * k / 2, img.width * k, img.height * k);
@@ -7249,7 +7271,7 @@ function createWorldTakeover(o) {
 }
 var clamp4, ease, texAvg;
 var init_takeover = __esm({
-  "../../sdk/inworld/takeover.js"() {
+  "sdk/inworld/takeover.js"() {
     init_builders();
     init_props();
     init_scan();
@@ -7259,7 +7281,7 @@ var init_takeover = __esm({
   }
 });
 
-// ../../sdk/inworld/session.js
+// sdk/inworld/session.js
 var session_exports = {};
 __export(session_exports, {
   INTERACTIONS: () => INTERACTIONS,
@@ -9428,7 +9450,7 @@ function createSession(o) {
 }
 var clamp5, num3, INTERACTIONS, isInWorld, isOurs;
 var init_session = __esm({
-  "../../sdk/inworld/session.js"() {
+  "sdk/inworld/session.js"() {
     init_scan();
     init_props();
     init_builders();
@@ -9444,7 +9466,7 @@ var init_session = __esm({
   }
 });
 
-// ../../sdk/three-shim.js
+// sdk/three-shim.js
 function threeShim(THREE) {
   if (shimUrl && shimFor === THREE) return shimUrl;
   globalThis.__BONUSROUND_THREE__ = THREE;
@@ -9487,14 +9509,14 @@ function gltfLoaderFor(base, THREE) {
 }
 var blobs, shimUrl, shimFor;
 var init_three_shim = __esm({
-  "../../sdk/three-shim.js"() {
+  "sdk/three-shim.js"() {
     blobs = /* @__PURE__ */ new Map();
     shimUrl = null;
     shimFor = null;
   }
 });
 
-// ../../sdk/host-three.js
+// sdk/host-three.js
 function ourThree(base) {
   return ourP || (ourP = (async () => {
     const prev = window.__THREE__;
@@ -9914,7 +9936,7 @@ async function hostAmbient(opts) {
 }
 var ourP, chain, tryNew;
 var init_host_three = __esm({
-  "../../sdk/host-three.js"() {
+  "sdk/host-three.js"() {
     init_three_shim();
     init_builders();
     init_spatial_ads();
@@ -9935,7 +9957,7 @@ var init_host_three = __esm({
   }
 });
 
-// ../../sdk/inworld/round.js
+// sdk/inworld/round.js
 var round_exports = {};
 __export(round_exports, {
   brandFlash: () => brandFlash,
@@ -10515,7 +10537,7 @@ async function playInWorldRound(opts) {
 }
 var INTRO_MS, sleep, within, loadImage, prepared, warmed, decoded, keyOf, warmInWorldObjects, nextFrame;
 var init_round = __esm({
-  "../../sdk/inworld/round.js"() {
+  "sdk/inworld/round.js"() {
     init_host_three();
     init_three_shim();
     init_spatial_ads();
@@ -10557,7 +10579,7 @@ var init_round = __esm({
   }
 });
 
-// ../../sdk/spatial-ads.js
+// sdk/spatial-ads.js
 function iigAccrue(acc, run, minMs) {
   if (run >= minMs) {
     acc.ms += acc.prevRun < minMs ? run : run - acc.prevRun;
@@ -10602,7 +10624,7 @@ function normalizeManifest(THREE, raw) {
 }
 var inWorldMod, inWorldRun, VERSION, ARENA_CENTER, INTRO_MS2, log, DEFAULTS, withTimeout, loadImage2, gltfLoaderP, defaultGltfLoader, Runtime, SpatialAds;
 var init_spatial_ads = __esm({
-  "../../sdk/spatial-ads.js"() {
+  "sdk/spatial-ads.js"() {
     init_builders();
     init_overlay();
     init_audio();
@@ -11609,11 +11631,11 @@ var init_spatial_ads = __esm({
   }
 });
 
-// ../../sdk/br-core.js
+// sdk/br-core.js
 init_spatial_ads();
 init_builders();
 
-// ../../sdk/round-layout.js
+// sdk/round-layout.js
 var WALK_R = 23.2;
 var ARENA_CENTER2 = [0, 0, 2e3];
 function rng2(seed) {
@@ -11669,7 +11691,7 @@ function freeSpot(rand, maxR, clearance = 0.9) {
   return [0, 0];
 }
 
-// ../../sdk/mechanics/bot-brains.js
+// sdk/mechanics/bot-brains.js
 init_physics();
 init_race_rules();
 init_platform_rules();
@@ -11867,7 +11889,7 @@ function smashBot(c) {
   return bot;
 }
 
-// ../../sdk/round-core.js
+// sdk/round-core.js
 var COLORS = ["#ff5d8f", "#4cc9f0", "#ffd23f", "#7ae582", "#b392f0", "#ff8c42", "#2ec4b6", "#f15bb5", "#9bf6ff", "#c0fdfb"];
 var BOT_NAMES = ["Bloop", "Wobbles", "Jellybean", "Squish"];
 var r2 = (v) => Math.round(v * 100) / 100;
@@ -12708,7 +12730,7 @@ var GameCore = class {
   }
 };
 
-// ../../sdk/local-net.js
+// sdk/local-net.js
 function relay() {
   const handlers = /* @__PURE__ */ new Map();
   return {
@@ -12793,13 +12815,14 @@ function createLocalNet(manifestUrl, opts = {}) {
   };
 }
 
-// ../../sdk/br-core.js
+// sdk/br-core.js
 init_three_shim();
 
-// ../../sdk/br-ui.js
+// sdk/br-ui.js
 init_click();
+init_ui_reset();
 var CSS4 = `
-:host{all:initial}
+${UI_RESET}
 *{box-sizing:border-box;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 iframe{position:fixed;inset:0;width:100vw;height:100vh;border:0;margin:0;padding:0;background:transparent;color-scheme:normal;
   opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:1}
@@ -12997,7 +13020,7 @@ function createUi() {
   };
 }
 
-// ../../sdk/bots.js
+// sdk/bots.js
 function tag(THREE, name, color) {
   const c = document.createElement("canvas"), g = c.getContext("2d");
   g.font = "800 44px system-ui, sans-serif";
@@ -13147,8 +13170,9 @@ function createTracers(THREE, scene) {
   };
 }
 
-// ../../sdk/host-session.js
-var CHIP_CSS = `:host{all:initial}
+// sdk/host-session.js
+init_ui_reset();
+var CHIP_CSS = `${UI_RESET}
 button{all:unset;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483647;cursor:pointer;
   display:flex;align-items:center;gap:10px;padding:12px 20px 12px 14px;border-radius:999px;background:rgba(20,16,40,.86);color:#fff;
   font:800 15px/1 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.25);
@@ -13209,42 +13233,52 @@ function createHostSession() {
       const el = lockedEl;
       lockedEl = null;
       if (!el || !el.isConnected || document.pointerLockElement) return;
-      const holder = document.createElement("div");
-      holder.setAttribute("data-bonusround-resume", "");
-      const root = holder.attachShadow ? holder.attachShadow({ mode: "open" }) : holder;
-      root.innerHTML = `<style>${CHIP_CSS}</style><button type="button"><i></i><span>Click to resume <small>\xB7 back to the game</small></span></button>`;
-      const btn = root.querySelector("button");
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        removeChip();
-        try {
-          const p = el.requestPointerLock?.();
-          if (p && typeof p.catch === "function") p.catch(() => {
-          });
-        } catch {
-        }
-        void kbLocked;
-      });
-      document.documentElement.appendChild(holder);
-      chip = holder;
-      document.addEventListener("pointerlockchange", onLockChange);
-      btn.focus({ preventScroll: true });
+      showChip(el, "Click to resume", "back to the game");
+    },
+    /** mid-round: the game's lock got lost (Safari Esc, a focus change); one click re-locks the game's element */
+    prompt(el, label = "Click to look around", sub = "back to the round") {
+      if (!el || !el.isConnected || document.pointerLockElement) return;
+      showChip(el, label, sub);
     },
     dispose() {
       removeChip();
     }
   };
+  function showChip(el, label, sub) {
+    removeChip();
+    const holder = document.createElement("div");
+    holder.setAttribute("data-bonusround-resume", "");
+    const root = holder.attachShadow ? holder.attachShadow({ mode: "open" }) : holder;
+    const esc6 = (v) => String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    root.innerHTML = `<style>${CHIP_CSS}</style><button type="button"><i></i><span>${esc6(label)} <small>\xB7 ${esc6(sub)}</small></span></button>`;
+    const btn = root.querySelector("button");
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      removeChip();
+      try {
+        const p = el.requestPointerLock?.();
+        if (p && typeof p.catch === "function") p.catch(() => {
+        });
+      } catch {
+      }
+      void kbLocked;
+    });
+    document.documentElement.appendChild(holder);
+    chip = holder;
+    document.addEventListener("pointerlockchange", onLockChange);
+    btn.focus({ preventScroll: true });
+  }
 }
 
-// ../../sdk/br-core.js
+// sdk/br-core.js
 init_host_three();
 init_countdown();
 init_proximity();
 init_viewability();
 init_click();
 
-// ../../sdk/ivt.js
+// sdk/ivt.js
 var now = () => performance.now();
 var S2 = { on: false, inputs: [], holds: [], down: /* @__PURE__ */ new Map(), vis: [], foc: [], ratio: null, ov: null, rounds: /* @__PURE__ */ new Map(), gl: void 0, glv: null, px: 0, py: 0, np: null, cdp: false };
 var MOVE_KEYS = /* @__PURE__ */ new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "ShiftLeft", "ShiftRight"]);
@@ -13504,7 +13538,7 @@ function ivtSignals(key = null, { full = false } = {}) {
   };
 }
 
-// ../../sdk/br-core.js
+// sdk/br-core.js
 var ctaAs = (cta, fm) => cta ? { ...cta, url: withFormat(cta.url, fm) } : null;
 var DEFAULT_SETTINGS = {
   formats: { takeover: { enabled: true, triggers: ["intermission", "rewarded"], intervalSec: 300 }, ambient: { enabled: true } },
@@ -13692,6 +13726,27 @@ var Core = class {
     if (a.kind === "zone") return Promise.resolve(unfilled("busy"));
     return a.promise.then((r4) => ({ ...r4, joined: true }));
   }
+  /** The game's pointer lock is never taken at 'start', in the countdown or during an in-world / native round (the game's
+   *  own controls play it); only clickable UI frees it (the end card, the offer card). If the browser drops it mid-round
+   *  anyway (Safari: Esc, a focus change), a "Click to look around" chip re-locks the game's element from that click. */
+  _guardLock(run) {
+    const el = run.lockEl;
+    if (!el) return;
+    const on = () => {
+      if (run.finished) {
+        run.unguard?.();
+        return;
+      }
+      if (document.pointerLockElement) return;
+      if (run.noGuard || this.session.lockedEl) return;
+      this.session.prompt(el, "Click to look around", "back to the round");
+    };
+    document.addEventListener("pointerlockchange", on);
+    run.unguard = () => {
+      document.removeEventListener("pointerlockchange", on);
+      run.unguard = null;
+    };
+  }
   /** Continue clicked (a user gesture): re-lock the element the game had locked before the round, unless it re-locked */
   _relock() {
     try {
@@ -13704,9 +13759,11 @@ var Core = class {
     if (!run || run.announced || run.finished) return;
     run.announced = true;
     try {
-      run.hadLock = !!document.pointerLockElement;
+      run.lockEl = document.pointerLockElement || null;
+      run.hadLock = !!run.lockEl;
     } catch {
     }
+    this._guardLock(run);
     this.emitter.emit("start", {
       id: run.id,
       format: "takeover",
@@ -14148,6 +14205,7 @@ var Core = class {
     this.busy = false;
     this.ui?.hideRewarded(false);
     clearTimeout(run.soonT);
+    run.unguard?.();
     const out = { filled: true, completed: run.completed, score: run.score, trigger: run.trigger, requestId: run.ad?.requestId || null, brand: run.ad?.brand?.name || null, ...extra };
     if (run.announced) out.id = run.id;
     if (run.hadLock || this.session.lockedEl) {
@@ -14686,6 +14744,7 @@ var Core = class {
       if (!data.aborted) {
         run.completed = true;
         this._beacon(token, "complete", run.score);
+        if (this.mode !== "overlay") this.session.begin();
       }
     } else if (type === "cta") this._beacon(token, "click", data.url || null, false);
     else if (type === "roundExit") this._finish(run);
@@ -14694,10 +14753,7 @@ var Core = class {
     if (run.started || run.finished) return;
     this._announce(run);
     run.started = true;
-    if (!run.session) {
-      run.session = true;
-      this.session.begin();
-    }
+    if (!run.session) run.session = true;
     run.startedAt = performance.now();
     this._beacon(run.token, "impression", 1);
     this._beacon(run.token, "start", 1);
@@ -14776,6 +14832,7 @@ var Core = class {
       if (d.phase === "ready" && readyT) {
         clearTimeout(readyT);
         readyT = 0;
+        run.noGuard = true;
         if (!run.session) {
           run.session = true;
           this.session.begin();
