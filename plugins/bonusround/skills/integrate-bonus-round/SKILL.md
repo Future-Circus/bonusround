@@ -10,7 +10,7 @@ Bonus Round (bonusround.io) is an ad network for three.js games. At natural brea
 ## Where the recipe is (in order)
 
 1. **npm**, which works when bonusround.io is blocked. `npm view bonusround readme` prints the full recipe. After `npm i bonusround`, the same text is in `node_modules/bonusround/AGENTS.md`. Follow it.
-2. The `bonusround_integration_guide` MCP tool, if the `bonusround_*` tools are connected.
+2. The `bonusround_integration_guide` MCP tool, if the `bonusround_*` tools are connected. To connect them, add `https://bonusround.io/mcp` and sign in. With no sign-in, `bonusround_register_game` still registers the game without an account. Once signed in, `bonusround_claim_game` claims it.
 3. `https://bonusround.io/integrate.md`, or https://github.com/Future-Circus/bonusround.
 
 If none of those can be reached, the summary below is enough.

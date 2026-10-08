@@ -154,17 +154,24 @@ MCP server for **[Bonus Round](https://bonusround.io)** (bonusround.io), playabl
 
 \`\`\`bash
 # Claude Code
+# Recommended: the hosted server, sign in with your Bonus Round account (OAuth)
+claude mcp add --transport http bonusround https://bonusround.io/mcp      # then /mcp → bonusround → Authenticate
+# Claude.ai / ChatGPT: add https://bonusround.io/mcp as a custom connector and sign in
+# Alternative: an API key header on the hosted server
+claude mcp add --transport http bonusround https://bonusround.io/mcp --header "Authorization: Bearer br_sk_…"
+# Alternative: this package, the local stdio server
 claude mcp add bonusround --env BONUSROUND_API_KEY=br_sk_… -- npx -y @bonusround/mcp
 # any MCP client (stdio)
 { "mcpServers": { "bonusround": { "command": "npx", "args": ["-y", "@bonusround/mcp"], "env": { "BONUSROUND_API_KEY": "br_sk_…" } } } }
-# hosted (streamable HTTP): https://bonusround.io/mcp  with  Authorization: Bearer br_sk_…
 \`\`\`
 
-The API key is optional. It comes from https://bonusround.io/app/developers/, or \`npx bonusround login\` saves one. Without a key, \`bonusround_integration_guide\` still works, and you can integrate with the \`pub_XXXXXXXX\` placeholder. \`BONUSROUND_URL\` points the server at another host.
+Signing in is optional. The hosted server's \`bonusround_integration_guide\`, \`bonusround_docs\` and \`bonusround_register_game\` work without it: register the game with no account, and a human claims it later. The first account tool asks the user to sign in, and then \`bonusround_claim_game\` moves a game registered without an account into their workspace. For this stdio package, the API key comes from https://bonusround.io/app/developers/, or \`npx bonusround login\` saves one. Without a key, \`bonusround_integration_guide\` still works, and you can integrate with the \`pub_XXXXXXXX\` placeholder. \`BONUSROUND_URL\` points the server at another host.
 
 | Tool | What it does |
 | --- | --- |
 | \`bonusround_integration_guide\` | The full integration recipe (works offline: a copy ships in this package) |
+| \`bonusround_register_game\` (hosted, no account) | Registers the game without an account: returns its pub id, snippet and the \`claimUrl\` for the human |
+| \`bonusround_claim_game\` (hosted, signed in) | Moves a game registered without an account into the signed-in user's workspace (pass its \`claimToken\`) |
 | \`bonusround_list_games\` / \`bonusround_create_game\` | The account's games / register one by its public URL |
 | \`bonusround_get_snippet\` | The script tag, the npm import lines, the attach and break lines, and the ads.txt line for a game |
 | \`bonusround_integration_status\` | Whether bonusround.io has seen the SDK (polls with \`waitSeconds\`) |

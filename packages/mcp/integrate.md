@@ -8,6 +8,8 @@ What the user gets: at natural breaks a 15-second branded Bonus Round takes over
 
 Base URL: `https://bonusround.io` (or `$BONUSROUND_URL` if set). REST auth: `Authorization: Bearer br_sk_…` (an API key from https://bonusround.io/app/developers/). If the `bonusround_*` MCP tools are available, use them instead of raw HTTP; they call the same endpoints.
 
+**MCP server:** add `https://bonusround.io/mcp` to your agent and sign in (OAuth). For example, `claude mcp add --transport http bonusround https://bonusround.io/mcp`, then `/mcp` → bonusround → Authenticate. In Claude or ChatGPT, add it as a custom connector. You don't have to sign in up front: `bonusround_integration_guide`, `bonusround_docs` and `bonusround_register_game` (integrate with no account) work right away, and the first account tool asks the user to sign in. With an account, `bonusround_claim_game { claimToken }` moves a game registered without one into the user's workspace. Alternatively, send an API key as a header (`Authorization: Bearer br_sk_…`), or run the stdio server, `npx -y @bonusround/mcp`, with `BONUSROUND_API_KEY`.
+
 ## Rules
 
 - Show the user your plan and your diff. Keep changes minimal and match the project's code style.
@@ -38,7 +40,7 @@ Shortcut: `npx bonusround init --dry-run` does steps 1 to 3 and prints a diff. I
 The SDK needs the game's public publisher id (`pub_` followed by 16 hex characters). If the user has none yet, use the placeholder `pub_XXXXXXXX` and carry on. Only the test round plays until they replace it.
 
 1. If the user gave you a `pub_` id, use it.
-2. Else, with an API key (MCP tools, or `$BONUSROUND_API_KEY`):
+2. Else, with an account (the MCP server signed in, or `$BONUSROUND_API_KEY`):
    - `bonusround_list_games` / `GET /api/games` → find the game whose `url` matches where this game is hosted. Use its `pubId`.
    - None? Ask the user for the public URL where the game runs (or will run), then `bonusround_create_game { url, name }` / `POST /api/games { url, name }` → `{ game }`.
    - Get the exact tag: `bonusround_get_snippet { gameId }` / `GET /api/games/:id` → `game.snippet.scriptTag`.

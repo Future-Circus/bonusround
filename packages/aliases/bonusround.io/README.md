@@ -250,5 +250,5 @@ npx bonusround status [gameId] --wait 60
 ## Links
 
 - Docs: https://bonusround.io/docs/ · Agent recipe: https://bonusround.io/integrate.md · Full text: https://bonusround.io/llms-full.txt
-- MCP server for agents (register games, get the snippet, check integration): `npx -y @bonusround/mcp` (npm `@bonusround/mcp`)
+- MCP server for agents: add `https://bonusround.io/mcp` and sign in (OAuth), e.g. `claude mcp add --transport http bonusround https://bonusround.io/mcp`. It has no-account tools (`bonusround_register_game`, the guide and docs) and account tools (games, snippet, status, `bonusround_claim_game`, stats, settings). Alternatives: the header `Authorization: Bearer br_sk_…`, or the stdio server `npx -y @bonusround/mcp` (npm `@bonusround/mcp`) with `BONUSROUND_API_KEY`.
 - Source and examples (vanilla, Vite, R3F): https://github.com/Future-Circus/bonusround
