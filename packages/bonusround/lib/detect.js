@@ -190,7 +190,7 @@ export function planAttach(root, file, { attachCall = 'attach', style = 'queue',
     const ii = indentOf(lines[lastImport] || '');
     insertions.push({ after: lastImport, lines: [
       `${ii}import { BonusRound } from 'bonusround'; // Bonus Round: playable ads for three.js games (npm i bonusround)`,
-      `${ii}BonusRound.init({ pub: '${pub}'${server ? `, server: '${server}'` : ''} }); // ${pub === 'pub_XXXXXXXX' ? 'TODO(bonusround): your publisher id from https://bonusround.io/app/games/ (until then only the Fizzpop test round plays)' : 'your public publisher id'}`,
+      `${ii}BonusRound.init({ pub: '${pub}'${server ? `, server: '${server}'` : ''} }); // ${pub === 'pub_XXXXXXXX' ? 'TODO(bonusround): your publisher id from https://bonusround.io/app/games/ (until then only the bonusround.io test round plays)' : 'your public publisher id'}`,
     ] });
     insertions.push({ after, lines: [
       `${indent}// Bonus Round: ambient branded props + Bonus Round takeovers. Docs: https://bonusround.io/docs/attach`,
@@ -275,7 +275,7 @@ export function planR3F(root, files, { style = 'queue', pub = 'pub_XXXXXXXX' } =
     "import * as THREE from 'three';",
     "import { BonusRound } from 'bonusround';",
     '',
-    `BonusRound.init({ pub: '${pub}' }); // ${pub === 'pub_XXXXXXXX' ? 'TODO(bonusround): your publisher id from https://bonusround.io/app/games/ (until then only the Fizzpop test round plays)' : 'your public publisher id'}`,
+    `BonusRound.init({ pub: '${pub}' }); // ${pub === 'pub_XXXXXXXX' ? 'TODO(bonusround): your publisher id from https://bonusround.io/app/games/ (until then only the bonusround.io test round plays)' : 'your public publisher id'}`,
     '',
     'export function BonusRoundAttach() {',
     '  const { scene, camera, gl } = useThree();',

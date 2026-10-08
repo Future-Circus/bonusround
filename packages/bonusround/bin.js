@@ -103,7 +103,7 @@ async function cmdWhoami() {
 
 const statusLine = (g) => {
   const seen = g.integration?.lastSeenAt ?? g.lastSeenAt;
-  return `${c.b(g.name || g.url)}  ${c.dim(`${g.id} · ${g.pubId}`)}\n  status ${g.status} · ${g.testMode ? 'test mode (Fizzpop test ad)' : 'live'} · SDK ${seen ? c.g(`seen ${new Date(seen).toLocaleString()}`) : c.y('not seen yet')}`
+  return `${c.b(g.name || g.url)}  ${c.dim(`${g.id} · ${g.pubId}`)}\n  status ${g.status} · ${g.testMode ? 'test mode (bonusround.io test ad)' : 'live'} · SDK ${seen ? c.g(`seen ${new Date(seen).toLocaleString()}`) : c.y('not seen yet')}`
     + (g.integration?.sdkVersion ? ` · br.js ${g.integration.sdkVersion} · three r${g.integration.threeRevision}` : '');
 };
 
@@ -113,7 +113,7 @@ async function cmdStatus() {
     const { api: agentApi } = makeClient({ baseUrl: reg.server || server, apiKey: reg.provisionalKey, userAgent: `bonusround-cli/${VERSION}` });
     try {
       const g = args.wait ? await agentApi(`/api/agent/games/${reg.pubId}/verify`, { method: 'POST', body: { waitSeconds: Math.min(60, Number(args.wait) || 0) } }) : await agentApi(`/api/agent/games/${reg.pubId}`);
-      const MODES = { dev: 'dev host (test ad only)', test: 'test mode (Fizzpop test ad)', house: 'free house ads (unpaid)', paid: 'paid ads' };
+      const MODES = { dev: 'dev host (test ad only)', test: 'test mode (bonusround.io test ad)', house: 'free house ads (unpaid)', paid: 'paid ads' };
       const mode = MODES[g.mode] || (g.testMode ? MODES.test : 'live');
       const next = typeof g.next === 'string' ? g.next : g.nextStep;
       say(`${c.b(g.name || g.url)}  ${c.dim(g.pubId)}\n  ${g.claimed ? 'claimed' : 'not claimed yet'} · ${mode}${g.learning ? ' · learning' : ''} · SDK ${g.integration?.lastSeenAt ? c.g(`seen ${new Date(g.integration.lastSeenAt).toLocaleString()}`) : c.y('not seen yet')}${next ? `\n  Next: ${next}` : ''}${!g.claimed && g.unclaimedDeleteAt ? `\n  ${c.dim('Unclaimed games are removed after 90 days.')}` : ''}`);
@@ -339,7 +339,7 @@ function printNext(game, style = 'queue') {
 ${c.b('Next')}
   1. Find the TODO(bonusround) comment and put ${call} at your natural breaks
      (round over, game over, level complete). Pause the game while it's awaited.
-  2. Run the game. ${style === 'import' ? "In the browser console, await BonusRound.break('test') plays the Fizzpop Soda test round,\n     even offline or with no publisher id (the SDK bundles it)." : "In the browser console, await BonusRound.break('test') plays the Fizzpop Soda test round."}
+  2. Run the game. ${style === 'import' ? "In the browser console, await BonusRound.break('test') plays the bonusround.io test round,\n     even offline or with no publisher id (the SDK bundles it)." : "In the browser console, await BonusRound.break('test') plays the bonusround.io test round."}
 ${placeholder ? `  3. ${c.y('Publisher id:')} the code has the placeholder pub_XXXXXXXX. The human needs to sign up at https://bonusround.io/signup,
      add the game, and paste its pub_ id there (or run: npx bonusround init --pub pub_…). Until then only the test round plays.\n` : `  3. ${game.gameId ? `npx bonusround status ${game.gameId} --wait 60` : 'npx bonusround status --wait 60'}   (checks that bonusround.io saw the game)\n`}  Full recipe: npm view bonusround readme · node_modules/bonusround/AGENTS.md · https://bonusround.io/integrate.md${claim}`);
 }

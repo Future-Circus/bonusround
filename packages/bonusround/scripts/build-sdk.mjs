@@ -3,7 +3,7 @@
 //   index.js        ESM entry: `import { BonusRound } from 'bonusround'` (sdk/br.js + the bundled core, no network to load)
 //   br.js           classic script for the CDN: <script async src="https://cdn.jsdelivr.net/npm/bonusround/br.js" data-pub="…">
 //   dist/core.js    sdk/br-core.js and everything it imports, one ES module
-//   dist/offline.js the Fizzpop Soda test round (overlay runtime + three.js + assets), loaded only when a test break can't
+//   dist/offline.js the bonusround.io test round (overlay runtime + three.js + assets), loaded only when a test break can't
 //                   reach the ad server (sdk/br-core.js _offlineTestAd)
 // Run: node tools/cli/scripts/build-sdk.mjs   (also runs on `npm pack` / `npm publish` via prepack)
 import fs from 'node:fs';
@@ -13,7 +13,13 @@ import { fileURLToPath } from 'node:url';
 const PKG = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = path.resolve(PKG, '../..');
 const THREE_DIR = path.join(ROOT, 'node_modules/three');
-const FIXTURE = path.join(ROOT, 'runs/fizzpop-fixture/ad');
+// the bonusround.io fallback round (Bo mark, CTA to bonusround.io); the old Fizzpop fixture only until that one has a manifest
+const HOUSE = path.join(ROOT, 'runs/house-bonusround-fallback/ad');
+const IS_HOUSE = fs.existsSync(path.join(HOUSE, 'manifest.json'));
+const FIXTURE = IS_HOUSE ? HOUSE : path.join(ROOT, 'runs/fizzpop-fixture/ad');
+const ROUND = IS_HOUSE ? { name: 'Bonus Round', label: 'the bonusround.io test round', cta: { label: 'Visit bonusround.io', url: 'https://bonusround.io' } }
+  : { name: 'Fizzpop Soda', label: 'the Fizzpop Soda test round', cta: { label: 'Pop the fun', url: null } };
+if (!IS_HOUSE && fs.existsSync(path.join(ROOT, 'sdk/br-core.js'))) console.warn('build-sdk: runs/house-bonusround-fallback/ad/manifest.json missing: bundling the old Fizzpop round');
 if (!fs.existsSync(path.join(ROOT, 'sdk/br-core.js'))) { console.log('build-sdk: no ../../sdk here (a published copy): using the prebuilt index.js, br.js and dist/'); process.exit(0); }
 const esbuild = await import('esbuild');
 const version = JSON.parse(fs.readFileSync(path.join(PKG, 'package.json'), 'utf8')).version;
@@ -47,7 +53,7 @@ const core = await esbuild.build({
 });
 fs.writeFileSync(path.join(PKG, 'dist/core.js'), core.outputFiles[0].text);
 
-// 2. offline test round: the overlay page (overlay/main.js + three.js) as one module, plus the Fizzpop package's files
+// 2. offline test round: the overlay page (overlay/main.js + three.js) as one module, plus the fixture package's files
 const overlay = await esbuild.build({
   entryPoints: [path.join(ROOT, 'overlay/main.js')], bundle: true, format: 'esm', platform: 'browser', target: 'es2022',
   minify: true, plugins: [repoPaths(true)], write: false, legalComments: 'none', logLevel: 'error',
@@ -66,7 +72,7 @@ JSON.stringify(manifest, (_k, v) => {
   if (ext && fs.existsSync(path.join(FIXTURE, v))) assets[v] = [TYPES[ext], fs.readFileSync(path.join(FIXTURE, v)).toString('base64')];
   return v;
 });
-const offline = `// Bonus Round offline test round ${version}: the Fizzpop Soda TEST round (fictional brand, never an ad, never billed).
+const offline = `// Bonus Round offline test round ${version}: ${ROUND.label} (never a paid ad, never billed).
 // Loaded by the SDK only when a test break can't reach the ad server, or the game has no publisher id yet (sdk/br-core.js).
 const HTML = ${JSON.stringify(html)};
 const OVERLAY_JS = ${JSON.stringify(overlayJs)};
@@ -75,7 +81,8 @@ const ASSETS = ${JSON.stringify(assets)};
 let cache = null;
 const blob = (parts, type) => URL.createObjectURL(new Blob(parts, { type }));
 const bytes = (b64) => { const s = atob(b64); const a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; };
-export const brand = { name: 'Fizzpop Soda' };
+export const brand = { name: ${JSON.stringify(ROUND.name)} };
+export const label = ${JSON.stringify(ROUND.label)};
 export async function offlineTestAd({ trigger = 'test' } = {}) {
   if (!cache) {
     const urls = {};
@@ -86,7 +93,7 @@ export async function offlineTestAd({ trigger = 'test' } = {}) {
     cache = { manifestUrl: blob([JSON.stringify(m)], 'application/json'), overlayUrl: blob([HTML.replace('%%BOOT%%', boot)], 'text/html') };
   }
   return { fill: true, test: true, offline: true, format: 'takeover', trigger, token: null, requestId: null,
-    manifestUrl: cache.manifestUrl, overlayUrl: cache.overlayUrl, brand, cta: { label: 'Pop the fun', url: null } };
+    manifestUrl: cache.manifestUrl, overlayUrl: cache.overlayUrl, brand, cta: ${JSON.stringify(ROUND.cta)} };
 }
 `;
 fs.writeFileSync(path.join(PKG, 'dist/offline.js'), offline);

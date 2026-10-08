@@ -9734,6 +9734,7 @@ async function hostAmbient(opts) {
     const K = harvest(scene);
     if (!K) return null;
     const T = await ourThree(base);
+    if (!K.Texture && +String(hookRecords().revision || "").replace(/\D.*$/, "") >= 150) K.Texture = T.Texture;
     const abs = new URL(manifestUrl, location.href).href;
     const raw = await (await fetch(abs, { cache: "no-cache" })).json();
     const m = normalizeManifest(T, raw);
@@ -13789,7 +13790,7 @@ var Core = class {
     }
     return this._play(ad, trigger, opts);
   }
-  /** The npm package's bundled Fizzpop Soda test round (state.loadOffline), so a developer and their agent's headless browser see
+  /** The npm package's bundled test round (the bonusround.io fallback round) (state.loadOffline), so a developer and their agent's headless browser see
    *  a real round when the ad server can't be reached or doesn't know this game yet. Only when this can't be a paid ad: no or a
    *  placeholder publisher id (anything but pub_ + 16 hex), or a test break (break('test'), config({ test:true }), test mode)
    *  that couldn't reach the ad server. A live game whose ad server is unreachable gets nothing: live ads are never faked. */
@@ -13800,7 +13801,7 @@ var Core = class {
     const testBreak = trigger === "test" || !!this.state.test || this.testMode === true;
     const server = this.api || this.base;
     if (!placeholder && !(unreachable && testBreak)) {
-      if (unreachable) console.info(`[bonusround] ${server}/v1/ad unreachable: no Bonus Round this break (live ads are never faked). break('test') plays the bundled Fizzpop Soda test round.`);
+      if (unreachable) console.info(`[bonusround] ${server}/v1/ad unreachable: no Bonus Round this break (live ads are never faked). break('test') plays the bundled bonusround.io test round.`);
       return null;
     }
     let mod;
@@ -13812,7 +13813,7 @@ var Core = class {
     }
     const why = unreachable ? `${server}/v1/ad is unreachable (network, DNS or firewall)` : `the ad server answered "${ad.reason}"`;
     const who = placeholder ? `${this.pub ? `"${this.pub}" is a placeholder publisher id` : "no publisher id is set"}; get yours at https://bonusround.io/app/games/ (BonusRound.init({ pub }) or the script tag's data-pub)` : "this is a test break";
-    console.info(`[bonusround] ${why} and ${who}. Playing the bundled Fizzpop Soda TEST round locally: not an ad, nothing is requested or billed. Live ads always come from the ad server.`);
+    console.info(`[bonusround] ${why} and ${who}. Playing the bundled ${mod.label || "bonusround.io test round"} locally (a TEST round): not an ad, nothing is requested or billed. Live ads always come from the ad server.`);
     const off = await mod.offlineTestAd({ trigger });
     this.requests.push({ at: Date.now(), format: "takeover", trigger, fill: true, requestId: null, reason: "offline_test_round", test: true, offline: true });
     return off;
