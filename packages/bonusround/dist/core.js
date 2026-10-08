@@ -1,4 +1,4 @@
-// Bonus Round SDK core 1.0.6 (bundled from sdk/br-core.js). https://bonusround.io/docs/
+// Bonus Round SDK core 1.0.7 (bundled from sdk/br-core.js). https://bonusround.io/docs/
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __esm = (fn, res, err) => function __init() {
@@ -4676,13 +4676,24 @@ function bandCanvas(m, pal, logoImg) {
   g.fillText(String(logo ? m.brand.tagline || m.brand.name : m.brand.name || "").toUpperCase(), x0, 68, logo ? 600 : 980);
   return c;
 }
-function createProps({ T, m, pal, logoImg, collectible }) {
+function createProps({ T, m, pal, logoImg, collectible, textures = null }) {
   const owned = [];
   const keep = (x) => {
     owned.push(x);
     return x;
   };
-  const targetTex = keep(canvasTexture(T, targetCanvas(m, pal, logoImg)));
+  const TX = textures || {};
+  const pkg = (img, draw) => {
+    if (img?.width) {
+      const c = document.createElement("canvas");
+      c.width = img.width;
+      c.height = img.height;
+      c.getContext("2d").drawImage(img, 0, 0);
+      return c;
+    }
+    return draw();
+  };
+  const targetTex = keep(canvasTexture(T, pkg(TX.target, () => targetCanvas(m, pal, logoImg))));
   const faceMat = keep(new T.MeshBasicMaterial({ map: targetTex, transparent: true, color: "#e8e8e8" }));
   const backMat = keep(new T.MeshStandardMaterial({ color: pal.primary, roughness: 0.5, metalness: 0.1 }));
   const rimMat = keep(new T.MeshStandardMaterial({ color: pal.accent, emissive: pal.accent, emissiveIntensity: 0.9, roughness: 0.3 }));
@@ -4699,7 +4710,7 @@ function createProps({ T, m, pal, logoImg, collectible }) {
   const quad = keep(new T.PlaneGeometry(1, 1));
   const flatQuad = keep(new T.PlaneGeometry(1, 1));
   flatQuad.rotateX(-Math.PI / 2);
-  const bandTex = keep(canvasTexture(T, bandCanvas(m, pal, logoImg)));
+  const bandTex = keep(canvasTexture(T, pkg(TX.arch, () => bandCanvas(m, pal, logoImg))));
   const bandMat = keep(new T.MeshBasicMaterial({ map: bandTex, toneMapped: false, side: T.DoubleSide }));
   const postMat = keep(new T.MeshStandardMaterial({ color: pal.primary, roughness: 0.4 }));
   const zoneTex = keep(canvasTexture(T, zoneCanvas(m, pal, logoImg)));
@@ -4987,7 +4998,8 @@ function createProps({ T, m, pal, logoImg, collectible }) {
         }
       };
     },
-    printTexture: () => keep(canvasTexture(T, printCanvas(m, pal, logoImg))),
+    printTexture: () => keep(canvasTexture(T, pkg(TX.sticker, () => printCanvas(m, pal, logoImg)))),
+    // 2:1 wrap
     dispose() {
       for (const x of owned) {
         try {
@@ -6682,6 +6694,7 @@ function createWorldTakeover(o) {
     c.getContext("2d").drawImage(img, 0, 0);
     return c;
   };
+  const ringCanvas = () => TX.ring ? imgTex(TX.ring) : decalCanvas(m, pal, logo);
   try {
     skyTex = adapter.texture(own(canvasTexture(T, TX.sky ? imgTex(TX.sky) : skyCanvas(pal))));
   } catch {
@@ -6843,8 +6856,8 @@ function createWorldTakeover(o) {
       const D = clamp4(r4 * 1.8, 4 * u, 26 * u);
       const tex = own(canvasTexture(
         T,
-        decalCanvas(m, pal, logo)
-        /* floor decals are seen at grazing angles: always our big-logo disc */
+        ringCanvas()
+        /* floor decals are seen at grazing angles: the package's ring (big logo + rim type), else our big-logo disc */
       ));
       const mat = own(new T.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4, color: "#e8e8e8" }));
       const geo = own(new T.PlaneGeometry(1, 1));
@@ -7021,8 +7034,8 @@ function createWorldTakeover(o) {
     st.focusBillboards = n;
     const decalTex = own(canvasTexture(
       T,
-      decalCanvas(m, pal, logo)
-      /* floor decals are seen at grazing angles: always our big-logo disc */
+      ringCanvas()
+      /* floor decals are seen at grazing angles: the package ring, else our big-logo disc */
     ));
     const geo = own(new T.PlaneGeometry(1, 1));
     geo.rotateX(-Math.PI / 2);
@@ -7084,7 +7097,7 @@ function createWorldTakeover(o) {
     /** a flat logo pad on the ground (the session's moving ground logo): centre p, diameter D, upright for a viewer at
      *  `from`; returns the mesh (move it with .position) */
     pad(p, D, from) {
-      const tex = padTex || (padTex = own(canvasTexture(T, decalCanvas(m, pal, logo))));
+      const tex = padTex || (padTex = own(canvasTexture(T, ringCanvas())));
       const geo = padGeo || (padGeo = own(new T.PlaneGeometry(1, 1)));
       if (!geo.userData.flat) {
         geo.rotateX(-Math.PI / 2);
@@ -7432,7 +7445,7 @@ function createSession(o) {
   const upm = num3(world.scale?.unitsPerMeter, num3(hooks.units?.unitsPerMeter, 1)) || 1;
   const log2 = o.log || (() => {
   });
-  const props = createProps({ T, m, pal, logoImg: o.logoImg, collectible: o.collectible });
+  const props = createProps({ T, m, pal, logoImg: o.logoImg, collectible: o.collectible, textures: o.textures || null });
   const undo = [];
   const items = [];
   const entities = /* @__PURE__ */ new Map();
@@ -11036,13 +11049,22 @@ var init_spatial_ads = __esm({
       /** full takeover extras: a fresh copy of the hero model (the arena owns the first one) and the product image, loaded
        *  ahead (ad load / the adSoon countdown) so the round's start never waits on them; taken once per round */
       _iwExtras(ad, take = false) {
-        if (!ad) return Promise.resolve([null, null]);
+        if (!ad) return Promise.resolve([null, null, null]);
         if (!ad.iwPre) {
           const rel = (p2) => typeof p2 === "string" && p2 ? new URL(p2, ad.abs).href : null;
           const wantsHero = (ad.m.round.inworld?.spawn || []).some((x) => x?.asset === "hero");
           ad.iwPre = Promise.all([
             wantsHero && rel(ad.m.round.hero.model) ? this.gltfLoader().then((l) => l.loadAsync(rel(ad.m.round.hero.model))).catch(() => null) : null,
-            rel(ad.m.brand.product) ? loadImage2(rel(ad.m.brand.product)).then((i) => i?.decode ? i.decode().then(() => i, () => i) : i).catch(() => null) : null
+            rel(ad.m.brand.product) ? loadImage2(rel(ad.m.brand.product)).then((i) => i?.decode ? i.decode().then(() => i, () => i) : i).catch(() => null) : null,
+            // the package's takeover textures (tk_billboard, tk_arch, tk_ring…), as the standalone runner loads them; {} = drawn
+            (async () => {
+              const tx = {}, files = ad.m.round.brandworld?.textures || ad.m.round.inworld?.textures;
+              if (files && typeof files === "object") await Promise.all(Object.entries(files).map(([k, f]) => rel(f) ? loadImage2(rel(f)).then((i) => i?.decode ? i.decode().then(() => i, () => i) : i).then((i) => {
+                if (i?.width) tx[k] = i;
+              }).catch(() => {
+              }) : null));
+              return tx;
+            })()
           ]);
         }
         const p = ad.iwPre;
@@ -11061,7 +11083,7 @@ var init_spatial_ads = __esm({
         const T = this.THREE;
         const { createSession: createSession2, directAdapter: directAdapter2 } = await inWorldMod();
         const run = await inWorldRun().catch(() => null);
-        const [heroGltf, productImg] = await this._iwExtras(ad, true);
+        const [heroGltf, productImg, textures] = await this._iwExtras(ad, true);
         if (token !== this.roundToken || this.disposed) return;
         const r4 = {
           ad,
@@ -11101,7 +11123,8 @@ var init_spatial_ads = __esm({
           onFail: (why) => this._err("in-world", why),
           log: (m) => log(m),
           heroGltf,
-          productImg
+          productImg,
+          textures: textures || null
         });
         try {
           if (r4.iw.buildAsync && run?.nextFrame) await r4.iw.buildAsync(run.nextFrame);

@@ -1,4 +1,4 @@
-// Bonus Round SDK 1.0.6 for three.js games: https://bonusround.io/docs/  ·  npm i bonusround
+// Bonus Round SDK 1.0.7 for three.js games: https://bonusround.io/docs/  ·  npm i bonusround
 //   import { BonusRound } from 'bonusround';
 //   BonusRound.init({ pub: 'pub_…' });                       // your publisher id (none yet: the test round still plays)
 //   BonusRound.attach({ THREE, scene, camera, renderer });    // once, after all four exist
@@ -19,7 +19,7 @@ if (!BR_SSR) {
   (function () {
     'use strict';
     if (window.BonusRound && window.BonusRound.__loader) return;
-    var VERSION = '1.0.6';
+    var VERSION = '1.0.7';
   
     // ---------- who am I ----------
     var script = document.currentScript;
@@ -426,7 +426,7 @@ if (!BR_SSR) {
   
 }
 const noop = () => Promise.resolve({ filled: false, completed: false, reason: 'ssr' });
-const stub = { version: "1.0.6", init() { return stub; }, config() { return stub; }, attach: noop, break: noop, zone: noop, rewarded: noop, safe() { return stub; },
+const stub = { version: "1.0.7", init() { return stub; }, config() { return stub; }, attach: noop, break: noop, zone: noop, rewarded: noop, safe() { return stub; },
   placeAmbient() { return stub; }, on() { return stub; }, off() { return stub; }, cancel: () => false, consent() { return stub; }, debug: noop, ready: () => Promise.resolve(stub) };
 /** window.BonusRound (a no-op stub during server-side rendering). */
 export const BonusRound = BR_SSR ? stub : window.BonusRound;

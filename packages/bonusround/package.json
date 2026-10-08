@@ -1,6 +1,6 @@
 {
   "name": "bonusround",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Monetize your three.js game with one line of code. Bonus Round (bonusround.io): playable 15-second brand rounds at natural breaks; developers keep 70% of net ad revenue. npm i bonusround, then BonusRound.attach({ THREE, scene, camera, renderer }) and await BonusRound.break() as the upgrade. SDK + TypeScript types + `npx bonusround init` CLI; works offline with a bundled test round.",
   "keywords": [
     "bonusround",

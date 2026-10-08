@@ -1,4 +1,4 @@
-/*! Bonus Round SDK 1.0.6 (npm: bonusround) · <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_…"></script> */
+/*! Bonus Round SDK 1.0.7 (npm: bonusround) · <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_…"></script> */
 (function () {
   var s = document.currentScript, dir = s && s.src ? s.src.replace(/[?#].*$/, '').replace(/\/[^\/]*$/, '') : '';
   var cfg = (window.bonusroundConfig = window.bonusroundConfig || {});
@@ -15,7 +15,7 @@
 (function () {
   'use strict';
   if (window.BonusRound && window.BonusRound.__loader) return;
-  var VERSION = '1.0.6';
+  var VERSION = '1.0.7';
 
   // ---------- who am I ----------
   var script = document.currentScript;
