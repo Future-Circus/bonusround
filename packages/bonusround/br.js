@@ -1,4 +1,4 @@
-/*! Bonus Round SDK 1.0.3 (npm: bonusround) · <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_…"></script> */
+/*! Bonus Round SDK 1.0.5 (npm: bonusround) · <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_…"></script> */
 (function () {
   var s = document.currentScript, dir = s && s.src ? s.src.replace(/[?#].*$/, '').replace(/\/[^\/]*$/, '') : '';
   var cfg = (window.bonusroundConfig = window.bonusroundConfig || {});
@@ -15,7 +15,7 @@
 (function () {
   'use strict';
   if (window.BonusRound && window.BonusRound.__loader) return;
-  var VERSION = '1.0.3';
+  var VERSION = '1.0.5';
 
   // ---------- who am I ----------
   var script = document.currentScript;
@@ -177,7 +177,9 @@
     api: api,
     /** attach({ THREE, scene, camera, renderer, worldRoot?, host? }) → Promise<{ mode }> */
     attach: function (opts) { return core().then(function (c) { return c.attach(opts || {}); }); },
-    /** await break(trigger) → { filled, completed, reason?, score? }; resolves right away when unfilled or capped */
+    /** await break(trigger) → { filled, completed, id?, reason?, score? }: once, after the round has fully ended ('end' fired),
+     *  or { filled:false } when no round plays for this call. A break() while another is still preparing shares its round;
+     *  one while a round is on screen is { filled:false, reason:'busy' }. 'start' fires before anything shows (countdown included). */
     'break': function (trigger, opts) { counts.breaks++; return core().then(function (c) { return c.breakRound(trigger || 'intermission', opts || {}); }, function () { return unfilled('sdk_unavailable'); }); },
     /** zone(name, { live:true, countdownEndsAt }) → the player is approaching a named stretch of your level (a racer's
      *  pier): it becomes a sponsored zone while the game keeps running. Never an interstitial: unfilled or unsupported →
@@ -233,7 +235,7 @@
   // bonusroundConfig.hostClass = 'public' | 'dev' overrides the page's host class (tests only: the server keeps its own view).
   var status = (function () {
     var LEARN0 = 'not-started (needs a public URL)';
-    var cur = null, said = '', mod = null, hostInfo = null, game = null, offline = false, settled = false, badge = null, hidden = false, inRound = false;
+    var pageRound = false, cur = null, said = '', mod = null, hostInfo = null, game = null, offline = false, settled = false, badge = null, hidden = false, inRound = false;
     var override = cfg0.hostClass === 'public' || cfg0.hostClass === 'dev' ? cfg0.hostClass : null;
     var label = location.protocol === 'file:' ? 'file' : (location.hostname || 'file');
     // before /sdk/hostclass.js loads (or when our server is unreachable): the obvious dev hosts
@@ -277,7 +279,7 @@
       if (!state.agent) { var l = line(s); if (l !== said) { said = l; console.info(l); } }
     }
     function render() {
-      var show = cur && cur.host === 'dev' && !state.agent && !portal && !hidden && !inRound && document.body;
+      var show = cur && cur.host === 'dev' && !state.agent && !portal && !hidden && !inRound && !pageRound && document.body;
       if (!show) { if (badge) badge.host.style.display = 'none'; return; }
       if (!badge) {
         var host = document.createElement('div');
@@ -308,15 +310,31 @@
       // the claim chip (claimHint above) sits bottom-left too: stack above it
       var chip = document.querySelector('[data-bonusround-claim]');
       badge.host.style.bottom = chip ? (12 + chip.getBoundingClientRect().height + 8) + 'px' : '12px';
-      var what = cur.ad === 'tailored-test' ? 'Showing the free bonusround.io test ad made for your game.' : 'Showing the free bonusround.io test ad (no game learning yet).';
+      var what = cur.ad === 'tailored-test' ? 'Showing a free test ad made for your game.' : 'Showing the free bonusround.io test ad (no game learning yet).';
       badge.q('.w').textContent = (cur.offline ? "Our server isn't reachable: the bundled test ad plays. " : '') + what;
       badge.q('.n').textContent = cur.next;
       var c = badge.q('.c');   // the claim link (unclaimed games, registering network only: claimHint above)
-      if (cur.claimUrl) { c.href = cur.claimUrl; c.hidden = false; } else c.hidden = true;
+      if (cur.claimUrl && /^https?:\/\//i.test(cur.claimUrl)) { c.href = cur.claimUrl; c.hidden = false; } else c.hidden = true;
     }
     try { hidden = sessionStorage.getItem('br_devbadge_x') === '1'; } catch (e) {}
     emitter.on('start', function () { inRound = true; render(); });
     emitter.on('end', function () { inRound = false; render(); });
+    // rounds that don't come through this emitter (tag-only, Brand World, zones, the countdown): the page-level signals
+    var roundOn = function () {
+      var w = window, ph = function (x) { return /^(countdown|intro|playing|leaderboard)$/.test(String(x || '')); };
+      try {
+        if ((w.__BONUSROUND_COUNTDOWN__ && w.__BONUSROUND_COUNTDOWN__.active) || (w.__BONUSROUND_BREAK__ && w.__BONUSROUND_BREAK__.active)
+          || (w.__BONUSROUND_ROUND__ && w.__BONUSROUND_ROUND__.active) || w.__SPATIAL_ADS_BRANDWORLD__) return true;
+        if (w.__SPATIAL_ADS_OVERLAY__ && ph(w.__SPATIAL_ADS_OVERLAY__.phase)) return true;
+        if (w.__SPATIAL_ADS__ && typeof w.__SPATIAL_ADS__.debug === 'function' && ph((w.__SPATIAL_ADS__.debug() || {}).phase)) return true;
+      } catch (e) {}
+      return false;
+    };
+    setInterval(function () {
+      if (!badge || hidden || !cur || cur.host !== 'dev') return;
+      var on = roundOn();
+      if (on !== pageRound) { pageRound = on; render(); }
+    }, 400);
     if (state.agent) return function () { return build(); };
     update();
     if (!portal) Promise.all([   // portal mode loads nothing from the SDK (the inline twin answers)
@@ -327,7 +345,9 @@
       game = null; offline = false;
       if (j && j.sdkGame) game = j.sdkGame;
       else if (pub && state.pingHttp === 404) game = { known: false };
-      else if (pub && !j) offline = true;
+      // an older server (no sdkGame): its testMode / status are enough; a pub id we couldn't check is still a pub id
+      else if (pub && j) game = { testMode: j.testMode !== false, claimed: null, status: j.status || '' };
+      else if (pub) { offline = true; game = { testMode: true, claimed: null, status: '' }; }
       settled = true; update();
       setTimeout(update, 2500);   // the claim link (claimHint) lands in localStorage a moment after the ping
     };

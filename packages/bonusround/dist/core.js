@@ -1,4 +1,4 @@
-// Bonus Round SDK core 1.0.3 (bundled from sdk/br-core.js). https://bonusround.io/docs/
+// Bonus Round SDK core 1.0.5 (bundled from sdk/br-core.js). https://bonusround.io/docs/
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __esm = (fn, res, err) => function __init() {
@@ -14,7 +14,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// ../../sdk/builders.js
+// sdk/builders.js
 function luminance(h) {
   const n = h.length === 4 ? h.replace(/#(.)(.)(.)/, "#$1$1$2$2$3$3") : h;
   const [r4, g, b] = [1, 3, 5].map((i) => parseInt(n.substr(i, 2), 16) / 255).map((c) => c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
@@ -883,7 +883,7 @@ function buildInWorld(THREE, m, A, pal, statueGltf) {
 }
 var isHex, hex, readableOn, initials, brand, DRINK, clampN;
 var init_builders = __esm({
-  "../../sdk/builders.js"() {
+  "sdk/builders.js"() {
     isHex = (v) => typeof v === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v);
     hex = (v, fb) => isHex(v) ? v : fb;
     readableOn = (bg, preferred) => {
@@ -898,7 +898,7 @@ var init_builders = __esm({
   }
 });
 
-// ../../sdk/audio.js
+// sdk/audio.js
 function unlockAudio() {
   gestured = true;
   ac();
@@ -1099,14 +1099,14 @@ function createAudio(urls, volume = 0.5) {
 }
 var NOTES, ctx, gestured;
 var init_audio = __esm({
-  "../../sdk/audio.js"() {
+  "sdk/audio.js"() {
     NOTES = { collect: [880, 1320], start: [523, 659, 784], win: [523, 659, 784, 1047], shoot: [520, 392] };
     ctx = null;
     gestured = false;
   }
 });
 
-// ../../sdk/countdown.js
+// sdk/countdown.js
 function resolveCountdownSec({ config, publisher, manifest, trigger, userInitiated } = {}) {
   const c = num(config);
   if (c !== null && c <= 0) return 0;
@@ -1535,7 +1535,7 @@ function serverCountdown(rt, m) {
 }
 var DEFAULT_COUNTDOWN_SEC, USER_COUNTDOWN_SEC, MAX_SEC, MAX_HIDDEN_MS, clamp, num, esc, BR_MARK_SVG, ZONES, overlap, OURS, SKIP_TAGS, CSS, RING_C, active, history, MIN_FIXED_MS, done0, isNum, toEpochMs, countdownActive, DEFAULT_MIN_BREAK_GAP_SEC, DEFAULT_MAX_PER_SESSION, absUrl;
 var init_countdown = __esm({
-  "../../sdk/countdown.js"() {
+  "sdk/countdown.js"() {
     init_audio();
     DEFAULT_COUNTDOWN_SEC = 5;
     USER_COUNTDOWN_SEC = 3;
@@ -1620,7 +1620,7 @@ var init_countdown = __esm({
   }
 });
 
-// ../../sdk/overlay.js
+// sdk/overlay.js
 function createOverlay(m, pal, logoUrl, opts = {}) {
   if (!document.getElementById("sa-style")) {
     const st = document.createElement("style");
@@ -1659,7 +1659,7 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
   const q = (s) => root.querySelector(s);
   const fadeEl = q(".sa-fade"), bar = q(".sa-bar"), intro = q(".sa-intro"), board = q(".sa-board"), toast = q(".sa-toast");
   const timerEl = q(".sa-timer"), countEl = q(".sa-count"), countChip = countEl.parentElement, timeChip = timerEl.parentElement;
-  let lastTimer = "", holdTimer = 0, capTimer = 0, total = null, lastCount = 0;
+  let lastTimer = "", holdTimer = 0, capTimer = 0, total = null, lastCount = 0, boardLock = null;
   const cap = root.querySelector(".sa-cap"), capText = root.querySelector(".sa-cap-t"), ccBtn = root.querySelector(".sa-cc");
   let ccOn = true;
   const canStore = () => typeof opts.storage === "function" ? opts.storage() : opts.storage !== false;
@@ -1724,7 +1724,7 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
     },
     /** hold: { ms, onDone } keeps the card up until Continue or a visible countdown (paused while CTA/Continue is hovered or focused) */
     showBoard(rows, myId, hold = null) {
-      const list = rows.slice(0, opts.productUrl ? 4 : 6).map((p, i) => `<li class="${p.id === myId ? "me" : ""}"><span class="r">${i + 1}</span><span class="d" style="background:${esc2(p.color || pal.primary)}"></span><span class="n">${esc2(p.name)}${p.bot ? "<i>BOT</i>" : ""}${p.id === myId ? "<i>YOU</i>" : ""}</span><span class="s">${p.score}</span></li>`).join("");
+      const list = rows.slice(0, opts.productUrl ? 4 : 6).map((p, i) => `<li class="${p.id === myId ? "me" : ""}"><span class="r">${i + 1}</span><span class="d" style="background:${/^#[0-9a-f]{3,8}$/i.test(String(p.color || "")) ? p.color : esc2(pal.primary)}"></span><span class="n">${esc2(p.name)}${p.bot ? "<i>BOT</i>" : ""}${p.id === myId ? "<i>YOU</i>" : ""}</span><span class="s">${esc2(p.score)}</span></li>`).join("");
       const prod = opts.productUrl ? `<div class="sa-prod"><img alt="${esc2(m.brand.productName || m.brand.name)}" src="${esc2(opts.productUrl)}"><div class="sa-pl">${logoUrl ? `<img alt="${esc2(m.brand.name)}" src="${esc2(logoUrl)}">` : ""}${m.brand.tagline ? `<b>${esc2(m.brand.tagline)}</b>` : ""}${m.brand.productName ? `<small>${esc2(m.brand.productName)}</small>` : ""}</div></div>` : "";
       board.innerHTML = `<header>${logo}<div><small>Round results</small><strong><span class="sa-ad">Ad</span><span class="sa-dot">\xB7</span>${esc2(m.brand.name)}</strong></div></header>
         ${prod}
@@ -1740,46 +1740,75 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
       });
       board.classList.add("on");
       clearInterval(holdTimer);
+      boardLock?.();
+      try {
+        if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+      } catch {
+      }
       if (!hold) return;
-      let left = hold.ms, paused = 0, finished = false;
+      let left = hold.ms, hover = 0, kbFocus = 0, finished = false;
+      const paused = () => hover > 0 && !document.pointerLockElement || kbFocus > 0;
       const cd = board.querySelector(".sa-count-down");
       const finish = () => {
         if (finished) return;
         finished = true;
         clearInterval(holdTimer);
+        boardLock?.();
         hold.onDone?.();
       };
       const paint = () => {
-        cd.textContent = paused ? "\xB7 paused" : `\xB7 ${Math.max(0, Math.ceil(left / 1e3))}`;
+        cd.textContent = paused() ? "\xB7 paused" : `\xB7 ${Math.max(0, Math.ceil(left / 1e3))}`;
+      };
+      const onLock = () => {
+        hover = 0;
+        paint();
+      };
+      document.addEventListener("pointerlockchange", onLock);
+      boardLock = () => {
+        document.removeEventListener("pointerlockchange", onLock);
+        boardLock = null;
       };
       for (const el of board.querySelectorAll(".sa-click, .sa-continue")) {
         el.addEventListener("pointerenter", () => {
-          paused++;
+          if (!document.pointerLockElement) hover++;
           paint();
         });
         el.addEventListener("pointerleave", () => {
-          paused = Math.max(0, paused - 1);
+          hover = Math.max(0, hover - 1);
           paint();
         });
         el.addEventListener("focus", () => {
-          paused++;
+          let kb = false;
+          try {
+            kb = el.matches(":focus-visible");
+          } catch {
+          }
+          el.__brKb = kb;
+          if (kb) kbFocus++;
           paint();
         });
         el.addEventListener("blur", () => {
-          paused = Math.max(0, paused - 1);
+          if (el.__brKb) {
+            el.__brKb = false;
+            kbFocus = Math.max(0, kbFocus - 1);
+          }
           paint();
         });
       }
       board.querySelector(".sa-continue").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
+        try {
+          window.dispatchEvent(new CustomEvent("bonusround:continue"));
+        } catch {
+        }
         finish();
       });
       let last = performance.now();
       paint();
       holdTimer = setInterval(() => {
         const now2 = performance.now();
-        if (!paused) left -= now2 - last;
+        if (!paused()) left -= now2 - last;
         last = now2;
         paint();
         if (left <= 0) finish();
@@ -1798,10 +1827,12 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
     },
     hideBoard() {
       clearInterval(holdTimer);
+      boardLock?.();
       board.classList.remove("on");
     },
     hideAll() {
       clearInterval(holdTimer);
+      boardLock?.();
       clearTimeout(capTimer);
       cap.classList.remove("on");
       bar.classList.remove("on");
@@ -1815,7 +1846,7 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
 }
 var CSS2, esc2;
 var init_overlay = __esm({
-  "../../sdk/overlay.js"() {
+  "sdk/overlay.js"() {
     init_builders();
     init_countdown();
     CSS2 = `
@@ -1939,14 +1970,14 @@ var init_overlay = __esm({
   }
 });
 
-// ../../sdk/mechanics/collect.js
+// sdk/mechanics/collect.js
 var collect_exports = {};
 __export(collect_exports, {
   default: () => collect_default
 });
 var PICK_R, collect_default;
 var init_collect = __esm({
-  "../../sdk/mechanics/collect.js"() {
+  "sdk/mechanics/collect.js"() {
     PICK_R = 1.2;
     collect_default = {
       name: "collect",
@@ -1995,7 +2026,7 @@ var init_collect = __esm({
   }
 });
 
-// ../../sdk/mechanics/shoot.js
+// sdk/mechanics/shoot.js
 var shoot_exports = {};
 __export(shoot_exports, {
   default: () => shoot_default
@@ -2013,7 +2044,7 @@ function crosshair(color) {
 }
 var SPEED, GRAV, LIFE, COOLDOWN, TRAIL, frac, rand01, shoot_default;
 var init_shoot = __esm({
-  "../../sdk/mechanics/shoot.js"() {
+  "sdk/mechanics/shoot.js"() {
     SPEED = 24;
     GRAV = 7;
     LIFE = 1.5;
@@ -2177,7 +2208,7 @@ var init_shoot = __esm({
   }
 });
 
-// ../../sdk/mechanics/physics.js
+// sdk/mechanics/physics.js
 function rng(seed) {
   let a = seed >>> 0;
   return () => {
@@ -2328,7 +2359,7 @@ function claimIndex(elements) {
 }
 var STEP_UP, clamp2, num2, wrapAngle, CLAIM_TYPES, isClaim;
 var init_physics = __esm({
-  "../../sdk/mechanics/physics.js"() {
+  "sdk/mechanics/physics.js"() {
     STEP_UP = 0.35;
     clamp2 = (v, a, b) => Math.max(a, Math.min(b, v));
     num2 = (v, d) => v !== null && v !== "" && v !== void 0 && Number.isFinite(+v) ? +v : d;
@@ -2338,7 +2369,7 @@ var init_physics = __esm({
   }
 });
 
-// ../../sdk/mechanics/race-rules.js
+// sdk/mechanics/race-rules.js
 function trackFrom(layout) {
   const els = layout?.elements || [], m = layout?.meta?.track || {};
   const seq = [];
@@ -2487,12 +2518,12 @@ function raceDisplay(score, T) {
   return total ? `${Math.floor(score / 100)}/${total}` : `${Math.floor(score / 100)}`;
 }
 var init_race_rules = __esm({
-  "../../sdk/mechanics/race-rules.js"() {
+  "sdk/mechanics/race-rules.js"() {
     init_physics();
   }
 });
 
-// ../../sdk/mechanics/course-kit.js
+// sdk/mechanics/course-kit.js
 function ink(hex2) {
   const n = parseInt(String(hex2 || "#000").slice(1).padEnd(6, "0").slice(0, 6), 16);
   const l = (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255;
@@ -2643,12 +2674,13 @@ function hudChip(ctx2, color) {
   let card = null;
   return {
     el,
-    set(html) {
-      if (el._h !== html) {
-        el.innerHTML = html;
-        el._h = html;
+    set(text) {
+      if (el._h !== text) {
+        el.textContent = text;
+        el._h = text;
       }
     },
+    // plain text: callers interpolate brand names (never innerHTML)
     show(v) {
       el.style.opacity = v ? "1" : "0";
     },
@@ -2735,7 +2767,7 @@ function cleanup(ctx2, objs, k) {
 }
 var css, esc3, claimsOf;
 var init_course_kit = __esm({
-  "../../sdk/mechanics/course-kit.js"() {
+  "sdk/mechanics/course-kit.js"() {
     init_physics();
     css = (el, s) => {
       el.style.cssText = s;
@@ -2746,7 +2778,7 @@ var init_course_kit = __esm({
   }
 });
 
-// ../../sdk/mechanics/race.js
+// sdk/mechanics/race.js
 var race_exports = {};
 __export(race_exports, {
   default: () => race_default,
@@ -2758,7 +2790,7 @@ __export(race_exports, {
 });
 var usable, race_default, K_brand, claimOf;
 var init_race = __esm({
-  "../../sdk/mechanics/race.js"() {
+  "sdk/mechanics/race.js"() {
     init_collect();
     init_race_rules();
     init_physics();
@@ -2990,7 +3022,7 @@ var init_race = __esm({
   }
 });
 
-// ../../sdk/mechanics/platform-rules.js
+// sdk/mechanics/platform-rules.js
 function courseFrom(layout) {
   const els = layout?.elements || [];
   const surfs = surfacesFrom(els);
@@ -3086,13 +3118,13 @@ function platformDisplay(score, total) {
 }
 var pathIndex;
 var init_platform_rules = __esm({
-  "../../sdk/mechanics/platform-rules.js"() {
+  "sdk/mechanics/platform-rules.js"() {
     init_physics();
     pathIndex = (C, s) => s ? C.path.indexOf(s) : -1;
   }
 });
 
-// ../../sdk/mechanics/platform.js
+// sdk/mechanics/platform.js
 var platform_exports = {};
 __export(platform_exports, {
   courseFrom: () => courseFrom,
@@ -3129,7 +3161,7 @@ function addBridge(ctx2, s, hop) {
 }
 var usable2, brandOf, platform_default;
 var init_platform = __esm({
-  "../../sdk/mechanics/platform.js"() {
+  "sdk/mechanics/platform.js"() {
     init_collect();
     init_platform_rules();
     init_physics();
@@ -3394,7 +3426,7 @@ var init_platform = __esm({
   }
 });
 
-// ../../sdk/mechanics/sports-rules.js
+// sdk/mechanics/sports-rules.js
 function pitchFrom(layout) {
   const els = layout?.elements || [];
   const goal = els.find((e) => e.type === "goal") || null;
@@ -3557,14 +3589,14 @@ function simulateGoals(layout, P, { seconds = 13, sprint = true, ballIndex = 0, 
 }
 var sportsScore, sportsDisplay;
 var init_sports_rules = __esm({
-  "../../sdk/mechanics/sports-rules.js"() {
+  "sdk/mechanics/sports-rules.js"() {
     init_physics();
     sportsScore = (goals) => goals;
     sportsDisplay = (score) => `${score} goal${score === 1 ? "" : "s"}`;
   }
 });
 
-// ../../sdk/mechanics/sports.js
+// sdk/mechanics/sports.js
 var sports_exports = {};
 __export(sports_exports, {
   default: () => sports_default,
@@ -3605,7 +3637,7 @@ function ballTexture(K, pal) {
 }
 var usable3, brandOf2, sports_default;
 var init_sports = __esm({
-  "../../sdk/mechanics/sports.js"() {
+  "sdk/mechanics/sports.js"() {
     init_collect();
     init_sports_rules();
     init_physics();
@@ -3813,7 +3845,7 @@ var init_sports = __esm({
   }
 });
 
-// ../../sdk/mechanics/smash-rules.js
+// sdk/mechanics/smash-rules.js
 function targetsFrom(layout) {
   return (layout?.elements || []).filter((e) => e.type === "target").map((e, i) => ({
     i,
@@ -3886,14 +3918,14 @@ function simulateSweep(layout, P, { sprint = true } = {}) {
 }
 var smashScore, smashDisplay;
 var init_smash_rules = __esm({
-  "../../sdk/mechanics/smash-rules.js"() {
+  "sdk/mechanics/smash-rules.js"() {
     init_physics();
     smashScore = (points) => points;
     smashDisplay = (score) => `${score} pts`;
   }
 });
 
-// ../../sdk/mechanics/smash.js
+// sdk/mechanics/smash.js
 var smash_exports = {};
 __export(smash_exports, {
   default: () => smash_default,
@@ -3907,7 +3939,7 @@ __export(smash_exports, {
 });
 var usable4, brandOf3, smash_default;
 var init_smash = __esm({
-  "../../sdk/mechanics/smash.js"() {
+  "sdk/mechanics/smash.js"() {
     init_collect();
     init_smash_rules();
     init_physics();
@@ -4032,7 +4064,7 @@ var init_smash = __esm({
   }
 });
 
-// ../../sdk/mechanics/index.js
+// sdk/mechanics/index.js
 async function loadMechanic(name) {
   const want = KNOWN.includes(name) ? ALIAS[name] || name : "collect";
   if (!cache.has(want)) {
@@ -4046,7 +4078,7 @@ async function loadMechanic(name) {
 }
 var BUNDLED, KNOWN, ALIAS, cache;
 var init_mechanics = __esm({
-  "../../sdk/mechanics/index.js"() {
+  "sdk/mechanics/index.js"() {
     BUNDLED = { "collect": () => Promise.resolve().then(() => (init_collect(), collect_exports)), "shoot": () => Promise.resolve().then(() => (init_shoot(), shoot_exports)), "race": () => Promise.resolve().then(() => (init_race(), race_exports)), "platform": () => Promise.resolve().then(() => (init_platform(), platform_exports)), "sports": () => Promise.resolve().then(() => (init_sports(), sports_exports)), "smash": () => Promise.resolve().then(() => (init_smash(), smash_exports)) };
     KNOWN = ["collect", "shoot", "race", "platform", "sports", "smash", "gates"];
     ALIAS = { gates: "collect" };
@@ -4054,7 +4086,7 @@ var init_mechanics = __esm({
   }
 });
 
-// ../../sdk/viewability.js
+// sdk/viewability.js
 function ambientRule(inWorld = {}) {
   return inWorld && (inWorld.video || inWorld.animated === true || inWorld.surface === "video") ? RULES.video : RULES.display;
 }
@@ -4434,7 +4466,7 @@ function takeoverSample(showing, tabVisible) {
 }
 var IIG_STD, POLL_MS, RULES, EPS, round, mul, EDGES, clamp01;
 var init_viewability = __esm({
-  "../../sdk/viewability.js"() {
+  "sdk/viewability.js"() {
     IIG_STD = "iig2";
     POLL_MS = 200;
     RULES = Object.freeze({
@@ -4450,7 +4482,7 @@ var init_viewability = __esm({
   }
 });
 
-// ../../sdk/inworld/props.js
+// sdk/inworld/props.js
 function trimmedLogo(img) {
   if (!img?.width) return null;
   if (trimmed.has(img)) return trimmed.get(img);
@@ -4948,13 +4980,13 @@ function createProps({ T, m, pal, logoImg, collectible }) {
 }
 var trimmed;
 var init_props = __esm({
-  "../../sdk/inworld/props.js"() {
+  "sdk/inworld/props.js"() {
     init_builders();
     trimmed = /* @__PURE__ */ new WeakMap();
   }
 });
 
-// ../../sdk/click-params.js
+// sdk/click-params.js
 function triggerFor(format, tokenTrigger) {
   if (format === "zone") return "zone";
   if (format === "prop" || format === "portal") return "proximity";
@@ -5044,7 +5076,7 @@ function buildDestination(spec = {}, click = {}) {
 }
 var CLICK_FORMATS, PLACEMENTS, MACROS, PER_CLICK_MACROS, HOUSE_REF, pick;
 var init_click_params = __esm({
-  "../../sdk/click-params.js"() {
+  "sdk/click-params.js"() {
     CLICK_FORMATS = ["inworld", "brandworld", "zone", "prop", "portal", "arena"];
     PLACEMENTS = ["endcard", "prop", "portal", "toast"];
     MACROS = ["click_id", "campaign_id", "creative_id", "game", "format", "trigger", "placement", "score", "device", "country", "ts"];
@@ -5054,7 +5086,7 @@ var init_click_params = __esm({
   }
 });
 
-// ../../sdk/click.js
+// sdk/click.js
 function noteApi(ok) {
   S.down = !ok;
 }
@@ -5072,6 +5104,16 @@ function withFormat(url, format) {
   return u.href;
 }
 function ctaHref(url, hints = {}) {
+  if (typeof url !== "string") return null;
+  url = url.trim();
+  if (/^\/(?![\/\\])/.test(url) && !/[\t\n\r]/.test(url)) {
+    try {
+      return new URL(url, location.href).href;
+    } catch {
+      return null;
+    }
+  }
+  if (!/^https?:\/\//i.test(url)) return null;
   const c = clickToken(url);
   if (!c) return url;
   const u = new URL(url);
@@ -5115,7 +5157,7 @@ function openCta(url, hints = {}) {
 }
 var S, clickToken, isClickUrl, deviceGuess;
 var init_click = __esm({
-  "../../sdk/click.js"() {
+  "sdk/click.js"() {
     init_click_params();
     S = globalThis.__brClick || (globalThis.__brClick = { down: false, ctas: /* @__PURE__ */ new Map() });
     clickToken = (url) => {
@@ -5141,7 +5183,7 @@ var init_click = __esm({
   }
 });
 
-// ../../sdk/proximity.js
+// sdk/proximity.js
 function usedKeys(world) {
   const list = [...world?.controls || [], ...world?.gameplayHooks?.controls || []];
   const used = /* @__PURE__ */ new Set();
@@ -5259,16 +5301,7 @@ function createProximity(o) {
     }
     st.learnMore++;
     freePointer();
-    if (o.url) {
-      const a = document.createElement("a");
-      a.href = ctaHref(o.url, { placement: o.kind === "portal" ? "portal" : "prop", format: o.kind === "portal" ? "portal" : "prop" });
-      a.target = "_blank";
-      a.rel = "noopener sponsored";
-      a.style.display = "none";
-      document.documentElement.appendChild(a);
-      a.click();
-      a.remove();
-    }
+    if (o.url) openCta(o.url, { placement: o.kind === "portal" ? "portal" : "prop", format: o.kind === "portal" ? "portal" : "prop" });
     o.onLearnMore?.();
     st.ignored = true;
   }
@@ -5389,7 +5422,7 @@ function createProximity(o) {
 }
 var clamp3, esc4, isTouch, CSS3;
 var init_proximity = __esm({
-  "../../sdk/proximity.js"() {
+  "sdk/proximity.js"() {
     init_click();
     clamp3 = (v, a, b) => Math.max(a, Math.min(b, v));
     esc4 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -5409,7 +5442,7 @@ kbd{font:900 12px/1 system-ui,sans-serif;display:inline-block;min-width:16px;tex
   }
 });
 
-// ../../sdk/inworld/scan.js
+// sdk/inworld/scan.js
 function worldPos(o, out = v3()) {
   try {
     o.updateWorldMatrix ? o.updateWorldMatrix(true, false) : o.updateMatrixWorld?.(true);
@@ -6048,7 +6081,7 @@ function segPointDist(a, b, c) {
 }
 var v3, dist, distXZ, matHex, hexDist, levelCache, sameMatrix, triCount, Level, TRIS_PER_RUN, RUNS_PER_GROUP, _rb, PLAYER_NAME;
 var init_scan = __esm({
-  "../../sdk/inworld/scan.js"() {
+  "sdk/inworld/scan.js"() {
     v3 = (x = 0, y = 0, z = 0) => ({ x, y, z });
     dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
     distXZ = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
@@ -6188,7 +6221,7 @@ var init_scan = __esm({
   }
 });
 
-// ../../sdk/inworld/takeover.js
+// sdk/inworld/takeover.js
 function drawFit2(g, img, cx, cy, w, h) {
   const k = Math.min(w / img.width, h / img.height);
   g.drawImage(img, cx - img.width * k / 2, cy - img.height * k / 2, img.width * k, img.height * k);
@@ -7216,7 +7249,7 @@ function createWorldTakeover(o) {
 }
 var clamp4, ease, texAvg;
 var init_takeover = __esm({
-  "../../sdk/inworld/takeover.js"() {
+  "sdk/inworld/takeover.js"() {
     init_builders();
     init_props();
     init_scan();
@@ -7226,7 +7259,7 @@ var init_takeover = __esm({
   }
 });
 
-// ../../sdk/inworld/session.js
+// sdk/inworld/session.js
 var session_exports = {};
 __export(session_exports, {
   INTERACTIONS: () => INTERACTIONS,
@@ -9395,7 +9428,7 @@ function createSession(o) {
 }
 var clamp5, num3, INTERACTIONS, isInWorld, isOurs;
 var init_session = __esm({
-  "../../sdk/inworld/session.js"() {
+  "sdk/inworld/session.js"() {
     init_scan();
     init_props();
     init_builders();
@@ -9411,7 +9444,7 @@ var init_session = __esm({
   }
 });
 
-// ../../sdk/three-shim.js
+// sdk/three-shim.js
 function threeShim(THREE) {
   if (shimUrl && shimFor === THREE) return shimUrl;
   globalThis.__BONUSROUND_THREE__ = THREE;
@@ -9454,14 +9487,14 @@ function gltfLoaderFor(base, THREE) {
 }
 var blobs, shimUrl, shimFor;
 var init_three_shim = __esm({
-  "../../sdk/three-shim.js"() {
+  "sdk/three-shim.js"() {
     blobs = /* @__PURE__ */ new Map();
     shimUrl = null;
     shimFor = null;
   }
 });
 
-// ../../sdk/host-three.js
+// sdk/host-three.js
 function ourThree(base) {
   return ourP || (ourP = (async () => {
     const prev = window.__THREE__;
@@ -9881,7 +9914,7 @@ async function hostAmbient(opts) {
 }
 var ourP, chain, tryNew;
 var init_host_three = __esm({
-  "../../sdk/host-three.js"() {
+  "sdk/host-three.js"() {
     init_three_shim();
     init_builders();
     init_spatial_ads();
@@ -9902,7 +9935,7 @@ var init_host_three = __esm({
   }
 });
 
-// ../../sdk/inworld/round.js
+// sdk/inworld/round.js
 var round_exports = {};
 __export(round_exports, {
   brandFlash: () => brandFlash,
@@ -10125,8 +10158,9 @@ async function playInWorldRound(opts) {
       t.setAttribute("data-bonusround-endtoast", "");
       t.style.cssText = "position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:2147483646;pointer-events:none";
       const sh = t.attachShadow ? t.attachShadow({ mode: "open" }) : t;
-      const prod = productImg ? `<img class="p" alt="" src="${rel(m.brand.product)}">` : "";
-      const lg = logoImg ? `<img class="l" alt="${m.brand.name}" src="${rel(m.brand.logo)}">` : `<b>${m.brand.name}</b>`;
+      const esc6 = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      const prod = productImg ? `<img class="p" alt="" src="${esc6(rel(m.brand.product))}">` : "";
+      const lg = logoImg ? `<img class="l" alt="${esc6(m.brand.name)}" src="${esc6(rel(m.brand.logo))}">` : `<b>${esc6(m.brand.name)}</b>`;
       sh.innerHTML = `<style>
         .c{display:flex;align-items:center;gap:12px;padding:8px 10px 8px 8px;border-radius:18px;background:#fff;color:#1b1b2a;font:700 14px system-ui,sans-serif;
           box-shadow:0 0 0 3px ${pal.primary},0 14px 40px rgba(0,0,0,.3);animation:in .45s cubic-bezier(.2,1.4,.4,1);pointer-events:auto;max-width:min(94vw,560px)}
@@ -10135,7 +10169,7 @@ async function playInWorldRound(opts) {
         .t{font-weight:900;color:${pal.primary};font-size:13px;margin-top:2px}
         a,button{all:unset;cursor:pointer;background:${pal.primary};color:#fff;font-weight:900;padding:9px 14px;border-radius:999px;white-space:nowrap}
         @keyframes in{from{opacity:0;transform:translateY(20px)}}</style>
-        <div class="c">${prod}<div><small>Ad \xB7 ${m.brand.name} \xB7 you scored ${out.score}</small>${lg}${m.brand.tagline ? `<div class="t">${m.brand.tagline}</div>` : ""}</div>${cta.label ? `<button type="button">${cta.label} \u2197</button>` : ""}</div>`;
+        <div class="c">${prod}<div><small>Ad \xB7 ${esc6(m.brand.name)} \xB7 you scored ${esc6(out.score)}</small>${lg}${m.brand.tagline ? `<div class="t">${esc6(m.brand.tagline)}</div>` : ""}</div>${cta.label ? `<button type="button">${esc6(cta.label)} \u2197</button>` : ""}</div>`;
       sh.querySelector("button")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -10481,7 +10515,7 @@ async function playInWorldRound(opts) {
 }
 var INTRO_MS, sleep, within, loadImage, prepared, warmed, decoded, keyOf, warmInWorldObjects, nextFrame;
 var init_round = __esm({
-  "../../sdk/inworld/round.js"() {
+  "sdk/inworld/round.js"() {
     init_host_three();
     init_three_shim();
     init_spatial_ads();
@@ -10523,7 +10557,7 @@ var init_round = __esm({
   }
 });
 
-// ../../sdk/spatial-ads.js
+// sdk/spatial-ads.js
 function iigAccrue(acc, run, minMs) {
   if (run >= minMs) {
     acc.ms += acc.prevRun < minMs ? run : run - acc.prevRun;
@@ -10568,7 +10602,7 @@ function normalizeManifest(THREE, raw) {
 }
 var inWorldMod, inWorldRun, VERSION, ARENA_CENTER, INTRO_MS2, log, DEFAULTS, withTimeout, loadImage2, gltfLoaderP, defaultGltfLoader, Runtime, SpatialAds;
 var init_spatial_ads = __esm({
-  "../../sdk/spatial-ads.js"() {
+  "sdk/spatial-ads.js"() {
     init_builders();
     init_overlay();
     init_audio();
@@ -11575,11 +11609,11 @@ var init_spatial_ads = __esm({
   }
 });
 
-// ../../sdk/br-core.js
+// sdk/br-core.js
 init_spatial_ads();
 init_builders();
 
-// ../../sdk/round-layout.js
+// sdk/round-layout.js
 var WALK_R = 23.2;
 var ARENA_CENTER2 = [0, 0, 2e3];
 function rng2(seed) {
@@ -11635,7 +11669,7 @@ function freeSpot(rand, maxR, clearance = 0.9) {
   return [0, 0];
 }
 
-// ../../sdk/mechanics/bot-brains.js
+// sdk/mechanics/bot-brains.js
 init_physics();
 init_race_rules();
 init_platform_rules();
@@ -11833,7 +11867,7 @@ function smashBot(c) {
   return bot;
 }
 
-// ../../sdk/round-core.js
+// sdk/round-core.js
 var COLORS = ["#ff5d8f", "#4cc9f0", "#ffd23f", "#7ae582", "#b392f0", "#ff8c42", "#2ec4b6", "#f15bb5", "#9bf6ff", "#c0fdfb"];
 var BOT_NAMES = ["Bloop", "Wobbles", "Jellybean", "Squish"];
 var r2 = (v) => Math.round(v * 100) / 100;
@@ -12674,7 +12708,7 @@ var GameCore = class {
   }
 };
 
-// ../../sdk/local-net.js
+// sdk/local-net.js
 function relay() {
   const handlers = /* @__PURE__ */ new Map();
   return {
@@ -12759,10 +12793,10 @@ function createLocalNet(manifestUrl, opts = {}) {
   };
 }
 
-// ../../sdk/br-core.js
+// sdk/br-core.js
 init_three_shim();
 
-// ../../sdk/br-ui.js
+// sdk/br-ui.js
 init_click();
 var CSS4 = `
 :host{all:initial}
@@ -12845,7 +12879,7 @@ function createUi() {
       root.querySelector(".chip")?.remove();
       const el = document.createElement("div");
       el.className = "chip";
-      el.innerHTML = `<span><small>Ad</small> ${esc5(brand2 || "Brand")}</span>${url ? `<a href="${esc5(ctaHref(url, { placement: "toast", format: "prop" }))}" target="_blank" rel="noopener sponsored">Learn more \u2197</a>` : ""}<button type="button" aria-label="Dismiss">\xD7</button>`;
+      el.innerHTML = `<span><small>Ad</small> ${esc5(brand2 || "Brand")}</span>${url && ctaHref(url) ? `<a href="${esc5(ctaHref(url, { placement: "toast", format: "prop" }))}" target="_blank" rel="noopener sponsored">Learn more \u2197</a>` : ""}<button type="button" aria-label="Dismiss">\xD7</button>`;
       el.querySelector("a")?.addEventListener("click", () => onClick?.());
       el.querySelector("button").addEventListener("click", () => el.remove());
       root.appendChild(el);
@@ -12860,6 +12894,7 @@ function createUi() {
       const f = document.createElement("iframe");
       f.title = "Bonus Round";
       f.allow = "autoplay; fullscreen; gamepad";
+      f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-pointer-lock");
       f.setAttribute("allowtransparency", "true");
       f.src = src;
       root.appendChild(f);
@@ -12928,6 +12963,10 @@ function createUi() {
       root.appendChild(el);
       offerEl = el;
       rewardedBtn?.classList.add("hide");
+      try {
+        if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+      } catch {
+      }
       return new Promise((resolve) => {
         const bar = el.querySelector(".bar");
         requestAnimationFrame(() => {
@@ -12958,7 +12997,7 @@ function createUi() {
   };
 }
 
-// ../../sdk/bots.js
+// sdk/bots.js
 function tag(THREE, name, color) {
   const c = document.createElement("canvas"), g = c.getContext("2d");
   g.font = "800 44px system-ui, sans-serif";
@@ -13108,7 +13147,7 @@ function createTracers(THREE, scene) {
   };
 }
 
-// ../../sdk/host-session.js
+// sdk/host-session.js
 var CHIP_CSS = `:host{all:initial}
 button{all:unset;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483647;cursor:pointer;
   display:flex;align-items:center;gap:10px;padding:12px 20px 12px 14px;border-radius:999px;background:rgba(20,16,40,.86);color:#fff;
@@ -13150,6 +13189,21 @@ function createHostSession() {
       } catch {
       }
     },
+    /** a user gesture ended the round (Continue): give the game its lock back now. Never over the game's own lock
+     *  (it re-locked itself). true when requested; end() still shows "Click to resume" if the browser refused. */
+    resume() {
+      const el = lockedEl;
+      if (!el || !el.isConnected || document.pointerLockElement) return false;
+      removeChip();
+      try {
+        const p = el.requestPointerLock?.();
+        if (p && typeof p.catch === "function") p.catch(() => {
+        });
+      } catch {
+        return false;
+      }
+      return true;
+    },
     /** call when the round is over and the game is visible again */
     end() {
       const el = lockedEl;
@@ -13183,14 +13237,14 @@ function createHostSession() {
   };
 }
 
-// ../../sdk/br-core.js
+// sdk/br-core.js
 init_host_three();
 init_countdown();
 init_proximity();
 init_viewability();
 init_click();
 
-// ../../sdk/ivt.js
+// sdk/ivt.js
 var now = () => performance.now();
 var S2 = { on: false, inputs: [], holds: [], down: /* @__PURE__ */ new Map(), vis: [], foc: [], ratio: null, ov: null, rounds: /* @__PURE__ */ new Map(), gl: void 0, glv: null, px: 0, py: 0, np: null, cdp: false };
 var MOVE_KEYS = /* @__PURE__ */ new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "ShiftLeft", "ShiftRight"]);
@@ -13450,7 +13504,7 @@ function ivtSignals(key = null, { full = false } = {}) {
   };
 }
 
-// ../../sdk/br-core.js
+// sdk/br-core.js
 var ctaAs = (cta, fm) => cta ? { ...cta, url: withFormat(cta.url, fm) } : null;
 var DEFAULT_SETTINGS = {
   formats: { takeover: { enabled: true, triggers: ["intermission", "rewarded"], intervalSec: 300 }, ambient: { enabled: true } },
@@ -13540,6 +13594,16 @@ function pageBreak(phase, ms = 0) {
   } catch {
   }
 }
+async function countdownGone() {
+  for (let i = 0; i < 20; i++) {
+    try {
+      if (!document.querySelector("[data-bonusround-countdown]")) return;
+    } catch {
+      return;
+    }
+    await sleep2(50);
+  }
+}
 function createCore(env) {
   return new Core(env);
 }
@@ -13561,6 +13625,7 @@ var Core = class {
     this.mode = null;
     this.attached = null;
     this.busy = false;
+    this.attempt = null;
     this.beacons = [];
     this.requests = [];
     this.sentOnce = /* @__PURE__ */ new Set();
@@ -13578,7 +13643,93 @@ var Core = class {
     addEventListener("pointermove", () => {
       if (document.pointerLockElement) input();
     }, { passive: true, capture: true });
+    addEventListener("bonusround:continue", () => this._relock());
     if (!this.state.agent && !this.state.loadOffline && typeof window !== "undefined") this._autoStart();
+  }
+  // ---------- the round contract (web/docs/events.html "The round contract"; test/sdk-contract.mjs) ----------
+  // A round attempt runs from break() (or an interval / tag-only / rewarded start) until its round has ended. 'start' fires
+  // before anything is on screen (the countdown included) and 'end' after it's gone, exactly once each with the same id.
+  // break() during an attempt that hasn't shown yet shares its result (it never answers early and then plays); break()
+  // while a round is on screen is { filled:false, reason:'busy' } and queues nothing.
+  /** busy: an attempt is in flight, a round is on screen, or a zone / server round holds the SDK */
+  get busy() {
+    return !!(this._busyFlag || this.attempt || this._showing());
+  }
+  set busy(v) {
+    this._busyFlag = !!v;
+  }
+  /** a round whose 'start' fired and whose 'end' hasn't */
+  _showing() {
+    const r4 = this.run;
+    return !!(r4 && r4.announced && !r4.finished);
+  }
+  /** one round attempt; fn(a) resolves the caller's result. A round it announced always ends ('end') before it resolves */
+  _attempt(kind, fn) {
+    const a = { kind, at: performance.now(), run: null };
+    this.attempt = a;
+    a.promise = (async () => {
+      try {
+        return await fn(a);
+      } catch (e) {
+        warn(`${kind} round failed`, e);
+        return unfilled("error");
+      }
+    })().then((r4) => {
+      if (a.run && !a.run.finished) {
+        this._teardown(a.run);
+        this._finish(a.run, a.run.started ? { completed: false, error: true } : { filled: false, reason: r4?.reason || "error" });
+      }
+      if (this.attempt === a) this.attempt = null;
+      return r4 || unfilled("error");
+    });
+    return a.promise;
+  }
+  /** break() / a rewarded round while another round is pending or showing: null = go ahead */
+  _join() {
+    if (this._showing()) return Promise.resolve(unfilled("busy"));
+    const a = this.attempt;
+    if (!a) return this._busyFlag ? Promise.resolve(unfilled("busy")) : null;
+    if (a.kind === "zone") return Promise.resolve(unfilled("busy"));
+    return a.promise.then((r4) => ({ ...r4, joined: true }));
+  }
+  /** Continue clicked (a user gesture): re-lock the element the game had locked before the round, unless it re-locked */
+  _relock() {
+    try {
+      if (this.session.resume()) this.relockedAt = performance.now();
+    } catch {
+    }
+  }
+  /** 'start' (once per round, before anything shows) */
+  _announce(run) {
+    if (!run || run.announced || run.finished) return;
+    run.announced = true;
+    try {
+      run.hadLock = !!document.pointerLockElement;
+    } catch {
+    }
+    this.emitter.emit("start", {
+      id: run.id,
+      format: "takeover",
+      trigger: run.trigger,
+      brand: run.ad?.brand?.name || run.brandHint || null,
+      requestId: run.ad?.requestId || null,
+      test: !!run.ad?.test,
+      ...run.trigger === "zone" ? { live: true } : {}
+    });
+  }
+  /** take whatever the round put on screen down (timeout / failure), so 'end' really comes after it's gone */
+  _teardown(run) {
+    try {
+      run?.teardown?.();
+    } catch (e) {
+      warn("round teardown", e);
+    }
+  }
+  _failed(run, e) {
+    warn("round failed", e);
+    if (run.finished) return;
+    this._teardown(run);
+    this._finish(run, run.started ? { completed: false, error: true } : { filled: false, reason: "error" });
   }
   /** tag-only mode (sdk/tag-only.js): the game never calls attach() → auto-attach 3 s after its first render */
   _autoStart() {
@@ -13747,6 +13898,7 @@ var Core = class {
       });
       net.on("adSoon", (m) => {
         this.serverSoonAt = m?.cancelled ? 0 : performance.now();
+        this._serverSoon(m);
       });
     }
     let worldRoot = o.worldRoot;
@@ -13787,6 +13939,31 @@ var Core = class {
       boardMs: 8e3,
       onEvent: (type, data) => this._roundEvent(type, data)
     });
+  }
+  /** native-net: the room's countdown ({ t:'adSoon' }) is the round's first frame on screen → 'start' now, not at roundStart */
+  _serverSoon(m) {
+    const cur = this.run && !this.run.finished ? this.run : null;
+    if (m?.cancelled) {
+      if (cur?.server && !cur.started) {
+        clearTimeout(cur.soonT);
+        cur.cancelling = true;
+        countdownGone().then(() => {
+          if (cur.cancelling && !cur.started && !cur.finished) this._finish(cur, { filled: false, reason: "countdown_server" });
+        });
+      }
+      return;
+    }
+    if (cur && !cur.server) return;
+    if (cur) cur.cancelling = false;
+    const run = cur || this._newRun(null, "intermission");
+    run.server = true;
+    run.brandHint || (run.brandHint = m?.sponsor?.name || null);
+    this._announce(run);
+    clearTimeout(run.soonT);
+    const sec = Number.isFinite(+m?.sec) ? +m.sec : 5;
+    run.soonT = setTimeout(() => {
+      if (!run.started && !run.finished) this._finish(run, { filled: false, reason: "server_no_round" });
+    }, (sec + 10) * 1e3);
   }
   _runFrame(dt) {
     for (const cb of this.frameCbs) {
@@ -13894,15 +14071,19 @@ var Core = class {
     this.lastRoundAt = performance.now();
   }
   // ---------- takeover ----------
-  async breakRound(trigger = "intermission", opts = {}) {
-    if (this.state.agent) return unfilled("agent");
+  /** break(): resolves once, after the round has fully ended ({ filled:true, … }), or { filled:false, reason } when no round
+   *  plays for this call. Called while another attempt is still preparing → shares it; while a round shows → 'busy'. */
+  breakRound(trigger = "intermission", opts = {}) {
+    if (this.state.agent) return Promise.resolve(unfilled("agent"));
     if (!opts.__internal) {
       this.devBreaks = true;
       if (this.autoAttached) this.tagOnlyCtl?.stop("break");
     }
     if (trigger === "intermission") this.zonesDone?.clear();
+    return this._join() || this._attempt("break", (a) => this._breakRound(trigger, opts, a));
+  }
+  async _breakRound(trigger, opts, a) {
     if (!this.attached && !await this._whenAttached("break")) return unfilled("not_attached");
-    if (this.busy) return unfilled("busy");
     const bg = typeof window !== "undefined" ? window.__BONUSROUND_BREAK__ : null;
     if (trigger !== "test" && bg && (bg.active || bg.endedAt && Date.now() - bg.endedAt < 6e4)) return unfilled("frequency_cap");
     const tk = this.settings.formats.takeover;
@@ -13911,16 +14092,16 @@ var Core = class {
     if (trigger !== "test" && this._capped()) return unfilled("frequency_cap");
     const gap = breakGuard(this, trigger);
     if (gap) return unfilled(gap);
-    if (this.mode === "native-net") return this._serverRound(trigger);
+    if (this.mode === "native-net") return this._serverRound(trigger, a);
     const pre = trigger === "rewarded" && this.prefetch && Date.now() - this.prefetch.at < 3e5 ? this.prefetch.ad : null;
     if (pre) this.prefetch = null;
     let ad = pre || await this._request("takeover", trigger);
     if (!ad.fill) {
-      const off = await this._offlineTestAd(ad, trigger);
+      const off = await timeout(this._offlineTestAd(ad, trigger), 8e3, null);
       if (!off) return unfilled(ad.reason);
       ad = off;
     }
-    return this._play(ad, trigger, opts);
+    return this._play(ad, trigger, { ...opts, __attempt: a });
   }
   /** The npm package's bundled test round (the bonusround.io fallback round) (state.loadOffline), so a developer and their agent's headless browser see
    *  a real round when the ad server can't be reached or doesn't know this game yet. Only when this can't be a paid ad: no or a
@@ -13955,7 +14136,8 @@ var Core = class {
     const done = new Promise((r4) => {
       resolve = r4;
     });
-    this.run = { ad, trigger, token: ad?.token || null, started: false, completed: false, engaged: false, score: 0, viewMs: 0, resolve, done };
+    const id = "r_" + Array.from(crypto.getRandomValues(new Uint8Array(8)), (b) => (b % 36).toString(36)).join("");
+    this.run = { id, ad, trigger, token: ad?.token || null, announced: false, started: false, completed: false, engaged: false, score: 0, viewMs: 0, resolve, done };
     const run = this.run;
     registerCta(ad?.cta, () => ({ score: run.score, completed: run.completed, dwell: run.startedAt ? ((run.completeAt ?? performance.now()) - run.startedAt) / 1e3 : null }));
     return this.run;
@@ -13965,21 +14147,40 @@ var Core = class {
     run.finished = true;
     this.busy = false;
     this.ui?.hideRewarded(false);
+    clearTimeout(run.soonT);
     const out = { filled: true, completed: run.completed, score: run.score, trigger: run.trigger, requestId: run.ad?.requestId || null, brand: run.ad?.brand?.name || null, ...extra };
+    if (run.announced) out.id = run.id;
+    if (run.hadLock || this.session.lockedEl) {
+      let on = false;
+      try {
+        on = !!document.pointerLockElement;
+      } catch {
+      }
+      out.pointerLock = on ? "restored" : "was-locked";
+    }
     if (run.session && run.session !== "inworld") this.session.end();
-    if (run.started) this.emitter.emit("end", out);
+    if (run.announced) this.emitter.emit("end", out);
     this.lastToken = run.token || this.lastToken;
     if (this.run === run) this.run = null;
     run.resolve(out);
   }
-  async _play(ad, trigger, opts = {}) {
+  /** play a filled takeover. From break() (inside its attempt), or on its own (an accepted interval offer, a tag-only chip
+   *  tap): then it is its own attempt, so a break() meanwhile shares it instead of starting a second round. */
+  _play(ad, trigger, opts = {}) {
+    if (opts.__attempt) return this._playIn(ad, trigger, opts, opts.__attempt);
+    if (this.busy) return Promise.resolve(unfilled("busy"));
+    return this._attempt("play", (a) => this._playIn(ad, trigger, opts, a));
+  }
+  async _playIn(ad, trigger, opts, a) {
     this.busy = true;
     this.ui?.hideRewarded(true);
     const run = this._newRun(ad, trigger);
-    run.opts = opts || {};
+    a.run = run;
+    const { __attempt, ...o } = opts || {};
+    run.opts = o;
     this._noteRound();
-    const maxMs = 6e4;
     const pocket = async () => {
+      if (run.finished) return null;
       if (this.mode === "overlay") {
         this._overlayRound(run);
         return null;
@@ -13990,31 +14191,44 @@ var Core = class {
       if (!(cur && cur.url === ad.manifestUrl && sameCta)) {
         const out = await this.local.core.setAd(ad.manifestUrl, { token: ad.token, requestId: ad.requestId, cta: pcta, test: !!ad.test, inWorld: false });
         if (out.error) {
-          this._finish(run);
+          this._finish(run, { filled: false, reason: "manifest_error" });
           return unfilled("manifest_error");
         }
       }
+      if (run.finished) return null;
+      run.teardown = () => {
+        if (this.ads?.runtime.round) this.ads.runtime.endRound({ aborted: true });
+      };
       this.local.core.forceAd();
       return null;
     };
     const raw = await timeout(fetch(ad.manifestUrl, { cache: "no-cache" }).then((r4) => r4.ok ? r4.json() : null).catch(() => null), 4e3, null);
+    if (performance.now() - a.at > 25e3) {
+      this._finish(run, { filled: false, reason: "timeout" });
+      return run.done;
+    }
     this._prepInWorld(ad, raw);
-    const bwBreak = raw?.round?.format === "brandworld" && this.state.brandworld !== false;
-    if (bwBreak) pageBreak("start", Math.round(((+raw.round.durationSec || 15) + 24) * 1e3 + 8e3));
+    const fmt = raw?.round?.format;
+    const bwBreak = fmt === "brandworld" && this.state.brandworld !== false;
+    const durMs = ((+raw?.round?.durationSec || 15) + 24) * 1e3 + 8e3;
+    if (bwBreak) pageBreak("start", Math.round(durMs));
+    this._announce(run);
     const cd = await coreCountdown(this, run, raw);
     if (!cd.completed) {
       if (bwBreak) pageBreak("end");
+      await countdownGone();
       this._finish(run, { filled: false, reason: `countdown_${cd.reason || "cancelled"}` });
       return run.done;
     }
-    const fmt = raw?.round?.format;
-    if (fmt === "brandworld" && this.state.brandworld !== false) this._brandWorldRound(run, raw, pocket);
-    else if ((raw?.round?.takeover?.mode === "in-world" || fmt === "inworld" || raw?.round?.inworld && typeof raw.round.inworld === "object") && this.state.inworld !== false) this._inWorldRound(run, raw, pocket);
+    if (run.finished) return run.done;
+    if (bwBreak) this._brandWorldRound(run, raw, pocket).catch((e) => this._failed(run, e));
+    else if ((raw?.round?.takeover?.mode === "in-world" || fmt === "inworld" || raw?.round?.inworld && typeof raw.round.inworld === "object") && this.state.inworld !== false) this._inWorldRound(run, raw, pocket).catch((e) => this._failed(run, e));
     else {
       const err = await pocket();
       if (err) return err;
     }
-    return timeout(run.done, maxMs, null).then((r4) => r4 || (this._finish(run, { timedOut: true }), run.done));
+    const maxMs = Math.max(6e4, durMs + 15e3);
+    return timeout(run.done, maxMs, null).then((r4) => r4 || (this._teardown(run), this._finish(run, run.started ? { timedOut: true } : { filled: false, reason: "timeout" }), run.done));
   }
   /** the learned world manifest (gameplayHooks, scale, movement) from the ping's worldUrl, fetched once */
   async _worldManifest() {
@@ -14050,6 +14264,7 @@ var Core = class {
     }
     if (!mod) return pocket();
     const world = { ...this.world || {}, ...await this._worldManifest() || {} };
+    if (run.finished) return;
     run.session = "inworld";
     const r4 = await mod.playInWorldRound({
       // a scene/camera the developer passed are used as given; a guessed one (attach({}): the last scene created, which can
@@ -14091,10 +14306,13 @@ var Core = class {
       onWarn: (m) => warn(m),
       onHandle: (h) => {
         this.inWorldHandle = h;
+        run.teardown = () => h.abort?.();
       }
     });
     this.inWorldHandle = null;
+    run.teardown = null;
     this.lastInWorld = { fallback: r4.fallback || null, score: r4.score, stats: r4.stats || null };
+    if (run.finished) return;
     if (r4.fallback) {
       warn(`in-world round fell back to the pocket arena (${r4.fallback})`);
       run.visible = false;
@@ -14107,9 +14325,11 @@ var Core = class {
     this._finish(run, { inWorld: true });
   }
   // ---------- personal rounds in a server-coordinated game (native-net): the player's own in-world round ----------
-  async _personalRound(trigger) {
-    if (this.busy) return unfilled("busy");
-    if (this.ads?.runtime.round?.active) return unfilled("busy");
+  _personalRound(trigger) {
+    if (this.ads?.runtime.round?.active) return Promise.resolve(unfilled("busy"));
+    return this._join() || this._attempt("personal", (a) => this._personalRoundIn(trigger, a));
+  }
+  async _personalRoundIn(trigger, a) {
     const pre = this.prefetch && Date.now() - this.prefetch.at < 3e5 ? this.prefetch.ad : null;
     if (pre) this.prefetch = null;
     this.busy = true;
@@ -14121,6 +14341,7 @@ var Core = class {
       return unfilled(ad.reason);
     }
     const run = this._newRun(ad, trigger);
+    a.run = run;
     run.done.then(() => {
       this.personalRewarded = false;
     }, () => {
@@ -14132,8 +14353,10 @@ var Core = class {
       return run.done;
     }
     this._prepInWorld(ad, raw);
+    this._announce(run);
     const cd = await coreCountdown(this, run, raw);
     if (!cd.completed) {
+      await countdownGone();
       this._finish(run, { filled: false, reason: `countdown_${cd.reason || "cancelled"}` });
       return run.done;
     }
@@ -14141,8 +14364,8 @@ var Core = class {
     this._inWorldRound(run, raw, async () => {
       this._finish(run, { filled: false, reason: "inworld_unavailable" });
       return null;
-    });
-    return timeout(run.done, 6e4, null).then((r4) => r4 || (this._finish(run, { timedOut: true }), run.done));
+    }).catch((e) => this._failed(run, e));
+    return timeout(run.done, 6e4, null).then((r4) => r4 || (this._teardown(run), this._finish(run, { timedOut: true }), run.done));
   }
   // ---------- priming: the ambient prop/portal shows the brand of the player's NEXT takeover ----------
   _noteTakeover(ad, source) {
@@ -14370,6 +14593,7 @@ var Core = class {
     }
     if (!mod) return pocket();
     const world = { ...this.world || {}, ...await this._worldManifest() || {} };
+    if (run.finished) return;
     run.session = "inworld";
     const r4 = await mod.playBrandWorldRound({
       base: this.base,
@@ -14412,10 +14636,13 @@ var Core = class {
       onWarn: (m) => warn(m),
       onHandle: (h) => {
         this.brandWorldHandle = h;
+        run.teardown = () => h.abort?.();
       }
     });
     this.brandWorldHandle = null;
+    run.teardown = null;
     this.lastBrandWorld = { fallback: r4.fallback || null, score: r4.score, stats: r4.stats || null };
+    if (run.finished) return;
     if (r4.fallback) {
       warn(`Brand World fell back to the pocket arena (${r4.fallback})`);
       run.visible = false;
@@ -14427,14 +14654,15 @@ var Core = class {
     run.score = r4.score;
     this._finish(run, { brandWorld: true });
   }
-  async _serverRound(trigger) {
+  async _serverRound(trigger, a) {
     const t0 = performance.now();
-    const live = () => this.ads?.runtime.round || this.serverRoundAt && performance.now() - this.serverRoundAt < 3e3;
+    const live = () => this.ads?.runtime.round || this.serverRoundAt && performance.now() - this.serverRoundAt < 3e3 || this.run?.server && !this.run.finished;
     const soon = () => this.serverSoonAt && performance.now() - this.serverSoonAt < 11e3;
     while (!live() && (performance.now() - t0 < 3e3 || soon()) && performance.now() - t0 < 14e3) await sleep2(100);
     if (!live()) return unfilled("no_fill");
     this.busy = true;
     const run = this.run && !this.run.finished ? this.run : this._newRun(null, trigger);
+    if (a) a.run = run;
     run.trigger = trigger;
     return timeout(run.done, 6e4, null).then((r4) => r4 || (this._finish(run, { timedOut: true }), run.done));
   }
@@ -14464,6 +14692,7 @@ var Core = class {
   }
   _started(run) {
     if (run.started || run.finished) return;
+    this._announce(run);
     run.started = true;
     if (!run.session) {
       run.session = true;
@@ -14472,7 +14701,6 @@ var Core = class {
     run.startedAt = performance.now();
     this._beacon(run.token, "impression", 1);
     this._beacon(run.token, "start", 1);
-    this.emitter.emit("start", { format: "takeover", trigger: run.trigger, brand: run.ad?.brand?.name || null, requestId: run.ad?.requestId || null, test: !!run.ad?.test });
   }
   _overlayWorld() {
     if (this.world && typeof this.world === "object" && (this.world.scale || this.world.cameraMode)) {
@@ -14510,6 +14738,7 @@ var Core = class {
     };
   }
   _overlayRound(run) {
+    if (run.finished) return;
     const ad = run.ad;
     const world = this._overlayWorld();
     const playerUrl = this.world?.playerUrl ? new URL(this.world.playerUrl, this.base + "/").href : "";
@@ -14543,6 +14772,7 @@ var Core = class {
         this._beacon(run.token, "engagement", 1);
       }
       if (d.event === "click") this._beacon(run.token, "click", ad.cta?.url || null, false);
+      if (d.event === "continue") this._relock();
       if (d.phase === "ready" && readyT) {
         clearTimeout(readyT);
         readyT = 0;
@@ -14570,9 +14800,12 @@ var Core = class {
       }
     };
     const cleanup2 = () => {
+      clearTimeout(readyT);
+      readyT = 0;
       removeEventListener("message", onMsg);
       frame.remove();
     };
+    run.teardown = cleanup2;
     addEventListener("message", onMsg);
   }
   // ---------- rewarded ----------
@@ -14597,6 +14830,7 @@ var Core = class {
       if (r4.reason !== "busy") this.ui?.toast("No Bonus Round available right now. Try again soon.");
       return { ...r4, rewarded: false };
     }
+    if (r4.joined && r4.trigger !== "rewarded") return { ...r4, rewarded: false };
     if (r4.completed) {
       try {
         onReward?.(r4);

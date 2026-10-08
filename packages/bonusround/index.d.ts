@@ -3,13 +3,23 @@
 
 export type BreakTrigger = 'intermission' | 'test' | (string & {});
 
+/**
+ * break() resolves exactly once: after the round has fully ended ('end' already fired) with filled:true, or with
+ * filled:false when no round plays for this call (no round starts later because of it). If 'start' fired for this call
+ * (e.g. the countdown showed, then was cancelled), 'end' fires before break() resolves filled:false.
+ */
 export interface BreakResult {
-  /** a round played (false: no ad, capped, not attached, …; the game just continues) */
+  /** a round played (false: no ad, capped, not attached, busy, …; the game just continues) */
   filled: boolean;
   /** the player finished the round */
   completed: boolean;
-  /** why nothing played: 'no_fill', 'ad_server_unreachable', 'frequency_cap', 'not_attached', 'portal', 'ssr', … */
+  /** why nothing played: 'no_fill', 'ad_server_unreachable', 'frequency_cap', 'not_attached', 'countdown_game' (BonusRound.cancel()), 'countdown_hidden',
+   *  'busy' (a round was already on screen: its 'end' resumes your game, so don't resume on 'busy'), 'portal', 'ssr', … */
   reason?: string;
+  /** the round's id: the same id as its 'start' and 'end' events */
+  id?: string;
+  /** this call arrived while another break() was still preparing and shares that round's outcome */
+  joined?: boolean;
   score?: number;
   trigger?: string;
   brand?: string | null;
@@ -66,6 +76,25 @@ export interface InitOptions {
 
 export type BonusRoundEvent = 'attach' | 'start' | 'end' | 'reward' | 'ambient' | 'event' | 'countdown';
 
+/** 'start': before anything of the round is on screen (the countdown card included). Exactly once per round. */
+export interface RoundStartEvent {
+  id: string;
+  format: 'takeover';
+  trigger: string;
+  brand: string | null;
+  requestId: string | null;
+  test: boolean;
+  /** a live zone round (zone()): the game keeps running, don't pause for it */
+  live?: boolean;
+}
+/** 'end': after the round is gone, exactly once per 'start', same id, before break() resolves */
+export interface RoundEndEvent extends BreakResult {
+  id: string;
+  /** the game had the mouse locked before the round: 'restored' (re-locked from the Continue click) or 'was-locked'
+   *  (free now: re-lock on the player's next click) */
+  pointerLock?: 'restored' | 'was-locked';
+}
+
 export interface BonusRoundSDK {
   readonly version: string;
   readonly pub: string | null;
@@ -76,13 +105,15 @@ export interface BonusRoundSDK {
   config(options: Omit<InitOptions, 'pub' | 'server' | 'api'>): BonusRoundSDK;
   /** once, after the renderer, scene and camera exist */
   attach(options: AttachOptions): Promise<{ mode: 'overlay' | 'native-local' | 'native-net' | 'off'; already?: boolean; [k: string]: unknown }>;
-  /** at a natural break: resolves when the round ends, or right away when nothing plays */
+  /** at a natural break: resolves once, after the round has fully ended, or with filled:false when nothing plays for this call */
   break(trigger?: BreakTrigger, options?: { countdownEndsAt?: number }): Promise<BreakResult>;
   zone(name: string, options?: { live?: boolean; countdownEndsAt?: number }): Promise<BreakResult & { zone?: string }>;
   rewarded(options: { onReward?: (r: BreakResult) => void; label?: string; button?: boolean | 'portal' }): Promise<BreakResult | { shown: boolean; hide(): void; start(): Promise<BreakResult> } | { registered: boolean }>;
   /** whether an interval round may interrupt now (null = auto) */
   safe(value?: boolean | null): BonusRoundSDK;
   placeAmbient(hint: { position: [number, number, number]; rotationY?: number } | null): BonusRoundSDK;
+  on(type: 'start', cb: (e: RoundStartEvent) => void): BonusRoundSDK;
+  on(type: 'end', cb: (e: RoundEndEvent) => void): BonusRoundSDK;
   on(type: BonusRoundEvent, cb: (data: any) => void): BonusRoundSDK;
   off(type: BonusRoundEvent, cb: (data: any) => void): BonusRoundSDK;
   cancel(): boolean;

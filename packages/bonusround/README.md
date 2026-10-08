@@ -30,7 +30,7 @@ BonusRound.attach({ THREE, scene, camera, renderer });   // once, after all of t
 // at a natural break: round over, game over, level complete, back to the menu
 async function onGameOver() {
   pauseGame();                                   // stop timers, enemies, input (if the game doesn't already)
-  await BonusRound.break('intermission');        // resolves when the round ends, or right away if there's no ad
+  await BonusRound.break('intermission');        // resolves after the round has fully ended, or right away if there's no ad
   restart();
 }
 ```
@@ -129,7 +129,8 @@ async function gameOver() {
 }
 ```
 
-- `break()` always resolves: `{ filled: true, completed, score }` after a round, or `{ filled: false, reason }` straight away when there's nothing to show. The game flow is unchanged when unfilled.
+- `break()` resolves exactly once: `{ filled: true, completed, score, id }` after the round has fully ended (its `end` event has already fired), or `{ filled: false, reason }` when no round plays for that call. Nothing starts later because of an unfilled call, so the game flow is unchanged when unfilled.
+- A second `break()` while the first is still getting its ad shares that round (`joined: true`). A `break()` while a round is on screen resolves `{ filled: false, reason: 'busy' }` at once and queues nothing.
 - Make the function `async` only if its callers don't use its return value; otherwise use `BonusRound.break('intermission').then(() => { … })`.
 - Inside a per-frame update, guard with a flag so it runs once, not every frame.
 - Never call `break()` on page load, during active play, or on every click.
@@ -211,7 +212,14 @@ await browser.close();
 - **Rewarded** (a game with coins, lives or revives): `BonusRound.rewarded({ button: false, onReward: () => revive() })` from the game's own button. `onReward` runs only if the player finishes the round. `BonusRound.rewarded({ label: 'Play for 50 coins', onReward })` after `await BonusRound.attach(…)` shows an entry button.
 - **Ambient placement hint**, in meters, world space, feet on the ground: `BonusRound.placeAmbient({ position: [12, 0, -6], rotationY: Math.PI / 2 })`.
 - **No interruptions** (boss fights, cutscenes): `BonusRound.safe(false)` …, then `BonusRound.safe(null)` afterwards.
-- **Pause on any round:** `BonusRound.on('start', pause).on('end', resume)`.
+- **Pause on any round:** `BonusRound.on('start', pause).on('end', resume)`. `start` fires before anything of a round is on screen (the countdown card included) and `end` after it's gone. Each fires exactly once per round, with the same `e.id`, for every format and however the round ends: completed, skipped, error, timeout or hidden tab. Treat the `break()` resolution as the final resume, except on `'busy'`, where the round on screen resumes you with its `end`:
+  ```js
+  BonusRound.on('start', (e) => { if (!e.live) pause(); });   // e.live: a zone() round, the game keeps running
+  BonusRound.on('end', () => resume());
+  const r = await BonusRound.break('intermission');
+  if (r.reason !== 'busy') resume();                          // pause() / resume() must be safe to call twice
+  ```
+- **Pointer lock (FPS games):** the SDK frees the mouse for anything clickable (the end card, the offer card), and Continue re-locks your game from that click. If the card times out, a "Click to resume" chip does it. If your game had the lock, `end` carries `pointerLock: 'restored'` or `'was-locked'` (free now: re-lock on your next canvas click). The SDK never fights a lock your game takes back itself.
 - **Native takeover** (the round runs in the game's own world with its own controls): pass `host: { getPlayerPosition, teleport, setBounds, onFrame }` and `worldRoot` to `attach()`. See https://bonusround.io/docs/attach. Use it only if you can implement all four correctly; otherwise overlay mode is the right default.
 
 ## API
@@ -220,11 +228,11 @@ await browser.close();
 | --- | --- |
 | `BonusRound.init({ pub, test?, muted?, server? })` | Sets the publisher id (the script tag's `data-pub`). `test: true` asks for the house test round at every break. |
 | `BonusRound.attach({ THREE, scene, camera, renderer, worldRoot?, host? })` → `Promise<{ mode }>` | Call once. `mode` is `overlay`, `native-local` or `native-net`. |
-| `await BonusRound.break('intermission' \| 'test')` → `{ filled, completed, score?, reason? }` | A takeover at a natural break. `'test'` always asks for the test round. |
+| `await BonusRound.break('intermission' \| 'test')` → `{ filled, completed, id?, score?, reason? }` | A takeover at a natural break. Resolves once, after the round's `end` (or `filled: false` when nothing plays for this call; `'busy'` during a round). `'test'` always asks for the test round. |
 | `BonusRound.rewarded({ onReward, label?, button? })` | An opt-in round for a reward. |
 | `BonusRound.safe(true \| false \| null)` | Whether an interval round may interrupt now. |
 | `BonusRound.placeAmbient({ position, rotationY } \| null)` | A hint for the ambient branded prop. |
-| `BonusRound.on(type, cb)` / `off` | `attach`, `start`, `end`, `reward`, `ambient`, `event`, `countdown`. |
+| `BonusRound.on(type, cb)` / `off` | `attach`, `start` (before anything shows), `end` (after it's gone; once per `start`, same `id`), `reward`, `ambient`, `event`, `countdown`. |
 | `BonusRound.config({ muted, countdownSec, … })`, `BonusRound.consent(bool)` | Runtime settings, and the CMP consent. |
 | `await BonusRound.debug()` | `{ version, pub, mode, attached, requests, warnings, … }`. |
 
