@@ -14,7 +14,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// sdk/builders.js
+// ../../sdk/builders.js
 function luminance(h) {
   const n = h.length === 4 ? h.replace(/#(.)(.)(.)/, "#$1$1$2$2$3$3") : h;
   const [r4, g, b] = [1, 3, 5].map((i) => parseInt(n.substr(i, 2), 16) / 255).map((c) => c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
@@ -883,7 +883,7 @@ function buildInWorld(THREE, m, A, pal, statueGltf) {
 }
 var isHex, hex, readableOn, initials, brand, DRINK, clampN;
 var init_builders = __esm({
-  "sdk/builders.js"() {
+  "../../sdk/builders.js"() {
     isHex = (v) => typeof v === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v);
     hex = (v, fb) => isHex(v) ? v : fb;
     readableOn = (bg, preferred) => {
@@ -898,7 +898,7 @@ var init_builders = __esm({
   }
 });
 
-// sdk/audio.js
+// ../../sdk/audio.js
 function unlockAudio() {
   gestured = true;
   ac();
@@ -1099,14 +1099,14 @@ function createAudio(urls, volume = 0.5) {
 }
 var NOTES, ctx, gestured;
 var init_audio = __esm({
-  "sdk/audio.js"() {
+  "../../sdk/audio.js"() {
     NOTES = { collect: [880, 1320], start: [523, 659, 784], win: [523, 659, 784, 1047], shoot: [520, 392] };
     ctx = null;
     gestured = false;
   }
 });
 
-// sdk/countdown.js
+// ../../sdk/countdown.js
 function resolveCountdownSec({ config, publisher, manifest, trigger, userInitiated } = {}) {
   const c = num(config);
   if (c !== null && c <= 0) return 0;
@@ -1535,7 +1535,7 @@ function serverCountdown(rt, m) {
 }
 var DEFAULT_COUNTDOWN_SEC, USER_COUNTDOWN_SEC, MAX_SEC, MAX_HIDDEN_MS, clamp, num, esc, BR_MARK_SVG, ZONES, overlap, OURS, SKIP_TAGS, CSS, RING_C, active, history, MIN_FIXED_MS, done0, isNum, toEpochMs, countdownActive, DEFAULT_MIN_BREAK_GAP_SEC, DEFAULT_MAX_PER_SESSION, absUrl;
 var init_countdown = __esm({
-  "sdk/countdown.js"() {
+  "../../sdk/countdown.js"() {
     init_audio();
     DEFAULT_COUNTDOWN_SEC = 5;
     USER_COUNTDOWN_SEC = 3;
@@ -1620,7 +1620,7 @@ var init_countdown = __esm({
   }
 });
 
-// sdk/overlay.js
+// ../../sdk/overlay.js
 function createOverlay(m, pal, logoUrl, opts = {}) {
   if (!document.getElementById("sa-style")) {
     const st = document.createElement("style");
@@ -1846,7 +1846,7 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
 }
 var CSS2, esc2;
 var init_overlay = __esm({
-  "sdk/overlay.js"() {
+  "../../sdk/overlay.js"() {
     init_builders();
     init_countdown();
     CSS2 = `
@@ -1970,14 +1970,14 @@ var init_overlay = __esm({
   }
 });
 
-// sdk/mechanics/collect.js
+// ../../sdk/mechanics/collect.js
 var collect_exports = {};
 __export(collect_exports, {
   default: () => collect_default
 });
 var PICK_R, collect_default;
 var init_collect = __esm({
-  "sdk/mechanics/collect.js"() {
+  "../../sdk/mechanics/collect.js"() {
     PICK_R = 1.2;
     collect_default = {
       name: "collect",
@@ -2026,7 +2026,7 @@ var init_collect = __esm({
   }
 });
 
-// sdk/mechanics/shoot.js
+// ../../sdk/mechanics/shoot.js
 var shoot_exports = {};
 __export(shoot_exports, {
   default: () => shoot_default
@@ -2044,7 +2044,7 @@ function crosshair(color) {
 }
 var SPEED, GRAV, LIFE, COOLDOWN, TRAIL, frac, rand01, shoot_default;
 var init_shoot = __esm({
-  "sdk/mechanics/shoot.js"() {
+  "../../sdk/mechanics/shoot.js"() {
     SPEED = 24;
     GRAV = 7;
     LIFE = 1.5;
@@ -2208,7 +2208,7 @@ var init_shoot = __esm({
   }
 });
 
-// sdk/mechanics/physics.js
+// ../../sdk/mechanics/physics.js
 function rng(seed) {
   let a = seed >>> 0;
   return () => {
@@ -2359,7 +2359,7 @@ function claimIndex(elements) {
 }
 var STEP_UP, clamp2, num2, wrapAngle, CLAIM_TYPES, isClaim;
 var init_physics = __esm({
-  "sdk/mechanics/physics.js"() {
+  "../../sdk/mechanics/physics.js"() {
     STEP_UP = 0.35;
     clamp2 = (v, a, b) => Math.max(a, Math.min(b, v));
     num2 = (v, d) => v !== null && v !== "" && v !== void 0 && Number.isFinite(+v) ? +v : d;
@@ -2369,7 +2369,7 @@ var init_physics = __esm({
   }
 });
 
-// sdk/mechanics/race-rules.js
+// ../../sdk/mechanics/race-rules.js
 function trackFrom(layout) {
   const els = layout?.elements || [], m = layout?.meta?.track || {};
   const seq = [];
@@ -2518,12 +2518,12 @@ function raceDisplay(score, T) {
   return total ? `${Math.floor(score / 100)}/${total}` : `${Math.floor(score / 100)}`;
 }
 var init_race_rules = __esm({
-  "sdk/mechanics/race-rules.js"() {
+  "../../sdk/mechanics/race-rules.js"() {
     init_physics();
   }
 });
 
-// sdk/mechanics/course-kit.js
+// ../../sdk/mechanics/course-kit.js
 function ink(hex2) {
   const n = parseInt(String(hex2 || "#000").slice(1).padEnd(6, "0").slice(0, 6), 16);
   const l = (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255;
@@ -2767,7 +2767,7 @@ function cleanup(ctx2, objs, k) {
 }
 var css, esc3, claimsOf;
 var init_course_kit = __esm({
-  "sdk/mechanics/course-kit.js"() {
+  "../../sdk/mechanics/course-kit.js"() {
     init_physics();
     css = (el, s) => {
       el.style.cssText = s;
@@ -2778,7 +2778,7 @@ var init_course_kit = __esm({
   }
 });
 
-// sdk/mechanics/race.js
+// ../../sdk/mechanics/race.js
 var race_exports = {};
 __export(race_exports, {
   default: () => race_default,
@@ -2790,7 +2790,7 @@ __export(race_exports, {
 });
 var usable, race_default, K_brand, claimOf;
 var init_race = __esm({
-  "sdk/mechanics/race.js"() {
+  "../../sdk/mechanics/race.js"() {
     init_collect();
     init_race_rules();
     init_physics();
@@ -3022,7 +3022,7 @@ var init_race = __esm({
   }
 });
 
-// sdk/mechanics/platform-rules.js
+// ../../sdk/mechanics/platform-rules.js
 function courseFrom(layout) {
   const els = layout?.elements || [];
   const surfs = surfacesFrom(els);
@@ -3118,13 +3118,13 @@ function platformDisplay(score, total) {
 }
 var pathIndex;
 var init_platform_rules = __esm({
-  "sdk/mechanics/platform-rules.js"() {
+  "../../sdk/mechanics/platform-rules.js"() {
     init_physics();
     pathIndex = (C, s) => s ? C.path.indexOf(s) : -1;
   }
 });
 
-// sdk/mechanics/platform.js
+// ../../sdk/mechanics/platform.js
 var platform_exports = {};
 __export(platform_exports, {
   courseFrom: () => courseFrom,
@@ -3161,7 +3161,7 @@ function addBridge(ctx2, s, hop) {
 }
 var usable2, brandOf, platform_default;
 var init_platform = __esm({
-  "sdk/mechanics/platform.js"() {
+  "../../sdk/mechanics/platform.js"() {
     init_collect();
     init_platform_rules();
     init_physics();
@@ -3426,7 +3426,7 @@ var init_platform = __esm({
   }
 });
 
-// sdk/mechanics/sports-rules.js
+// ../../sdk/mechanics/sports-rules.js
 function pitchFrom(layout) {
   const els = layout?.elements || [];
   const goal = els.find((e) => e.type === "goal") || null;
@@ -3589,14 +3589,14 @@ function simulateGoals(layout, P, { seconds = 13, sprint = true, ballIndex = 0, 
 }
 var sportsScore, sportsDisplay;
 var init_sports_rules = __esm({
-  "sdk/mechanics/sports-rules.js"() {
+  "../../sdk/mechanics/sports-rules.js"() {
     init_physics();
     sportsScore = (goals) => goals;
     sportsDisplay = (score) => `${score} goal${score === 1 ? "" : "s"}`;
   }
 });
 
-// sdk/mechanics/sports.js
+// ../../sdk/mechanics/sports.js
 var sports_exports = {};
 __export(sports_exports, {
   default: () => sports_default,
@@ -3637,7 +3637,7 @@ function ballTexture(K, pal) {
 }
 var usable3, brandOf2, sports_default;
 var init_sports = __esm({
-  "sdk/mechanics/sports.js"() {
+  "../../sdk/mechanics/sports.js"() {
     init_collect();
     init_sports_rules();
     init_physics();
@@ -3845,7 +3845,7 @@ var init_sports = __esm({
   }
 });
 
-// sdk/mechanics/smash-rules.js
+// ../../sdk/mechanics/smash-rules.js
 function targetsFrom(layout) {
   return (layout?.elements || []).filter((e) => e.type === "target").map((e, i) => ({
     i,
@@ -3918,14 +3918,14 @@ function simulateSweep(layout, P, { sprint = true } = {}) {
 }
 var smashScore, smashDisplay;
 var init_smash_rules = __esm({
-  "sdk/mechanics/smash-rules.js"() {
+  "../../sdk/mechanics/smash-rules.js"() {
     init_physics();
     smashScore = (points) => points;
     smashDisplay = (score) => `${score} pts`;
   }
 });
 
-// sdk/mechanics/smash.js
+// ../../sdk/mechanics/smash.js
 var smash_exports = {};
 __export(smash_exports, {
   default: () => smash_default,
@@ -3939,7 +3939,7 @@ __export(smash_exports, {
 });
 var usable4, brandOf3, smash_default;
 var init_smash = __esm({
-  "sdk/mechanics/smash.js"() {
+  "../../sdk/mechanics/smash.js"() {
     init_collect();
     init_smash_rules();
     init_physics();
@@ -4064,7 +4064,7 @@ var init_smash = __esm({
   }
 });
 
-// sdk/mechanics/index.js
+// ../../sdk/mechanics/index.js
 async function loadMechanic(name) {
   const want = KNOWN.includes(name) ? ALIAS[name] || name : "collect";
   if (!cache.has(want)) {
@@ -4078,7 +4078,7 @@ async function loadMechanic(name) {
 }
 var BUNDLED, KNOWN, ALIAS, cache;
 var init_mechanics = __esm({
-  "sdk/mechanics/index.js"() {
+  "../../sdk/mechanics/index.js"() {
     BUNDLED = { "collect": () => Promise.resolve().then(() => (init_collect(), collect_exports)), "shoot": () => Promise.resolve().then(() => (init_shoot(), shoot_exports)), "race": () => Promise.resolve().then(() => (init_race(), race_exports)), "platform": () => Promise.resolve().then(() => (init_platform(), platform_exports)), "sports": () => Promise.resolve().then(() => (init_sports(), sports_exports)), "smash": () => Promise.resolve().then(() => (init_smash(), smash_exports)) };
     KNOWN = ["collect", "shoot", "race", "platform", "sports", "smash", "gates"];
     ALIAS = { gates: "collect" };
@@ -4086,7 +4086,7 @@ var init_mechanics = __esm({
   }
 });
 
-// sdk/viewability.js
+// ../../sdk/viewability.js
 function ambientRule(inWorld = {}) {
   return inWorld && (inWorld.video || inWorld.animated === true || inWorld.surface === "video") ? RULES.video : RULES.display;
 }
@@ -4466,7 +4466,7 @@ function takeoverSample(showing, tabVisible) {
 }
 var IIG_STD, POLL_MS, RULES, EPS, round, mul, EDGES, clamp01;
 var init_viewability = __esm({
-  "sdk/viewability.js"() {
+  "../../sdk/viewability.js"() {
     IIG_STD = "iig2";
     POLL_MS = 200;
     RULES = Object.freeze({
@@ -4482,7 +4482,7 @@ var init_viewability = __esm({
   }
 });
 
-// sdk/inworld/props.js
+// ../../sdk/inworld/props.js
 function trimmedLogo(img) {
   if (!img?.width) return null;
   if (trimmed.has(img)) return trimmed.get(img);
@@ -4980,13 +4980,13 @@ function createProps({ T, m, pal, logoImg, collectible }) {
 }
 var trimmed;
 var init_props = __esm({
-  "sdk/inworld/props.js"() {
+  "../../sdk/inworld/props.js"() {
     init_builders();
     trimmed = /* @__PURE__ */ new WeakMap();
   }
 });
 
-// sdk/click-params.js
+// ../../sdk/click-params.js
 function triggerFor(format, tokenTrigger) {
   if (format === "zone") return "zone";
   if (format === "prop" || format === "portal") return "proximity";
@@ -5076,7 +5076,7 @@ function buildDestination(spec = {}, click = {}) {
 }
 var CLICK_FORMATS, PLACEMENTS, MACROS, PER_CLICK_MACROS, HOUSE_REF, pick;
 var init_click_params = __esm({
-  "sdk/click-params.js"() {
+  "../../sdk/click-params.js"() {
     CLICK_FORMATS = ["inworld", "brandworld", "zone", "prop", "portal", "arena"];
     PLACEMENTS = ["endcard", "prop", "portal", "toast"];
     MACROS = ["click_id", "campaign_id", "creative_id", "game", "format", "trigger", "placement", "score", "device", "country", "ts"];
@@ -5086,7 +5086,7 @@ var init_click_params = __esm({
   }
 });
 
-// sdk/click.js
+// ../../sdk/click.js
 function noteApi(ok) {
   S.down = !ok;
 }
@@ -5157,7 +5157,7 @@ function openCta(url, hints = {}) {
 }
 var S, clickToken, isClickUrl, deviceGuess;
 var init_click = __esm({
-  "sdk/click.js"() {
+  "../../sdk/click.js"() {
     init_click_params();
     S = globalThis.__brClick || (globalThis.__brClick = { down: false, ctas: /* @__PURE__ */ new Map() });
     clickToken = (url) => {
@@ -5183,7 +5183,7 @@ var init_click = __esm({
   }
 });
 
-// sdk/proximity.js
+// ../../sdk/proximity.js
 function usedKeys(world) {
   const list = [...world?.controls || [], ...world?.gameplayHooks?.controls || []];
   const used = /* @__PURE__ */ new Set();
@@ -5422,7 +5422,7 @@ function createProximity(o) {
 }
 var clamp3, esc4, isTouch, CSS3;
 var init_proximity = __esm({
-  "sdk/proximity.js"() {
+  "../../sdk/proximity.js"() {
     init_click();
     clamp3 = (v, a, b) => Math.max(a, Math.min(b, v));
     esc4 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -5442,7 +5442,7 @@ kbd{font:900 12px/1 system-ui,sans-serif;display:inline-block;min-width:16px;tex
   }
 });
 
-// sdk/inworld/scan.js
+// ../../sdk/inworld/scan.js
 function worldPos(o, out = v3()) {
   try {
     o.updateWorldMatrix ? o.updateWorldMatrix(true, false) : o.updateMatrixWorld?.(true);
@@ -6081,7 +6081,7 @@ function segPointDist(a, b, c) {
 }
 var v3, dist, distXZ, matHex, hexDist, levelCache, sameMatrix, triCount, Level, TRIS_PER_RUN, RUNS_PER_GROUP, _rb, PLAYER_NAME;
 var init_scan = __esm({
-  "sdk/inworld/scan.js"() {
+  "../../sdk/inworld/scan.js"() {
     v3 = (x = 0, y = 0, z = 0) => ({ x, y, z });
     dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
     distXZ = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
@@ -6221,7 +6221,7 @@ var init_scan = __esm({
   }
 });
 
-// sdk/inworld/takeover.js
+// ../../sdk/inworld/takeover.js
 function drawFit2(g, img, cx, cy, w, h) {
   const k = Math.min(w / img.width, h / img.height);
   g.drawImage(img, cx - img.width * k / 2, cy - img.height * k / 2, img.width * k, img.height * k);
@@ -7249,7 +7249,7 @@ function createWorldTakeover(o) {
 }
 var clamp4, ease, texAvg;
 var init_takeover = __esm({
-  "sdk/inworld/takeover.js"() {
+  "../../sdk/inworld/takeover.js"() {
     init_builders();
     init_props();
     init_scan();
@@ -7259,7 +7259,7 @@ var init_takeover = __esm({
   }
 });
 
-// sdk/inworld/session.js
+// ../../sdk/inworld/session.js
 var session_exports = {};
 __export(session_exports, {
   INTERACTIONS: () => INTERACTIONS,
@@ -9428,7 +9428,7 @@ function createSession(o) {
 }
 var clamp5, num3, INTERACTIONS, isInWorld, isOurs;
 var init_session = __esm({
-  "sdk/inworld/session.js"() {
+  "../../sdk/inworld/session.js"() {
     init_scan();
     init_props();
     init_builders();
@@ -9444,7 +9444,7 @@ var init_session = __esm({
   }
 });
 
-// sdk/three-shim.js
+// ../../sdk/three-shim.js
 function threeShim(THREE) {
   if (shimUrl && shimFor === THREE) return shimUrl;
   globalThis.__BONUSROUND_THREE__ = THREE;
@@ -9487,14 +9487,14 @@ function gltfLoaderFor(base, THREE) {
 }
 var blobs, shimUrl, shimFor;
 var init_three_shim = __esm({
-  "sdk/three-shim.js"() {
+  "../../sdk/three-shim.js"() {
     blobs = /* @__PURE__ */ new Map();
     shimUrl = null;
     shimFor = null;
   }
 });
 
-// sdk/host-three.js
+// ../../sdk/host-three.js
 function ourThree(base) {
   return ourP || (ourP = (async () => {
     const prev = window.__THREE__;
@@ -9914,7 +9914,7 @@ async function hostAmbient(opts) {
 }
 var ourP, chain, tryNew;
 var init_host_three = __esm({
-  "sdk/host-three.js"() {
+  "../../sdk/host-three.js"() {
     init_three_shim();
     init_builders();
     init_spatial_ads();
@@ -9935,7 +9935,7 @@ var init_host_three = __esm({
   }
 });
 
-// sdk/inworld/round.js
+// ../../sdk/inworld/round.js
 var round_exports = {};
 __export(round_exports, {
   brandFlash: () => brandFlash,
@@ -10515,7 +10515,7 @@ async function playInWorldRound(opts) {
 }
 var INTRO_MS, sleep, within, loadImage, prepared, warmed, decoded, keyOf, warmInWorldObjects, nextFrame;
 var init_round = __esm({
-  "sdk/inworld/round.js"() {
+  "../../sdk/inworld/round.js"() {
     init_host_three();
     init_three_shim();
     init_spatial_ads();
@@ -10557,7 +10557,7 @@ var init_round = __esm({
   }
 });
 
-// sdk/spatial-ads.js
+// ../../sdk/spatial-ads.js
 function iigAccrue(acc, run, minMs) {
   if (run >= minMs) {
     acc.ms += acc.prevRun < minMs ? run : run - acc.prevRun;
@@ -10602,7 +10602,7 @@ function normalizeManifest(THREE, raw) {
 }
 var inWorldMod, inWorldRun, VERSION, ARENA_CENTER, INTRO_MS2, log, DEFAULTS, withTimeout, loadImage2, gltfLoaderP, defaultGltfLoader, Runtime, SpatialAds;
 var init_spatial_ads = __esm({
-  "sdk/spatial-ads.js"() {
+  "../../sdk/spatial-ads.js"() {
     init_builders();
     init_overlay();
     init_audio();
@@ -11609,11 +11609,11 @@ var init_spatial_ads = __esm({
   }
 });
 
-// sdk/br-core.js
+// ../../sdk/br-core.js
 init_spatial_ads();
 init_builders();
 
-// sdk/round-layout.js
+// ../../sdk/round-layout.js
 var WALK_R = 23.2;
 var ARENA_CENTER2 = [0, 0, 2e3];
 function rng2(seed) {
@@ -11669,7 +11669,7 @@ function freeSpot(rand, maxR, clearance = 0.9) {
   return [0, 0];
 }
 
-// sdk/mechanics/bot-brains.js
+// ../../sdk/mechanics/bot-brains.js
 init_physics();
 init_race_rules();
 init_platform_rules();
@@ -11867,7 +11867,7 @@ function smashBot(c) {
   return bot;
 }
 
-// sdk/round-core.js
+// ../../sdk/round-core.js
 var COLORS = ["#ff5d8f", "#4cc9f0", "#ffd23f", "#7ae582", "#b392f0", "#ff8c42", "#2ec4b6", "#f15bb5", "#9bf6ff", "#c0fdfb"];
 var BOT_NAMES = ["Bloop", "Wobbles", "Jellybean", "Squish"];
 var r2 = (v) => Math.round(v * 100) / 100;
@@ -12708,7 +12708,7 @@ var GameCore = class {
   }
 };
 
-// sdk/local-net.js
+// ../../sdk/local-net.js
 function relay() {
   const handlers = /* @__PURE__ */ new Map();
   return {
@@ -12793,10 +12793,10 @@ function createLocalNet(manifestUrl, opts = {}) {
   };
 }
 
-// sdk/br-core.js
+// ../../sdk/br-core.js
 init_three_shim();
 
-// sdk/br-ui.js
+// ../../sdk/br-ui.js
 init_click();
 var CSS4 = `
 :host{all:initial}
@@ -12997,7 +12997,7 @@ function createUi() {
   };
 }
 
-// sdk/bots.js
+// ../../sdk/bots.js
 function tag(THREE, name, color) {
   const c = document.createElement("canvas"), g = c.getContext("2d");
   g.font = "800 44px system-ui, sans-serif";
@@ -13147,7 +13147,7 @@ function createTracers(THREE, scene) {
   };
 }
 
-// sdk/host-session.js
+// ../../sdk/host-session.js
 var CHIP_CSS = `:host{all:initial}
 button{all:unset;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483647;cursor:pointer;
   display:flex;align-items:center;gap:10px;padding:12px 20px 12px 14px;border-radius:999px;background:rgba(20,16,40,.86);color:#fff;
@@ -13237,14 +13237,14 @@ function createHostSession() {
   };
 }
 
-// sdk/br-core.js
+// ../../sdk/br-core.js
 init_host_three();
 init_countdown();
 init_proximity();
 init_viewability();
 init_click();
 
-// sdk/ivt.js
+// ../../sdk/ivt.js
 var now = () => performance.now();
 var S2 = { on: false, inputs: [], holds: [], down: /* @__PURE__ */ new Map(), vis: [], foc: [], ratio: null, ov: null, rounds: /* @__PURE__ */ new Map(), gl: void 0, glv: null, px: 0, py: 0, np: null, cdp: false };
 var MOVE_KEYS = /* @__PURE__ */ new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "ShiftLeft", "ShiftRight"]);
@@ -13504,7 +13504,7 @@ function ivtSignals(key = null, { full = false } = {}) {
   };
 }
 
-// sdk/br-core.js
+// ../../sdk/br-core.js
 var ctaAs = (cta, fm) => cta ? { ...cta, url: withFormat(cta.url, fm) } : null;
 var DEFAULT_SETTINGS = {
   formats: { takeover: { enabled: true, triggers: ["intermission", "rewarded"], intervalSec: 300 }, ambient: { enabled: true } },
