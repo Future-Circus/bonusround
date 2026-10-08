@@ -3,12 +3,13 @@
 //   index.js        ESM entry: `import { BonusRound } from 'bonusround'` (sdk/br.js + the bundled core, no network to load)
 //   br.js           classic script for the CDN: <script async src="https://cdn.jsdelivr.net/npm/bonusround/br.js" data-pub="…">
 //   dist/core.js    sdk/br-core.js and everything it imports, one ES module
-//   dist/offline.js the bonusround.io test round (overlay runtime + three.js + assets), loaded only when a test break can't
+//   dist/offline.js the bonusround.io test round, with its files in dist/offline/ (overlay runtime + three.js, models, audio),
+//                   loaded only when a test break can't
 //                   reach the ad server (sdk/br-core.js _offlineTestAd)
 // Run: node tools/cli/scripts/build-sdk.mjs   (also runs on `npm pack` / `npm publish` via prepack)
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PKG = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = path.resolve(PKG, '../..');
@@ -17,8 +18,12 @@ const THREE_DIR = path.join(ROOT, 'node_modules/three');
 const HOUSE = path.join(ROOT, 'runs/house-bonusround-fallback/ad');
 const IS_HOUSE = fs.existsSync(path.join(HOUSE, 'manifest.json'));
 const FIXTURE = IS_HOUSE ? HOUSE : path.join(ROOT, 'runs/fizzpop-fixture/ad');
-const ROUND = IS_HOUSE ? { name: 'Bonus Round', label: 'the bonusround.io test round', cta: { label: 'Visit bonusround.io', url: 'https://bonusround.io' } }
-  : { name: 'Fizzpop Soda', label: 'the Fizzpop Soda test round', cta: { label: 'Pop the fun', url: null } };
+// the house round's CTA: the three.js onboarding page (founder 2026-10-07; the server's HOUSE_AD links to the same page).
+// test=1 because the offline round is never billed; no brclid offline (no click row exists). offline.js adds game= at run time.
+const HOUSE_CTA = { label: 'Add Bonus Round to your game',   // the round adds the ↗
+  url: 'https://bonusround.io/three-js-monetization?from=house&test=1', utm: 'utm_source=bonusround&utm_medium=playable_ad&utm_campaign=bonusround-offline' };
+const ROUND = IS_HOUSE ? { name: 'Bonus Round', label: 'bonusround.io test round', cta: HOUSE_CTA }
+  : { name: 'Fizzpop Soda', label: 'Fizzpop Soda test round', cta: { label: 'Pop the fun', url: null } };
 if (!IS_HOUSE && fs.existsSync(path.join(ROOT, 'sdk/br-core.js'))) console.warn('build-sdk: runs/house-bonusround-fallback/ad/manifest.json missing: bundling the old Fizzpop round');
 if (!fs.existsSync(path.join(ROOT, 'sdk/br-core.js'))) { console.log('build-sdk: no ../../sdk here (a published copy): using the prebuilt index.js, br.js and dist/'); process.exit(0); }
 const esbuild = await import('esbuild');
@@ -65,41 +70,67 @@ const html = fs.readFileSync(path.join(ROOT, 'overlay/index.html'), 'utf8')
   .replace(/<script type="module" src="\.\/main\.js"><\/script>/, '%%BOOT%%');
 if (!html.includes('%%BOOT%%')) throw new Error('overlay/index.html changed: no ./main.js module script to replace');
 const manifest = JSON.parse(fs.readFileSync(path.join(FIXTURE, 'manifest.json'), 'utf8'));
-const TYPES = { png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp', glb: 'model/gltf-binary', mp3: 'audio/mpeg', json: 'application/json' };
-const assets = {};
+// The round's files ship as real files in dist/offline/ (no base64 in JS). offline.js names each one with a literal
+// new URL('./offline/<file>', import.meta.url), the pattern Vite, webpack, Parcel and Rollup all rewrite and copy into a build.
+const OFF = path.join(PKG, 'dist/offline');
+fs.rmSync(OFF, { recursive: true, force: true });
+fs.mkdirSync(OFF, { recursive: true });
+fs.writeFileSync(path.join(OFF, 'overlay.js'), `// Bonus Round offline test round ${version}: the round runtime (overlay + three.js), started by ../offline.js\n${overlayJs}`);
+const files = [];
 JSON.stringify(manifest, (_k, v) => {
-  const ext = typeof v === 'string' && /^[\w.-]+\.(png|jpg|webp|glb|mp3)$/.exec(v)?.[1];
-  if (ext && fs.existsSync(path.join(FIXTURE, v))) assets[v] = [TYPES[ext], fs.readFileSync(path.join(FIXTURE, v)).toString('base64')];
+  if (typeof v === 'string' && /^[\w.-]+\.(png|jpg|webp|glb|mp3)$/.test(v) && fs.existsSync(path.join(FIXTURE, v)) && !files.includes(v)) {
+    files.push(v); fs.copyFileSync(path.join(FIXTURE, v), path.join(OFF, v));
+  }
   return v;
 });
 const offline = `// Bonus Round offline test round ${version}: ${ROUND.label} (never a paid ad, never billed).
 // Loaded by the SDK only when a test break can't reach the ad server, or the game has no publisher id yet (sdk/br-core.js).
+// Its files are next to this one, in ./offline/.
 const HTML = ${JSON.stringify(html)};
-const OVERLAY_JS = ${JSON.stringify(overlayJs)};
 const MANIFEST = ${JSON.stringify(manifest)};
-const ASSETS = ${JSON.stringify(assets)};
+const FILES = {
+${files.map((f) => `  ${JSON.stringify(f)}: new URL(${JSON.stringify(`./offline/${f}`)}, import.meta.url).href,`).join('\n')}
+};
+const OVERLAY_JS = new URL('./offline/overlay.js', import.meta.url).href;
+// Vite's dev server pre-bundles dependencies into /node_modules/.vite/deps/, where ./offline/ doesn't exist: the package's own
+// copy is still served at /node_modules/bonusround/dist/.
+const fix = (u) => (/\\/node_modules\\/\\.vite\\/deps(_[^/]*)?\\/offline\\//.test(u) ? u.replace(/\\/node_modules\\/\\.vite\\/deps(_[^/]*)?\\/offline\\//, '/node_modules/bonusround/dist/offline/').replace(/\\?.*$/, '') : u);
 let cache = null;
 const blob = (parts, type) => URL.createObjectURL(new Blob(parts, { type }));
-const bytes = (b64) => { const s = atob(b64); const a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; };
 export const brand = { name: ${JSON.stringify(ROUND.name)} };
 export const label = ${JSON.stringify(ROUND.label)};
+const CTA = ${JSON.stringify(ROUND.cta)};
+// game= is the page's name: document.title (60 chars max), else the host name; none on file: or blank pages
+function gameName() {
+  try {
+    if (!/^https?:$/.test(location.protocol)) return '';
+    return (String(document.title || '').replace(/\\s+/g, ' ').trim().slice(0, 60).trim() || location.hostname || '');
+  } catch { return ''; }
+}
+function ctaFor() {
+  if (!CTA.utm) return { label: CTA.label, url: CTA.url };
+  const g = gameName();
+  return { label: CTA.label, url: CTA.url + (g ? '&game=' + encodeURIComponent(g) : '') + '&' + CTA.utm };
+}
 export async function offlineTestAd({ trigger = 'test' } = {}) {
   if (!cache) {
-    const urls = {};
-    for (const [name, [type, b64]] of Object.entries(ASSETS)) urls[name] = blob([bytes(b64)], type);
-    const m = JSON.parse(JSON.stringify(MANIFEST), (_k, v) => (typeof v === 'string' && urls[v] ? urls[v] : v));
-    const js = blob([OVERLAY_JS], 'text/javascript');
-    const boot = '<script>var __BR_SEARCH__ = location.hash.replace(/^#/, "?");</scr' + 'ipt><script type="module" src="' + js + '"></scr' + 'ipt>';
+    const m = JSON.parse(JSON.stringify(MANIFEST), (_k, v) => (typeof v === 'string' && FILES[v] ? fix(FILES[v]) : v));
+    const boot = '<script>var __BR_SEARCH__ = location.hash.replace(/^#/, "?");</scr' + 'ipt><script type="module" src="' + fix(OVERLAY_JS) + '"></scr' + 'ipt>';
     cache = { manifestUrl: blob([JSON.stringify(m)], 'application/json'), overlayUrl: blob([HTML.replace('%%BOOT%%', boot)], 'text/html') };
   }
   return { fill: true, test: true, offline: true, format: 'takeover', trigger, token: null, requestId: null,
-    manifestUrl: cache.manifestUrl, overlayUrl: cache.overlayUrl, brand, cta: ${JSON.stringify(ROUND.cta)} };
+    manifestUrl: cache.manifestUrl, overlayUrl: cache.overlayUrl, brand, cta: ctaFor() };
 }
 `;
 fs.writeFileSync(path.join(PKG, 'dist/offline.js'), offline);
 
 // 3. the loader (sdk/br.js) twice: as the package's ES module entry, and as the CDN's classic script
-const loader = fs.readFileSync(path.join(ROOT, 'sdk/br.js'), 'utf8');
+// the approved Bo mark (sdk/countdown.js BR_MARK_SVG, a small data: SVG), so the dev badge shows it even offline
+const MARK = /export const BR_MARK_SVG = '([^']+)';/.exec(fs.readFileSync(path.join(ROOT, 'sdk/countdown.js'), 'utf8'))?.[1];
+if (!MARK) throw new Error('sdk/countdown.js has no BR_MARK_SVG');
+// stamped with the package version, so BonusRound.version and debug().version say which npm release this is
+const loader = fs.readFileSync(path.join(ROOT, 'sdk/br.js'), 'utf8').replace(/var VERSION = '[^']*';/, `var VERSION = '${version}';`);
+if (!loader.includes(`var VERSION = '${version}';`)) throw new Error("sdk/br.js has no var VERSION = '…'; to stamp");
 if (!loader.includes('cfg0.loadCore') || !loader.includes('cfg0.loadOffline')) throw new Error('sdk/br.js has no loadCore/loadOffline hooks');
 const esm = `// Bonus Round SDK ${version} for three.js games: https://bonusround.io/docs/  ·  npm i bonusround
 //   import { BonusRound } from 'bonusround';
@@ -113,6 +144,7 @@ if (!BR_SSR) {
   if (!cfg.base) cfg.base = 'https://bonusround.io';
   if (!cfg.loadCore) cfg.loadCore = () => import('./dist/core.js');
   if (!cfg.loadOffline) cfg.loadOffline = () => import('./dist/offline.js');
+  if (!cfg.markSvg) cfg.markSvg = ${JSON.stringify(MARK)};
 ${loader.replace(/^/gm, '  ')}
 }
 const noop = () => Promise.resolve({ filled: false, completed: false, reason: 'ssr' });
@@ -130,6 +162,7 @@ const classic = `/*! Bonus Round SDK ${version} (npm: bonusround) · <script asy
   if (!cfg.base) cfg.base = (s && s.getAttribute('data-server')) || 'https://bonusround.io';
   if (dir && !cfg.loadCore) cfg.loadCore = function () { return import(dir + '/dist/core.js'); };
   if (dir && !cfg.loadOffline) cfg.loadOffline = function () { return import(dir + '/dist/offline.js'); };
+  if (!cfg.markSvg) cfg.markSvg = ${JSON.stringify(MARK)};
 })();
 ${loader}`;
 fs.writeFileSync(path.join(PKG, 'br.js'), classic);
@@ -182,4 +215,4 @@ Signing in is optional. The hosted server's \`bonusround_integration_guide\`, \`
 ${body.replace(/\n\*\*\[bonusround\.io\][^\n]*\n/, '').replace('the SDK is in this package', 'the SDK is in the `bonusround` npm package')}`);
 
 const kb = (f) => `${(fs.statSync(path.join(PKG, f)).size / 1024).toFixed(0)} KB`;
-console.log(`bonusround ${version}: index.js ${kb('index.js')} · br.js ${kb('br.js')} · dist/core.js ${kb('dist/core.js')} · dist/offline.js ${kb('dist/offline.js')} (${Object.keys(assets).length} assets)`);
+console.log(`bonusround ${version}: index.js ${kb('index.js')} · br.js ${kb('br.js')} · dist/core.js ${kb('dist/core.js')} · dist/offline.js ${kb('dist/offline.js')} + dist/offline/ ${Math.round(fs.readdirSync(OFF).reduce((n, f) => n + fs.statSync(path.join(OFF, f)).size, 0) / 1024)} KB (${files.length} files + overlay.js)`);

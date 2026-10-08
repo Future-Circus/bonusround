@@ -1,10 +1,11 @@
-/*! Bonus Round SDK 1.0.0 (npm: bonusround) · <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_…"></script> */
+/*! Bonus Round SDK 1.0.3 (npm: bonusround) · <script async src="https://cdn.jsdelivr.net/npm/bonusround@1/br.js" data-pub="pub_…"></script> */
 (function () {
   var s = document.currentScript, dir = s && s.src ? s.src.replace(/[?#].*$/, '').replace(/\/[^\/]*$/, '') : '';
   var cfg = (window.bonusroundConfig = window.bonusroundConfig || {});
   if (!cfg.base) cfg.base = (s && s.getAttribute('data-server')) || 'https://bonusround.io';
   if (dir && !cfg.loadCore) cfg.loadCore = function () { return import(dir + '/dist/core.js'); };
   if (dir && !cfg.loadOffline) cfg.loadOffline = function () { return import(dir + '/dist/offline.js'); };
+  if (!cfg.markSvg) cfg.markSvg = "<img src=\"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20role%3D%22img%22%20aria-label%3D%22Bonus%20Round%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22br-gold%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%228%22%20y1%3D%224%22%20x2%3D%2256%22%20y2%3D%2262%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffd66b%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ffb000%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%2234.2%22%20cy%3D%2232%22%20r%3D%2227%22%20fill%3D%22%23c27400%22%2F%3E%3Crect%20x%3D%2229.8%22%20y%3D%225%22%20width%3D%224.4%22%20height%3D%2254%22%20rx%3D%220%22%20fill%3D%22%23c27400%22%2F%3E%3Ccircle%20cx%3D%2229.8%22%20cy%3D%2232%22%20r%3D%2227%22%20fill%3D%22url(%23br-gold)%22%2F%3E%3Ccircle%20cx%3D%2229.8%22%20cy%3D%2232%22%20r%3D%2221.4%22%20fill%3D%22none%22%20stroke-width%3D%222.6%22%20stroke%3D%22%23e08f00%22%20stroke-opacity%3D%220.62%22%2F%3E%3Cpath%20d%3D%22M6.78%2024.52A24.2%2024.2%200%200%201%2020.73%209.56%22%20fill%3D%22none%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%220.7%22%2F%3E%3Cellipse%20cx%3D%2221.700000000000003%22%20cy%3D%2230.38%22%20rx%3D%223.7800000000000002%22%20ry%3D%225.13%22%20fill%3D%22%231a1405%22%2F%3E%3Cellipse%20cx%3D%2237.9%22%20cy%3D%2230.38%22%20rx%3D%223.7800000000000002%22%20ry%3D%225.13%22%20fill%3D%22%231a1405%22%2F%3E%3Ccircle%20cx%3D%2222.91%22%20cy%3D%2228.43%22%20r%3D%221.36%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2239.11%22%20cy%3D%2228.43%22%20r%3D%221.36%22%20fill%3D%22%23fff%22%2F%3E%3Cpath%20d%3D%22M26.02%2039.02Q29.8%2043.34%2033.58%2039.02%22%20fill%3D%22none%22%20stroke-width%3D%222.565%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke%3D%22%231a1405%22%2F%3E%3Cellipse%20cx%3D%2215.76%22%20cy%3D%2237.94%22%20rx%3D%223.5100000000000002%22%20ry%3D%222.16%22%20fill%3D%22%23ff5d8f%22%20fill-opacity%3D%220.6%22%2F%3E%3Cellipse%20cx%3D%2243.84%22%20cy%3D%2237.94%22%20rx%3D%223.5100000000000002%22%20ry%3D%222.16%22%20fill%3D%22%23ff5d8f%22%20fill-opacity%3D%220.6%22%2F%3E%3C%2Fsvg%3E%0A\" alt=\"\" aria-hidden=\"true\" draggable=\"false\">";
 })();
 /*! Bonus Round SDK loader v1.0.0 · <script async src="https://<host>/v1/br.js" data-pub="pub_…"></script>
  * Classic script. window.BonusRound exists as soon as this runs; code that may run earlier uses the queue:
@@ -14,7 +15,7 @@
 (function () {
   'use strict';
   if (window.BonusRound && window.BonusRound.__loader) return;
-  var VERSION = '1.0.0';
+  var VERSION = '1.0.3';
 
   // ---------- who am I ----------
   var script = document.currentScript;
@@ -110,7 +111,7 @@
         // origin + path only: query strings and fragments can carry personal data
         body: JSON.stringify(Object.assign({ pub: pub, origin: location.origin, path: location.pathname, sdkVersion: VERSION, threeRevision: pingRev, sid: sid, dev: deviceClass() },
           refHost ? { ref: refHost } : {}, navigator.webdriver === true ? { wd: true } : {}, state.agent ? { agent: true } : {}, portal ? { portal: portal.id, portalHost: portal.host } : {})),
-      }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { pingDone = true; pingResolve(j); }, function () { pingResolve(null); });
+      }).then(function (r) { state.pingHttp = r.status; return r.ok ? r.json() : null; }).then(function (j) { pingDone = true; pingResolve(j); if (state.onPing) state.onPing(j); }, function () { if (!state.pingHttp) state.pingHttp = 0; pingResolve(null); if (state.onPing) state.onPing(null); });
     } catch (e) { pingResolve(null); }
   }
   if (document.readyState === 'complete') setTimeout(ping, 0);
@@ -132,22 +133,7 @@
         if (h.claimUrl) { try { localStorage.setItem(k, h.claimUrl); } catch (e) {} }
         if (!url) { console.info('[bonusround] This game is unclaimed: free house ads only, no earnings. Ask the agent that integrated it for the claim link (npx bonusround status).'); return; }
         console.info('%c[bonusround] Free house ads only until you claim this game. Create your account to turn on paid ads and get paid: ' + url, 'font-weight:bold');
-        var dismissed = false; try { dismissed = localStorage.getItem(k + '_x') === '1'; } catch (e) {}
-        if (dismissed || !document.body) return;
-        var chip = document.createElement('div');
-        chip.setAttribute('data-bonusround-claim', '');
-        chip.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:2147483646;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 12px;border-radius:999px;background:rgba(10,11,16,.92);color:#fff;font:600 13px/1.2 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18)';
-        var a = document.createElement('a');
-        a.href = url; a.target = '_blank'; a.rel = 'noopener';
-        a.style.cssText = 'color:#ffd166;text-decoration:none';
-        a.textContent = 'Claim this game: turn on paid ads';
-        var small = document.createElement('span'); small.style.cssText = 'opacity:.6;font-weight:500'; small.textContent = 'bonusround.io · dev only';
-        var x = document.createElement('button');
-        x.type = 'button'; x.setAttribute('aria-label', 'Dismiss'); x.textContent = '×';
-        x.style.cssText = 'all:unset;cursor:pointer;width:22px;height:22px;text-align:center;border-radius:50%;background:rgba(255,255,255,.12);font-size:15px;line-height:22px';
-        x.onclick = function () { chip.remove(); try { localStorage.setItem(k + '_x', '1'); } catch (e) {} };
-        chip.appendChild(a); chip.appendChild(small); chip.appendChild(x);
-        document.body.appendChild(chip);
+        // the dev panel (BonusRound.status() badge, below) shows the link as a row; it reads the cache set above
       });
     }).catch(function () {});
   }
@@ -238,6 +224,120 @@
     ready: function () { return core().then(function () { return BR; }); },
   };
   window.BonusRound = BR;
+
+  // ---------- status: what Bonus Round is doing on this page, and the next step (one shape: sdk/status.js) ----------
+  // BonusRound.status() → { host:'dev'|'public', hostClass, mode:'test'|'free-house'|'paid', claimed, learning, paidAds, reason,
+  // ad, claimUrl?, next, pub, settled }. The same object rides the 'status' event (BonusRound.on('status', fn)) and the window
+  // event 'bonusround.status', is printed once as a console line, and (dev / temporary hosts only, never in front of real
+  // players) shows in a small dismissible "Bonus Round · dev" badge with a "Play test round" button.
+  // bonusroundConfig.hostClass = 'public' | 'dev' overrides the page's host class (tests only: the server keeps its own view).
+  var status = (function () {
+    var LEARN0 = 'not-started (needs a public URL)';
+    var cur = null, said = '', mod = null, hostInfo = null, game = null, offline = false, settled = false, badge = null, hidden = false, inRound = false;
+    var override = cfg0.hostClass === 'public' || cfg0.hostClass === 'dev' ? cfg0.hostClass : null;
+    var label = location.protocol === 'file:' ? 'file' : (location.hostname || 'file');
+    // before /sdk/hostclass.js loads (or when our server is unreachable): the obvious dev hosts
+    var quickClass = function () {
+      var h = location.hostname.toLowerCase();
+      if (location.protocol === 'file:' || !h || h.indexOf('.') < 0 || h.charAt(0) === '[') return 'dev';
+      return /^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.0\.0\.0$)|\.(localhost|local|test|lan|internal)$/.test(h) ? 'dev' : 'public';
+    };
+    var claimUrl = function () { try { return pub ? localStorage.getItem('br_claim_' + pub) : null; } catch (e) { return null; } };
+    function build() {
+      var hc = override || (hostInfo ? hostInfo['class'] : quickClass());
+      var s;
+      // before the ping answers (settled:false), a game with a pub id reads as test mode
+      var g = !settled && pub && !game ? { testMode: true, claimed: false, status: '' } : game;
+      if (mod) s = mod.buildStatus({ host: hc, game: g, claimUrl: claimUrl(), offline: offline });
+      else {   // inline twin of buildStatus for a dev page whose status module couldn't load
+        var dev = hc !== 'public';
+        s = { host: dev ? 'dev' : 'public', hostClass: hc, mode: 'test', claimed: game && game.known !== false ? !!game.claimed : null, learning: LEARN0, paidAds: false,
+          reason: offline ? 'offline' : dev ? 'dev_host' : 'test_mode', ad: 'fallback',
+          next: dev ? "Host your game at a public URL and we'll learn it and tailor ads to it." : 'Load the game once on its public HTTPS URL with the line of code.' };
+        if (offline) s.offline = true;
+      }
+      if (portal) { s.mode = 'test'; s.paidAds = false; s.reason = 'portal'; s.ad = 'none'; s.next = portal.host + ' does not allow third-party ads, so Bonus Round is off here.'; }
+      if (state.agent) s.reason = 'agent';
+      s.pub = pub || null;
+      s.settled = settled;
+      return s;
+    }
+    function line(s) {
+      if (mod) return mod.statusLine(s, label);
+      return '[Bonus Round] ' + (s.host === 'dev' ? label : 'test mode') + ' · showing the free bonusround.io test ad (no game learning yet' + (s.offline ? "; our server isn't reachable, so the bundled copy plays" : '') + '). ' + s.next;
+    }
+    function update() {
+      var s = build(), was = cur ? JSON.stringify(cur) : '';
+      cur = s;
+      if (JSON.stringify(s) === was) return;
+      render();
+      if (!settled) return;   // events once the server has answered (or couldn't)
+      emitter.emit('status', s);
+      try { window.dispatchEvent(new CustomEvent('bonusround.status', { detail: s })); } catch (e) {}
+      if (!state.agent) { var l = line(s); if (l !== said) { said = l; console.info(l); } }
+    }
+    function render() {
+      var show = cur && cur.host === 'dev' && !state.agent && !portal && !hidden && !inRound && document.body;
+      if (!show) { if (badge) badge.host.style.display = 'none'; return; }
+      if (!badge) {
+        var host = document.createElement('div');
+        host.setAttribute('data-bonusround-devbadge', '');
+        host.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:2147483645;';
+        var root = host.attachShadow ? host.attachShadow({ mode: 'open' }) : host;
+        root.innerHTML = '<style>.b{box-sizing:border-box;width:min(300px,calc(100vw - 24px));padding:10px 12px;border-radius:14px;background:rgba(10,11,16,.92);color:#fff;font:500 12px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.16)}'
+          + '.t{display:flex;align-items:center;gap:7px;font-weight:700;font-size:12.5px}.mk{display:inline-flex;width:18px;height:18px}.mk:empty{display:none}.mk img,.mk svg{width:18px;height:18px}.t .d{color:#ffd66b}.x{all:unset;margin-left:auto;cursor:pointer;width:20px;height:20px;text-align:center;border-radius:50%;background:rgba(255,255,255,.12);font-size:14px;line-height:20px}'
+          + '.w{margin-top:5px;opacity:.88}.n{margin-top:4px;opacity:.65}.p{all:unset;box-sizing:border-box;margin-top:8px;display:inline-block;cursor:pointer;padding:6px 12px;border-radius:999px;background:#ffb000;color:#1b1d33;font-weight:800;font-size:12px}.p[disabled]{opacity:.5;cursor:default}.c{display:block;margin-top:6px;color:#ffd66b;font-weight:700;text-decoration:none}.c[hidden]{display:none}</style>'
+          + '<div class="b" role="status"><div class="t"><span class="mk"></span><span>Bonus Round · <span class="d">dev</span></span><button class="x" type="button" aria-label="Dismiss">×</button></div>'
+          + '<div class="w"></div><div class="n"></div><a class="c" target="_blank" rel="noopener" hidden>Claim this game: turn on paid ads ↗</a><button class="p" type="button">▶ Play test round</button></div>';
+        var q = function (sel) { return root.querySelector(sel); };
+        q('.x').onclick = function () { hidden = true; render(); try { sessionStorage.setItem('br_devbadge_x', '1'); } catch (e) {} };
+        q('.p').onclick = function () {
+          var b = q('.p'); b.disabled = true; b.textContent = 'Starting…';
+          // __internal: a test round from the badge isn't the developer's own break() (keeps tag-only offers on)
+          BR['break']('test', { __internal: true }).then(function (r) {
+            b.disabled = false; b.textContent = '▶ Play test round';
+            if (r && !r.filled) console.info('[Bonus Round] test round not played: ' + (r.reason || 'unfilled') + (r.reason === 'not_attached' ? '. Add BonusRound.attach({ THREE, scene, camera, renderer }) after your renderer exists.' : ''));
+          });
+        };
+        badge = { host: host, q: q };
+        if (cfg0.markSvg) q('.mk').innerHTML = cfg0.markSvg;   // npm builds bundle the mark (no request to bonusround.io)
+        else import(base + '/sdk/countdown.js').then(function (m) { if (m.BR_MARK_SVG) q('.mk').innerHTML = m.BR_MARK_SVG; }).catch(function () {});
+        document.body.appendChild(host);
+      }
+      badge.host.style.display = '';
+      // the claim chip (claimHint above) sits bottom-left too: stack above it
+      var chip = document.querySelector('[data-bonusround-claim]');
+      badge.host.style.bottom = chip ? (12 + chip.getBoundingClientRect().height + 8) + 'px' : '12px';
+      var what = cur.ad === 'tailored-test' ? 'Showing the free bonusround.io test ad made for your game.' : 'Showing the free bonusround.io test ad (no game learning yet).';
+      badge.q('.w').textContent = (cur.offline ? "Our server isn't reachable: the bundled test ad plays. " : '') + what;
+      badge.q('.n').textContent = cur.next;
+      var c = badge.q('.c');   // the claim link (unclaimed games, registering network only: claimHint above)
+      if (cur.claimUrl) { c.href = cur.claimUrl; c.hidden = false; } else c.hidden = true;
+    }
+    try { hidden = sessionStorage.getItem('br_devbadge_x') === '1'; } catch (e) {}
+    emitter.on('start', function () { inRound = true; render(); });
+    emitter.on('end', function () { inRound = false; render(); });
+    if (state.agent) return function () { return build(); };
+    update();
+    if (!portal) Promise.all([   // portal mode loads nothing from the SDK (the inline twin answers)
+      import(base + '/sdk/status.js').then(function (m) { mod = m; }),
+      import(base + '/sdk/hostclass.js').then(function (m) { hostInfo = m.classifyHost(location); }),
+    ]).catch(function () {}).then(update);
+    var settle = function (j) {
+      game = null; offline = false;
+      if (j && j.sdkGame) game = j.sdkGame;
+      else if (pub && state.pingHttp === 404) game = { known: false };
+      else if (pub && !j) offline = true;
+      settled = true; update();
+      setTimeout(update, 2500);   // the claim link (claimHint) lands in localStorage a moment after the ping
+    };
+    state.ping.then(settle, function () { settle(null); });
+    state.onPing = function (j) { if (settled) settle(j); };   // a later ping (init({ pub }) after load) updates the status
+    var onBody = function () { if (cur) render(); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onBody, { once: true });
+    return function () { return cur || build(); };
+  })();
+  BR.status = function () { return status(); };
   // warm the core once the page is idle so the first break() doesn't wait on the network
   var warm = function () { if (window.requestIdleCallback) window.requestIdleCallback(function () { core(); }, { timeout: 3000 }); else setTimeout(core, 1500); };
   if (document.readyState === 'complete') warm(); else window.addEventListener('load', warm, { once: true });

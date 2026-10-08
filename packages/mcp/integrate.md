@@ -207,6 +207,24 @@ Optional, only where they fit the game:
 
 If `lastSeenAt` stays null: the tag isn't in the page that actually loads, `data-pub` is wrong, the page is on a domain the game doesn't list (only for non-localhost; add it under the game's domains), or a content security policy blocks `https://bonusround.io` (add it to `script-src` and `connect-src`).
 
+## How to test locally
+
+You can check the whole integration on localhost before the game is hosted.
+
+- **What plays.** On localhost, LAN IPs, `file:`, tunnels, cloud IDE previews and deploy previews, every break plays the free bonusround.io test ad. It's a pocket-arena round labelled "Ad", with the Bo mark, an end card and a CTA to bonusround.io. It's never billed and never goes live. Game learning (tailored in-world ads) starts only once the SDK is seen on your public URL.
+- **Console.** On load, the SDK prints one status line, e.g. `[Bonus Round] localhost · showing the free bonusround.io test ad (no game learning yet). Host your game at a public URL and we'll learn it and tailor ads to it.`
+- **Badge.** On dev hosts, a small dismissible "Bonus Round · dev" badge (bottom-left) shows the status, the next step, the claim link for unclaimed games, and a "Play test round" button. It never shows on a public host.
+- **Play a round on demand.** `await BonusRound.break('test')` plays the full round and end card. It resolves `{ filled, completed, score, brand }` when the game resumes.
+- **Read the status.** `BonusRound.status()` returns `{ host, hostClass, mode: 'test'|'free-house'|'paid', claimed, learning, paidAds, reason, ad, claimUrl?, next, pub, settled }`. `settled: true` means our server has answered, or couldn't be reached. Changes fire `BonusRound.on('status', fn)` and the window event `bonusround.status`.
+- **Without a browser.** `npx bonusround status`, the MCP status tool, `GET /api/agent/games/:pubId` and `GET /api/games/:id` all return the same object, as `sdkStatus`.
+- **Server unreachable** (a sandbox, offline). The npm package plays its bundled copy of the same test round on `break('test')`, and `status()` reports `reason: 'offline'`.
+- **Agent checklist** (headless Playwright; on macOS, `--use-angle=metal --enable-gpu`):
+  1. Load the page and wait for `BonusRound.status().settled`.
+  2. Read `status()`.
+  3. Run `await BonusRound.break('test')`.
+  4. Screenshot during the round and at the end card.
+  5. Check that the game renders frames again.
+
 ## Step 6. Report back
 
 Tell the user, briefly:

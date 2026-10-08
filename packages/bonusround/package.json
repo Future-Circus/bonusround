@@ -1,6 +1,6 @@
 {
   "name": "bonusround",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Monetize your three.js game with one line of code. Bonus Round (bonusround.io): playable 15-second brand rounds at natural breaks; developers keep 70% of net ad revenue. npm i bonusround, then BonusRound.attach({ THREE, scene, camera, renderer }) and await BonusRound.break() as the upgrade. SDK + TypeScript types + `npx bonusround init` CLI; works offline with a bundled test round.",
   "keywords": [
     "bonusround",
@@ -42,7 +42,7 @@
     "url": "https://github.com/Future-Circus/bonusround/issues"
   },
   "license": "MIT",
-  "author": "Bonus Round (https://bonusround.io)",
+  "author": "Dream Park Immersive Inc. (https://bonusround.io)",
   "type": "module",
   "main": "./index.js",
   "module": "./index.js",

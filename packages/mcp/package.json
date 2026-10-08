@@ -28,7 +28,7 @@
     "url": "https://github.com/Future-Circus/bonusround/issues"
   },
   "license": "MIT",
-  "author": "Bonus Round (https://bonusround.io)",
+  "author": "Dream Park Immersive Inc. (https://bonusround.io)",
   "type": "module",
   "bin": {
     "bonusround-mcp": "server.js"

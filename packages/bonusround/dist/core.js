@@ -1,4 +1,4 @@
-// Bonus Round SDK core 1.0.0 (bundled from sdk/br-core.js). https://bonusround.io/docs/
+// Bonus Round SDK core 1.0.3 (bundled from sdk/br-core.js). https://bonusround.io/docs/
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __esm = (fn, res, err) => function __init() {
@@ -14,11 +14,11 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// sdk/builders.js
+// ../../sdk/builders.js
 function luminance(h) {
   const n = h.length === 4 ? h.replace(/#(.)(.)(.)/, "#$1$1$2$2$3$3") : h;
-  const [r3, g, b] = [1, 3, 5].map((i) => parseInt(n.substr(i, 2), 16) / 255).map((c) => c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-  return 0.2126 * r3 + 0.7152 * g + 0.0722 * b;
+  const [r4, g, b] = [1, 3, 5].map((i) => parseInt(n.substr(i, 2), 16) / 255).map((c) => c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * r4 + 0.7152 * g + 0.0722 * b;
 }
 function canvasTexture(THREE, canvas) {
   const t = new THREE.CanvasTexture(canvas);
@@ -785,15 +785,15 @@ function buildInWorld(THREE, m, A, pal, statueGltf) {
       x.stroke();
     }
     const shape = new THREE.Shape();
-    const r3 = W / 2 - 0.35;
-    shape.moveTo(-r3, 0);
-    shape.lineTo(-r3, legH);
-    shape.absarc(0, legH, r3, Math.PI, 0, true);
-    shape.lineTo(r3, 0);
-    shape.lineTo(-r3, 0);
+    const r4 = W / 2 - 0.35;
+    shape.moveTo(-r4, 0);
+    shape.lineTo(-r4, legH);
+    shape.absarc(0, legH, r4, Math.PI, 0, true);
+    shape.lineTo(r4, 0);
+    shape.lineTo(-r4, 0);
     const pgeo = new THREE.ShapeGeometry(shape, 24);
     const uv = pgeo.attributes.uv, pos = pgeo.attributes.position;
-    for (let i = 0; i < pos.count; i++) uv.setXY(i, (pos.getX(i) + r3) / (2 * r3), pos.getY(i) / (legH + r3));
+    for (let i = 0; i < pos.count; i++) uv.setXY(i, (pos.getX(i) + r4) / (2 * r4), pos.getY(i) / (legH + r4));
     const tex = canvasTexture(THREE, c);
     tex.center.set(0.5, 0.5);
     portal = new THREE.Mesh(pgeo, new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }));
@@ -883,7 +883,7 @@ function buildInWorld(THREE, m, A, pal, statueGltf) {
 }
 var isHex, hex, readableOn, initials, brand, DRINK, clampN;
 var init_builders = __esm({
-  "sdk/builders.js"() {
+  "../../sdk/builders.js"() {
     isHex = (v) => typeof v === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v);
     hex = (v, fb) => isHex(v) ? v : fb;
     readableOn = (bg, preferred) => {
@@ -898,7 +898,7 @@ var init_builders = __esm({
   }
 });
 
-// sdk/audio.js
+// ../../sdk/audio.js
 function unlockAudio() {
   gestured = true;
   ac();
@@ -1099,14 +1099,14 @@ function createAudio(urls, volume = 0.5) {
 }
 var NOTES, ctx, gestured;
 var init_audio = __esm({
-  "sdk/audio.js"() {
+  "../../sdk/audio.js"() {
     NOTES = { collect: [880, 1320], start: [523, 659, 784], win: [523, 659, 784, 1047], shoot: [520, 392] };
     ctx = null;
     gestured = false;
   }
 });
 
-// sdk/countdown.js
+// ../../sdk/countdown.js
 function resolveCountdownSec({ config, publisher, manifest, trigger, userInitiated } = {}) {
   const c = num(config);
   if (c !== null && c <= 0) return 0;
@@ -1131,8 +1131,8 @@ function stageRect() {
   const vw = innerWidth, vh = innerHeight;
   let best = null, area = 0;
   for (const c of document.querySelectorAll("canvas")) {
-    const r3 = c.getBoundingClientRect();
-    const x0 = Math.max(0, r3.left), y0 = Math.max(0, r3.top), x1 = Math.min(vw, r3.right), y1 = Math.min(vh, r3.bottom);
+    const r4 = c.getBoundingClientRect();
+    const x0 = Math.max(0, r4.left), y0 = Math.max(0, r4.top), x1 = Math.min(vw, r4.right), y1 = Math.min(vh, r4.bottom);
     const a = Math.max(0, x1 - x0) * Math.max(0, y1 - y0);
     if (a > area) {
       area = a;
@@ -1153,8 +1153,8 @@ function domBoxes(touch = false, live = false) {
   for (let i = 0, n = Math.min(all.length, 4e3); i < n; i++) {
     const el = all[i];
     if (SKIP_TAGS.has(el.tagName) || el.ownerSVGElement) continue;
-    const r3 = el.getBoundingClientRect();
-    if (r3.width < 6 || r3.height < 6 || r3.right <= 0 || r3.bottom <= 0 || r3.left >= vw || r3.top >= vh || r3.width * r3.height > vw * vh * 0.35) continue;
+    const r4 = el.getBoundingClientRect();
+    if (r4.width < 6 || r4.height < 6 || r4.right <= 0 || r4.bottom <= 0 || r4.left >= vw || r4.top >= vh || r4.width * r4.height > vw * vh * 0.35) continue;
     let content = /^(IMG|VIDEO|BUTTON|INPUT|SELECT|TEXTAREA|svg|PROGRESS)$/.test(el.tagName);
     if (!content) {
       for (const c of el.childNodes) if (c.nodeType === 3 && c.textContent.trim()) {
@@ -1170,7 +1170,7 @@ function domBoxes(touch = false, live = false) {
     if (touch && !live && el.closest("[data-br-touch]")) continue;
     const fadingIn = touch && el.getAnimations?.().some((a) => a.playState === "running" || a.playState === "pending");
     if (el.checkVisibility ? !el.checkVisibility({ opacityProperty: !fadingIn, visibilityProperty: true }) : getComputedStyle(el).visibility === "hidden") continue;
-    out.push({ x: r3.left, y: r3.top, w: r3.width, h: r3.height });
+    out.push({ x: r4.left, y: r4.top, w: r4.width, h: r4.height });
   }
   return out;
 }
@@ -1242,8 +1242,8 @@ function fixedCountdown(o, want) {
   const live = o.live === true;
   const clampEnd = (v) => live ? toEpochMs(v) : Math.max(toEpochMs(v), Date.now() + MIN_FIXED_MS);
   let end = clampEnd(o.endsAt), settled = false, inner = null, resolve, t = 0;
-  const p = new Promise((r3) => {
-    resolve = r3;
+  const p = new Promise((r4) => {
+    resolve = r4;
   });
   const lead = () => want > 0 ? Math.min(want * 1e3, end - Date.now()) : 0;
   const off = () => {
@@ -1282,8 +1282,8 @@ function fixedCountdown(o, want) {
   const h = {
     info: { pending: true, mode: "fixed", live, seconds: 0, source: o.source || null },
     left: null,
-    cancel: (r3 = "cancelled") => stop(r3),
-    finish: (r3) => stop(r3, true),
+    cancel: (r4 = "cancelled") => stop(r4),
+    finish: (r4) => stop(r4, true),
     update: (u) => {
       if (!isNum(u?.endsAt)) return false;
       end = clampEnd(u.endsAt);
@@ -1294,7 +1294,7 @@ function fixedCountdown(o, want) {
   if (active) active.cancel("replaced");
   active = h;
   document.addEventListener("visibilitychange", onVis);
-  p.cancel = (r3) => inner ? inner.cancel(r3) : h.cancel(r3);
+  p.cancel = (r4) => inner ? inner.cancel(r4) : h.cancel(r4);
   p.update = (u) => inner ? inner.update(u) : !settled && h.update(u);
   schedule();
   return p;
@@ -1327,8 +1327,8 @@ function showCard(o, mode, endAt0, seconds) {
     </div>`;
   const card = root.querySelector(".cd"), numEl = root.querySelector(".n"), prg = root.querySelector(".prg"), lk = root.querySelector(".lk");
   if (lk) {
-    const r3 = lk.getAttribute("viewBox").split(" ");
-    lk.setAttribute("width", String(Math.round(18 * (+r3[2] / +r3[3]))));
+    const r4 = lk.getAttribute("viewBox").split(" ");
+    lk.setAttribute("width", String(Math.round(18 * (+r4[2] / +r4[3]))));
     lk.setAttribute("height", "18");
   }
   card.style.setProperty("--p", ringColor);
@@ -1349,8 +1349,8 @@ function showCard(o, mode, endAt0, seconds) {
   let endAt = endAt0;
   let lastN = null, finished = false, raf = 0, hiddenAt = 0, restarts = 0, resolve;
   const info = { seconds, mode, dock: place.dock, why: place.why, synced, brand: brandName || null, source: o.source || null, startedAt: Date.now() };
-  const promise = new Promise((r3) => {
-    resolve = r3;
+  const promise = new Promise((r4) => {
+    resolve = r4;
   });
   const paint = () => {
     if (finished || hiddenAt) return;
@@ -1479,8 +1479,8 @@ function noteBreak(mem2, now2 = Date.now()) {
 }
 function breakGuard(core, trigger) {
   if (trigger === "test" || trigger === "rewarded" || core.mode === "native-net") return null;
-  const r3 = breakAllowed(core.__breaks || (core.__breaks = { last: 0, count: 0 }), core.settings?.formats?.takeover || {});
-  return r3.ok ? null : r3.reason;
+  const r4 = breakAllowed(core.__breaks || (core.__breaks = { last: 0, count: 0 }), core.settings?.formats?.takeover || {});
+  return r4.ok ? null : r4.reason;
 }
 async function coreCountdown(core, run, raw) {
   try {
@@ -1488,7 +1488,7 @@ async function coreCountdown(core, run, raw) {
     const seconds = resolveCountdownSec({ config: core.state?.countdownSec, publisher: tk.countdownSec, manifest: raw?.round?.countdownSec, trigger: run.trigger });
     const name = run.ad?.brand?.name || raw?.brand?.name || "";
     const endsAt = isNum(run.opts?.countdownEndsAt) ? +run.opts.countdownEndsAt : null;
-    const r3 = seconds > 0 || endsAt ? await showCountdown({
+    const r4 = seconds > 0 || endsAt ? await showCountdown({
       seconds,
       endsAt,
       brand: { name, palette: raw?.brand?.palette || run.ad?.brand?.palette || null },
@@ -1498,14 +1498,14 @@ async function coreCountdown(core, run, raw) {
       hud: core.worldFull?.gameplayHooks?.hud || core.world?.gameplayHooks?.hud || null,
       source: "br.js"
     }) : { completed: true, reason: "disabled", seconds: 0 };
-    if (r3.completed) noteBreak(core.__breaks || (core.__breaks = { last: 0, count: 0 }));
-    const value = { seconds: r3.seconds ?? seconds, completed: r3.completed, reason: r3.reason, dock: r3.dock || null, restarts: r3.restarts || 0, endsAt };
+    if (r4.completed) noteBreak(core.__breaks || (core.__breaks = { last: 0, count: 0 }));
+    const value = { seconds: r4.seconds ?? seconds, completed: r4.completed, reason: r4.reason, dock: r4.dock || null, restarts: r4.restarts || 0, endsAt };
     if (seconds > 0) {
       core.beacons?.push({ at: Date.now(), type: "countdown", value, local: true });
       if (core.beacons?.length > 50) core.beacons.shift();
       core.emitter?.emit("countdown", { ...value, trigger: run.trigger, brand: name || null, requestId: run.ad?.requestId || null });
     }
-    return r3;
+    return r4;
   } catch (e) {
     return { completed: true, reason: "error", error: String(e?.message || e) };
   }
@@ -1528,14 +1528,14 @@ function serverCountdown(rt, m) {
     hud: rt.worldManifest?.gameplayHooks?.hud || null,
     source: "server"
   });
-  p.then((r3) => {
-    if (r3.reason !== "late") rt._emit?.("countdown", { seconds: r3.seconds, completed: r3.completed, reason: r3.reason, startsAt: m.startsAt, dock: r3.dock });
+  p.then((r4) => {
+    if (r4.reason !== "late") rt._emit?.("countdown", { seconds: r4.seconds, completed: r4.completed, reason: r4.reason, startsAt: m.startsAt, dock: r4.dock });
   });
   return p;
 }
 var DEFAULT_COUNTDOWN_SEC, USER_COUNTDOWN_SEC, MAX_SEC, MAX_HIDDEN_MS, clamp, num, esc, BR_MARK_SVG, ZONES, overlap, OURS, SKIP_TAGS, CSS, RING_C, active, history, MIN_FIXED_MS, done0, isNum, toEpochMs, countdownActive, DEFAULT_MIN_BREAK_GAP_SEC, DEFAULT_MAX_PER_SESSION, absUrl;
 var init_countdown = __esm({
-  "sdk/countdown.js"() {
+  "../../sdk/countdown.js"() {
     init_audio();
     DEFAULT_COUNTDOWN_SEC = 5;
     USER_COUNTDOWN_SEC = 3;
@@ -1589,8 +1589,8 @@ var init_countdown = __esm({
     active = null;
     history = [];
     MIN_FIXED_MS = 2e3;
-    done0 = (r3) => {
-      const p = Promise.resolve(r3);
+    done0 = (r4) => {
+      const p = Promise.resolve(r4);
       p.cancel = () => false;
       return p;
     };
@@ -1603,7 +1603,7 @@ var init_countdown = __esm({
           return countdownActive();
         },
         history,
-        cancel: (r3) => cancelCountdown(r3 || "game"),
+        cancel: (r4) => cancelCountdown(r4 || "game"),
         update: updateCountdown,
         show: showCountdown
       };
@@ -1620,7 +1620,7 @@ var init_countdown = __esm({
   }
 });
 
-// sdk/overlay.js
+// ../../sdk/overlay.js
 function createOverlay(m, pal, logoUrl, opts = {}) {
   if (!document.getElementById("sa-style")) {
     const st = document.createElement("style");
@@ -1645,13 +1645,13 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
   };
   for (const [k, v] of Object.entries(vars)) root.style.setProperty(k, v);
   const logo = logoUrl ? `<span class="sa-logo"><img alt="" src="${esc2(logoUrl)}"></span>` : `<span class="sa-logo">${esc2(initials(m.brand.name))}</span>`;
-  const r3 = m.round;
+  const r4 = m.round;
   root.innerHTML = `
     <div class="sa-fade${logoUrl ? " sa-has-big" : ""}">${logo}${logoUrl ? `<img class="sa-big" alt="${esc2(m.brand.name)}" src="${esc2(opts.bigLogoUrl || logoUrl)}">` : ""}<div class="sa-k">Ad \xB7 Bonus Round</div><div class="sa-n">${esc2(m.brand.name)}</div>${m.brand.tagline ? `<div class="sa-tagline">${esc2(m.brand.tagline)}</div>` : ""}</div>
     <div class="sa-bar" aria-live="polite"><span class="sa-ad" title="Advertisement">Ad</span>${logo}<div class="sa-b"><small>bonusround.io</small><strong>${esc2(m.brand.name)}</strong></div>
       <div class="sa-chip"><small>Time</small><b class="sa-timer">0:15</b></div>
-      <div class="sa-chip alt"><small class="sa-label">${esc2(r3.hudLabel)}</small><b class="sa-count">0</b></div><span class="sa-brm" title="bonusround.io">${BR_MARK_SVG}</span></div>
-    <div class="sa-intro"><small><span class="sa-ad">Ad</span>${esc2(m.brand.name)}</small><div>${esc2(r3.introText)}</div></div>
+      <div class="sa-chip alt"><small class="sa-label">${esc2(r4.hudLabel)}</small><b class="sa-count">0</b></div><span class="sa-brm" title="bonusround.io">${BR_MARK_SVG}</span></div>
+    <div class="sa-intro"><small><span class="sa-ad">Ad</span>${esc2(m.brand.name)}</small><div>${esc2(r4.introText)}</div></div>
     <div class="sa-toast">+1</div>
     <div class="sa-cap" aria-live="polite"><div class="sa-line"><b>${esc2(m.brand.name)}</b><span class="sa-cap-t"></span></div><button type="button" class="sa-cc" title="Captions on/off" aria-pressed="true">CC</button></div>
     <div class="sa-board"></div>`;
@@ -1729,8 +1729,8 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
       board.innerHTML = `<header>${logo}<div><small>Round results</small><strong><span class="sa-ad">Ad</span><span class="sa-dot">\xB7</span>${esc2(m.brand.name)}</strong></div></header>
         ${prod}
         <ol class="${prod ? "sa-short" : ""}">${list || '<li><span class="n">No players</span></li>'}</ol>
-        ${r3.outroText ? `<p class="sa-out">${esc2(r3.outroText)}</p>` : ""}
-        ${r3.cta ? opts.ctaUrl ? `<button type="button" class="sa-cta sa-click">${esc2(r3.cta)} <span aria-hidden="true">\u2197</span></button>` : `<span class="sa-cta">${esc2(r3.cta)}</span>` : ""}
+        ${r4.outroText ? `<p class="sa-out">${esc2(r4.outroText)}</p>` : ""}
+        ${r4.cta ? opts.ctaUrl ? `<button type="button" class="sa-cta sa-click">${esc2(r4.cta)} <span aria-hidden="true">\u2197</span></button>` : `<span class="sa-cta">${esc2(r4.cta)}</span>` : ""}
         ${hold ? `<button type="button" class="sa-continue">Continue <span class="sa-count-down"></span></button>` : ""}
         <footer>${BR_MARK_SVG}<span>Brought to you by bonusround.io</span></footer>`;
       board.querySelector(".sa-click")?.addEventListener("click", (e) => {
@@ -1815,7 +1815,7 @@ function createOverlay(m, pal, logoUrl, opts = {}) {
 }
 var CSS2, esc2;
 var init_overlay = __esm({
-  "sdk/overlay.js"() {
+  "../../sdk/overlay.js"() {
     init_builders();
     init_countdown();
     CSS2 = `
@@ -1939,14 +1939,14 @@ var init_overlay = __esm({
   }
 });
 
-// sdk/mechanics/collect.js
+// ../../sdk/mechanics/collect.js
 var collect_exports = {};
 __export(collect_exports, {
   default: () => collect_default
 });
 var PICK_R, collect_default;
 var init_collect = __esm({
-  "sdk/mechanics/collect.js"() {
+  "../../sdk/mechanics/collect.js"() {
     PICK_R = 1.2;
     collect_default = {
       name: "collect",
@@ -1995,7 +1995,7 @@ var init_collect = __esm({
   }
 });
 
-// sdk/mechanics/shoot.js
+// ../../sdk/mechanics/shoot.js
 var shoot_exports = {};
 __export(shoot_exports, {
   default: () => shoot_default
@@ -2013,7 +2013,7 @@ function crosshair(color) {
 }
 var SPEED, GRAV, LIFE, COOLDOWN, TRAIL, frac, rand01, shoot_default;
 var init_shoot = __esm({
-  "sdk/mechanics/shoot.js"() {
+  "../../sdk/mechanics/shoot.js"() {
     SPEED = 24;
     GRAV = 7;
     LIFE = 1.5;
@@ -2177,7 +2177,7 @@ var init_shoot = __esm({
   }
 });
 
-// sdk/mechanics/physics.js
+// ../../sdk/mechanics/physics.js
 function rng(seed) {
   let a = seed >>> 0;
   return () => {
@@ -2328,7 +2328,7 @@ function claimIndex(elements) {
 }
 var STEP_UP, clamp2, num2, wrapAngle, CLAIM_TYPES, isClaim;
 var init_physics = __esm({
-  "sdk/mechanics/physics.js"() {
+  "../../sdk/mechanics/physics.js"() {
     STEP_UP = 0.35;
     clamp2 = (v, a, b) => Math.max(a, Math.min(b, v));
     num2 = (v, d) => v !== null && v !== "" && v !== void 0 && Number.isFinite(+v) ? +v : d;
@@ -2338,7 +2338,7 @@ var init_physics = __esm({
   }
 });
 
-// sdk/mechanics/race-rules.js
+// ../../sdk/mechanics/race-rules.js
 function trackFrom(layout) {
   const els = layout?.elements || [], m = layout?.meta?.track || {};
   const seq = [];
@@ -2487,12 +2487,12 @@ function raceDisplay(score, T) {
   return total ? `${Math.floor(score / 100)}/${total}` : `${Math.floor(score / 100)}`;
 }
 var init_race_rules = __esm({
-  "sdk/mechanics/race-rules.js"() {
+  "../../sdk/mechanics/race-rules.js"() {
     init_physics();
   }
 });
 
-// sdk/mechanics/course-kit.js
+// ../../sdk/mechanics/course-kit.js
 function ink(hex2) {
   const n = parseInt(String(hex2 || "#000").slice(1).padEnd(6, "0").slice(0, 6), 16);
   const l = (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255;
@@ -2735,7 +2735,7 @@ function cleanup(ctx2, objs, k) {
 }
 var css, esc3, claimsOf;
 var init_course_kit = __esm({
-  "sdk/mechanics/course-kit.js"() {
+  "../../sdk/mechanics/course-kit.js"() {
     init_physics();
     css = (el, s) => {
       el.style.cssText = s;
@@ -2746,7 +2746,7 @@ var init_course_kit = __esm({
   }
 });
 
-// sdk/mechanics/race.js
+// ../../sdk/mechanics/race.js
 var race_exports = {};
 __export(race_exports, {
   default: () => race_default,
@@ -2758,7 +2758,7 @@ __export(race_exports, {
 });
 var usable, race_default, K_brand, claimOf;
 var init_race = __esm({
-  "sdk/mechanics/race.js"() {
+  "../../sdk/mechanics/race.js"() {
     init_collect();
     init_race_rules();
     init_physics();
@@ -2897,8 +2897,8 @@ var init_race = __esm({
           root.add(im);
         }
         for (const b of L.elements.filter((e) => e.type === "bumper")) {
-          const r3 = num2(b.radius, 0.8);
-          const m = new T.Mesh(K.keep(new T.CylinderGeometry(r3, r3 * 1.05, 0.9, 20)), K.mat(pal.secondary, { roughness: 0.9 }));
+          const r4 = num2(b.radius, 0.8);
+          const m = new T.Mesh(K.keep(new T.CylinderGeometry(r4, r4 * 1.05, 0.9, 20)), K.mat(pal.secondary, { roughness: 0.9 }));
           m.position.set(b.pos[0], 0.45, b.pos[2]);
           m.castShadow = true;
           root.add(m);
@@ -2990,7 +2990,7 @@ var init_race = __esm({
   }
 });
 
-// sdk/mechanics/platform-rules.js
+// ../../sdk/mechanics/platform-rules.js
 function courseFrom(layout) {
   const els = layout?.elements || [];
   const surfs = surfacesFrom(els);
@@ -3086,13 +3086,13 @@ function platformDisplay(score, total) {
 }
 var pathIndex;
 var init_platform_rules = __esm({
-  "sdk/mechanics/platform-rules.js"() {
+  "../../sdk/mechanics/platform-rules.js"() {
     init_physics();
     pathIndex = (C, s) => s ? C.path.indexOf(s) : -1;
   }
 });
 
-// sdk/mechanics/platform.js
+// ../../sdk/mechanics/platform.js
 var platform_exports = {};
 __export(platform_exports, {
   courseFrom: () => courseFrom,
@@ -3129,7 +3129,7 @@ function addBridge(ctx2, s, hop) {
 }
 var usable2, brandOf, platform_default;
 var init_platform = __esm({
-  "sdk/mechanics/platform.js"() {
+  "../../sdk/mechanics/platform.js"() {
     init_collect();
     init_platform_rules();
     init_physics();
@@ -3394,7 +3394,7 @@ var init_platform = __esm({
   }
 });
 
-// sdk/mechanics/sports-rules.js
+// ../../sdk/mechanics/sports-rules.js
 function pitchFrom(layout) {
   const els = layout?.elements || [];
   const goal = els.find((e) => e.type === "goal") || null;
@@ -3403,8 +3403,8 @@ function pitchFrom(layout) {
   return { goal, balls, R, bumpers: els.filter((e) => e.type === "bumper") };
 }
 function makeBall(spot) {
-  const r3 = num2(spot.radius, 0.45);
-  return { x: spot.pos[0], y: r3, z: spot.pos[2], vx: 0, vz: 0, r: r3, home: [spot.pos[0], spot.pos[2]], cool: 0, spin: 0 };
+  const r4 = num2(spot.radius, 0.45);
+  return { x: spot.pos[0], y: r4, z: spot.pos[2], vx: 0, vz: 0, r: r4, home: [spot.pos[0], spot.pos[2]], cool: 0, spin: 0 };
 }
 function goalFrame(g) {
   const a = num2(g.rotY, 0), nx = Math.sin(a), nz = Math.cos(a);
@@ -3557,14 +3557,14 @@ function simulateGoals(layout, P, { seconds = 13, sprint = true, ballIndex = 0, 
 }
 var sportsScore, sportsDisplay;
 var init_sports_rules = __esm({
-  "sdk/mechanics/sports-rules.js"() {
+  "../../sdk/mechanics/sports-rules.js"() {
     init_physics();
     sportsScore = (goals) => goals;
     sportsDisplay = (score) => `${score} goal${score === 1 ? "" : "s"}`;
   }
 });
 
-// sdk/mechanics/sports.js
+// ../../sdk/mechanics/sports.js
 var sports_exports = {};
 __export(sports_exports, {
   default: () => sports_default,
@@ -3605,7 +3605,7 @@ function ballTexture(K, pal) {
 }
 var usable3, brandOf2, sports_default;
 var init_sports = __esm({
-  "sdk/mechanics/sports.js"() {
+  "../../sdk/mechanics/sports.js"() {
     init_collect();
     init_sports_rules();
     init_physics();
@@ -3813,7 +3813,7 @@ var init_sports = __esm({
   }
 });
 
-// sdk/mechanics/smash-rules.js
+// ../../sdk/mechanics/smash-rules.js
 function targetsFrom(layout) {
   return (layout?.elements || []).filter((e) => e.type === "target").map((e, i) => ({
     i,
@@ -3886,14 +3886,14 @@ function simulateSweep(layout, P, { sprint = true } = {}) {
 }
 var smashScore, smashDisplay;
 var init_smash_rules = __esm({
-  "sdk/mechanics/smash-rules.js"() {
+  "../../sdk/mechanics/smash-rules.js"() {
     init_physics();
     smashScore = (points) => points;
     smashDisplay = (score) => `${score} pts`;
   }
 });
 
-// sdk/mechanics/smash.js
+// ../../sdk/mechanics/smash.js
 var smash_exports = {};
 __export(smash_exports, {
   default: () => smash_default,
@@ -3907,7 +3907,7 @@ __export(smash_exports, {
 });
 var usable4, brandOf3, smash_default;
 var init_smash = __esm({
-  "sdk/mechanics/smash.js"() {
+  "../../sdk/mechanics/smash.js"() {
     init_collect();
     init_smash_rules();
     init_physics();
@@ -4032,7 +4032,7 @@ var init_smash = __esm({
   }
 });
 
-// sdk/mechanics/index.js
+// ../../sdk/mechanics/index.js
 async function loadMechanic(name) {
   const want = KNOWN.includes(name) ? ALIAS[name] || name : "collect";
   if (!cache.has(want)) {
@@ -4046,7 +4046,7 @@ async function loadMechanic(name) {
 }
 var BUNDLED, KNOWN, ALIAS, cache;
 var init_mechanics = __esm({
-  "sdk/mechanics/index.js"() {
+  "../../sdk/mechanics/index.js"() {
     BUNDLED = { "collect": () => Promise.resolve().then(() => (init_collect(), collect_exports)), "shoot": () => Promise.resolve().then(() => (init_shoot(), shoot_exports)), "race": () => Promise.resolve().then(() => (init_race(), race_exports)), "platform": () => Promise.resolve().then(() => (init_platform(), platform_exports)), "sports": () => Promise.resolve().then(() => (init_sports(), sports_exports)), "smash": () => Promise.resolve().then(() => (init_smash(), smash_exports)) };
     KNOWN = ["collect", "shoot", "race", "platform", "sports", "smash", "gates"];
     ALIAS = { gates: "collect" };
@@ -4054,7 +4054,7 @@ var init_mechanics = __esm({
   }
 });
 
-// sdk/viewability.js
+// ../../sdk/viewability.js
 function ambientRule(inWorld = {}) {
   return inWorld && (inWorld.video || inWorld.animated === true || inWorld.surface === "video") ? RULES.video : RULES.display;
 }
@@ -4223,7 +4223,7 @@ function viewAngle(camPos, center, axes, facing = "front") {
   const dot = (a) => vx * a[0] + vy * a[1] + vz * a[2];
   let dn = dot(axes.normal);
   if (facing === "both") dn = Math.abs(dn);
-  const deg = (r3) => r3 * 180 / Math.PI;
+  const deg = (r4) => r4 * 180 / Math.PI;
   return Math.max(deg(Math.atan2(Math.abs(dot(axes.right)), dn)), deg(Math.atan2(Math.abs(dot(axes.up)), dn)));
 }
 function createMeter(opts) {
@@ -4416,8 +4416,8 @@ function createPropViewability(opts) {
         impressed = true;
         opts.onImpression?.(m);
       }
-      const r3 = tracker2.sample(now2, m);
-      if (r3.viewable) opts.onViewable?.(r3.report);
+      const r4 = tracker2.sample(now2, m);
+      if (r4.viewable) opts.onViewable?.(r4.report);
       return m;
     },
     reset() {
@@ -4434,7 +4434,7 @@ function takeoverSample(showing, tabVisible) {
 }
 var IIG_STD, POLL_MS, RULES, EPS, round, mul, EDGES, clamp01;
 var init_viewability = __esm({
-  "sdk/viewability.js"() {
+  "../../sdk/viewability.js"() {
     IIG_STD = "iig2";
     POLL_MS = 200;
     RULES = Object.freeze({
@@ -4450,7 +4450,7 @@ var init_viewability = __esm({
   }
 });
 
-// sdk/inworld/props.js
+// ../../sdk/inworld/props.js
 function trimmedLogo(img) {
   if (!img?.width) return null;
   if (trimmed.has(img)) return trimmed.get(img);
@@ -4730,11 +4730,11 @@ function createProps({ T, m, pal, logoImg, collectible }) {
     gate(p, dir, wM, hM) {
       const g = new T.Group();
       g.name = "br:gate";
-      const r3 = Math.max(0.12, wM * 0.04);
+      const r4 = Math.max(0.12, wM * 0.04);
       for (const s of [-1, 1]) {
-        const post = new T.Mesh(keep(new T.CylinderGeometry(r3, r3 * 1.15, hM, 12)), postMat);
+        const post = new T.Mesh(keep(new T.CylinderGeometry(r4, r4 * 1.15, hM, 12)), postMat);
         post.position.set(s * wM / 2, hM / 2, 0);
-        const cap = new T.Mesh(keep(new T.SphereGeometry(r3 * 1.6, 14, 10)), postCap);
+        const cap = new T.Mesh(keep(new T.SphereGeometry(r4 * 1.6, 14, 10)), postCap);
         cap.position.set(s * wM / 2, hM, 0);
         g.add(post, cap);
       }
@@ -4948,13 +4948,13 @@ function createProps({ T, m, pal, logoImg, collectible }) {
 }
 var trimmed;
 var init_props = __esm({
-  "sdk/inworld/props.js"() {
+  "../../sdk/inworld/props.js"() {
     init_builders();
     trimmed = /* @__PURE__ */ new WeakMap();
   }
 });
 
-// sdk/click-params.js
+// ../../sdk/click-params.js
 function triggerFor(format, tokenTrigger) {
   if (format === "zone") return "zone";
   if (format === "prop" || format === "portal") return "proximity";
@@ -5044,7 +5044,7 @@ function buildDestination(spec = {}, click = {}) {
 }
 var CLICK_FORMATS, PLACEMENTS, MACROS, PER_CLICK_MACROS, HOUSE_REF, pick;
 var init_click_params = __esm({
-  "sdk/click-params.js"() {
+  "../../sdk/click-params.js"() {
     CLICK_FORMATS = ["inworld", "brandworld", "zone", "prop", "portal", "arena"];
     PLACEMENTS = ["endcard", "prop", "portal", "toast"];
     MACROS = ["click_id", "campaign_id", "creative_id", "game", "format", "trigger", "placement", "score", "device", "country", "ts"];
@@ -5054,7 +5054,7 @@ var init_click_params = __esm({
   }
 });
 
-// sdk/click.js
+// ../../sdk/click.js
 function noteApi(ok) {
   S.down = !ok;
 }
@@ -5115,7 +5115,7 @@ function openCta(url, hints = {}) {
 }
 var S, clickToken, isClickUrl, deviceGuess;
 var init_click = __esm({
-  "sdk/click.js"() {
+  "../../sdk/click.js"() {
     init_click_params();
     S = globalThis.__brClick || (globalThis.__brClick = { down: false, ctas: /* @__PURE__ */ new Map() });
     clickToken = (url) => {
@@ -5141,7 +5141,7 @@ var init_click = __esm({
   }
 });
 
-// sdk/proximity.js
+// ../../sdk/proximity.js
 function usedKeys(world) {
   const list = [...world?.controls || [], ...world?.gameplayHooks?.controls || []];
   const used = /* @__PURE__ */ new Set();
@@ -5318,14 +5318,14 @@ function createProximity(o) {
   function position() {
     if (!card) return;
     const s = project(o.getAnchor());
-    const r3 = o.domElement?.getBoundingClientRect?.() || { left: 0, top: 0, width: innerWidth, height: innerHeight };
+    const r4 = o.domElement?.getBoundingClientRect?.() || { left: 0, top: 0, width: innerWidth, height: innerHeight };
     const W = innerWidth, H = innerHeight;
     if (!s) {
       card.style.opacity = "0";
       return;
     }
     card.style.opacity = "";
-    const px = r3.left + (s.x + 1) / 2 * r3.width, py = r3.top + (1 - s.y) / 2 * r3.height;
+    const px = r4.left + (s.x + 1) / 2 * r4.width, py = r4.top + (1 - s.y) / 2 * r4.height;
     const cw = card.offsetWidth || 260, ch = card.offsetHeight || 44;
     let right = px + 22 + cw < W - 8;
     let x = right ? px + 22 : px - 22 - cw, y = py - ch / 2;
@@ -5389,7 +5389,7 @@ function createProximity(o) {
 }
 var clamp3, esc4, isTouch, CSS3;
 var init_proximity = __esm({
-  "sdk/proximity.js"() {
+  "../../sdk/proximity.js"() {
     init_click();
     clamp3 = (v, a, b) => Math.max(a, Math.min(b, v));
     esc4 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -5409,7 +5409,7 @@ kbd{font:900 12px/1 system-ui,sans-serif;display:inline-block;min-width:16px;tex
   }
 });
 
-// sdk/inworld/scan.js
+// ../../sdk/inworld/scan.js
 function worldPos(o, out = v3()) {
   try {
     o.updateWorldMatrix ? o.updateWorldMatrix(true, false) : o.updateMatrixWorld?.(true);
@@ -5588,7 +5588,7 @@ function levelMeshes(scene, exclude, minRadius) {
 async function warmLevel(scene, sliceMs = 6) {
   try {
     const list = levelMeshes(scene, () => false, 0);
-    const slice = () => new Promise((r3) => window.requestIdleCallback ? requestIdleCallback(() => r3(), { timeout: 200 }) : setTimeout(r3, 16));
+    const slice = () => new Promise((r4) => window.requestIdleCallback ? requestIdleCallback(() => r4(), { timeout: 200 }) : setTimeout(r4, 16));
     let t = performance.now();
     for (const o of list) {
       const n = triCount(o);
@@ -5613,9 +5613,9 @@ function runBoxes(T) {
     groups[g * 6] = groups[g * 6 + 1] = groups[g * 6 + 2] = Infinity;
     groups[g * 6 + 3] = groups[g * 6 + 4] = groups[g * 6 + 5] = -Infinity;
   }
-  for (let r3 = 0; r3 < nRun; r3++) {
+  for (let r4 = 0; r4 < nRun; r4++) {
     let x0 = Infinity, y0 = Infinity, z0 = Infinity, x1 = -Infinity, y1 = -Infinity, z1 = -Infinity;
-    for (let i = r3 * TRIS_PER_RUN * 9, iEnd = Math.min(T.length, i + TRIS_PER_RUN * 9); i < iEnd; i += 3) {
+    for (let i = r4 * TRIS_PER_RUN * 9, iEnd = Math.min(T.length, i + TRIS_PER_RUN * 9); i < iEnd; i += 3) {
       const x = T[i], y = T[i + 1], z = T[i + 2];
       if (x < x0) x0 = x;
       if (y < y0) y0 = y;
@@ -5624,14 +5624,14 @@ function runBoxes(T) {
       if (y > y1) y1 = y;
       if (z > z1) z1 = z;
     }
-    const R6 = r3 * 6;
+    const R6 = r4 * 6;
     runs[R6] = x0;
     runs[R6 + 1] = y0;
     runs[R6 + 2] = z0;
     runs[R6 + 3] = x1;
     runs[R6 + 4] = y1;
     runs[R6 + 5] = z1;
-    const g = r3 / RUNS_PER_GROUP | 0, G = g * 6;
+    const g = r4 / RUNS_PER_GROUP | 0, G = g * 6;
     if (x0 < groups[G]) groups[G] = x0;
     if (y0 < groups[G + 1]) groups[G + 1] = y0;
     if (z0 < groups[G + 2]) groups[G + 2] = z0;
@@ -5661,8 +5661,8 @@ function buildGrid(meshes) {
   meshes.forEach((m, mi) => {
     var _a;
     const R = m.boxes.runs, n = R.length / 6;
-    for (let r3 = 0; r3 < n; r3++) {
-      const bb = R.subarray(r3 * 6, r3 * 6 + 6), run = { mi, s: r3 * TRIS_PER_RUN * 9, e: Math.min(m.tris.length, (r3 + 1) * TRIS_PER_RUN * 9), bb, stamp: 0 };
+    for (let r4 = 0; r4 < n; r4++) {
+      const bb = R.subarray(r4 * 6, r4 * 6 + 6), run = { mi, s: r4 * TRIS_PER_RUN * 9, e: Math.min(m.tris.length, (r4 + 1) * TRIS_PER_RUN * 9), bb, stamp: 0 };
       const ca = Math.max(0, Math.floor((bb[0] - 0.01 - x0) / cs)), cb = Math.min(nx - 1, Math.floor((bb[3] + 0.01 - x0) / cs));
       const za = Math.max(0, Math.floor((bb[2] - 0.01 - z0) / cs)), zb = Math.min(nz - 1, Math.floor((bb[5] + 0.01 - z0) / cs));
       for (let z = za; z <= zb; z++) for (let x = ca; x <= cb; x++) (cells[_a = z * nx + x] || (cells[_a] = [])).push(run);
@@ -5680,9 +5680,9 @@ function rayBoxAt(ox, oy, oz, dx, dy, dz, A, k, far) {
   slab(oz, dz, A[k + 2] - 0.01, A[k + 5] + 0.01, _rb);
   return _rb[0] <= _rb[1];
 }
-function slab(o, d, lo, hi, r3) {
+function slab(o, d, lo, hi, r4) {
   if (Math.abs(d) < 1e-12) {
-    if (o < lo || o > hi) r3[0] = Infinity;
+    if (o < lo || o > hi) r4[0] = Infinity;
     return;
   }
   let ta = (lo - o) / d, tb = (hi - o) / d;
@@ -5691,8 +5691,8 @@ function slab(o, d, lo, hi, r3) {
     ta = tb;
     tb = x;
   }
-  if (ta > r3[0]) r3[0] = ta;
-  if (tb < r3[1]) r3[1] = tb;
+  if (ta > r4[0]) r4[0] = ta;
+  if (tb < r4[1]) r4[1] = tb;
 }
 function findSpots(level, opts) {
   const u = opts.upm || 1, H = (opts.playerH || 1.8) * u, reach = (opts.reach || 16) * u, jump = (opts.jumpM || 1.1) * u;
@@ -5713,8 +5713,8 @@ function findSpots(level, opts) {
   for (const o of origins) {
     for (let a = 0; a < 360; a += 7.5) {
       for (const el of [-14, -4, 6, 16]) {
-        const r3 = a * Math.PI / 180, e = el * Math.PI / 180;
-        const dx = Math.sin(r3) * Math.cos(e), dy = Math.sin(e), dz = -Math.cos(r3) * Math.cos(e);
+        const r4 = a * Math.PI / 180, e = el * Math.PI / 180;
+        const dx = Math.sin(r4) * Math.cos(e), dy = Math.sin(e), dz = -Math.cos(r4) * Math.cos(e);
         const h = level.raycast(o.x, o.y, o.z, dx, dy, dz, reach);
         if (!h || Math.abs(h.ny) > 0.3 || h.t < 2 * u) continue;
         const p = { x: h.x + h.nx * 0.05 * u, y: h.y, z: h.z + h.nz * 0.05 * u };
@@ -5764,14 +5764,14 @@ function findSpots(level, opts) {
   floors.sort((a, b) => score(a) - score(b));
   return { walls, floors };
 }
-function flatAround(level, h, r3) {
+function flatAround(level, h, r4) {
   const n = { x: h.nx, y: h.ny, z: h.nz };
   let t1 = { x: -n.z, y: 0, z: n.x };
   const l = Math.hypot(t1.x, t1.z) || 1;
   t1 = { x: t1.x / l, y: 0, z: t1.z / l };
   const t2 = { x: n.y * t1.z - n.z * t1.y, y: n.z * t1.x - n.x * t1.z, z: n.x * t1.y - n.y * t1.x };
   for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-    const ox = h.x + n.x * 0.3 + (t1.x * a + t2.x * b) * r3, oy = h.y + n.y * 0.3 + (t1.y * a + t2.y * b) * r3, oz = h.z + n.z * 0.3 + (t1.z * a + t2.z * b) * r3;
+    const ox = h.x + n.x * 0.3 + (t1.x * a + t2.x * b) * r4, oy = h.y + n.y * 0.3 + (t1.y * a + t2.y * b) * r4, oz = h.z + n.z * 0.3 + (t1.z * a + t2.z * b) * r4;
     const q = level.raycast(ox, oy, oz, -n.x, -n.y, -n.z, 0.6);
     if (!q || Math.abs(q.t - 0.3) > 0.08) return false;
   }
@@ -5976,10 +5976,10 @@ function createProjectileTracker({ scene, camera, hooks, isOurs: isOurs2 = () =>
     const seen = /* @__PURE__ */ new Set();
     scene.traverse((o) => {
       if (!o.isMesh || isOurs2(o) || exclude(o) || under(o, camera)) return;
-      const r3 = geomRadius(o.geometry) * worldScale(o);
-      if (!(r3 > 0 && r3 < maxR) && !matchesHook(o)) return;
+      const r4 = geomRadius(o.geometry) * worldScale(o);
+      if (!(r4 > 0 && r4 < maxR) && !matchesHook(o)) return;
       seen.add(o);
-      if (!tracked.has(o)) tracked.set(o, { prev: null, fastFrames: 0, r: Math.max(r3, 0.05 * upm), hook: matchesHook(o) });
+      if (!tracked.has(o)) tracked.set(o, { prev: null, fastFrames: 0, r: Math.max(r4, 0.05 * upm), hook: matchesHook(o) });
     });
     for (const o of tracked.keys()) if (!seen.has(o)) tracked.delete(o);
     st.candidates = tracked.size;
@@ -6048,7 +6048,7 @@ function segPointDist(a, b, c) {
 }
 var v3, dist, distXZ, matHex, hexDist, levelCache, sameMatrix, triCount, Level, TRIS_PER_RUN, RUNS_PER_GROUP, _rb, PLAYER_NAME;
 var init_scan = __esm({
-  "sdk/inworld/scan.js"() {
+  "../../sdk/inworld/scan.js"() {
     v3 = (x = 0, y = 0, z = 0) => ({ x, y, z });
     dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
     distXZ = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
@@ -6188,18 +6188,18 @@ var init_scan = __esm({
   }
 });
 
-// sdk/inworld/takeover.js
+// ../../sdk/inworld/takeover.js
 function drawFit2(g, img, cx, cy, w, h) {
   const k = Math.min(w / img.width, h / img.height);
   g.drawImage(img, cx - img.width * k / 2, cy - img.height * k / 2, img.width * k, img.height * k);
 }
-function roundRect(g, x, y, w, h, r3) {
+function roundRect(g, x, y, w, h, r4) {
   g.beginPath();
-  g.moveTo(x + r3, y);
-  g.arcTo(x + w, y, x + w, y + h, r3);
-  g.arcTo(x + w, y + h, x, y + h, r3);
-  g.arcTo(x, y + h, x, y, r3);
-  g.arcTo(x, y, x + w, y, r3);
+  g.moveTo(x + r4, y);
+  g.arcTo(x + w, y, x + w, y + h, r4);
+  g.arcTo(x + w, y + h, x, y + h, r4);
+  g.arcTo(x, y + h, x, y, r4);
+  g.arcTo(x, y, x + w, y, r4);
   g.closePath();
 }
 function billboardCanvas(m, pal, logo, product) {
@@ -6356,14 +6356,14 @@ function texRgb(t) {
     const g = cv.getContext("2d");
     g.drawImage(img, 0, 0, 16, 16);
     const d = g.getImageData(0, 0, 16, 16).data;
-    let r3 = 0, gg = 0, b = 0;
+    let r4 = 0, gg = 0, b = 0;
     for (let i = 0; i < d.length; i += 4) {
-      r3 += d[i];
+      r4 += d[i];
       gg += d[i + 1];
       b += d[i + 2];
     }
     const n = d.length / 4;
-    rgb = [r3 / n / 255, gg / n / 255, b / n / 255];
+    rgb = [r4 / n / 255, gg / n / 255, b / n / 255];
   } catch {
     rgb = null;
   }
@@ -6380,7 +6380,7 @@ async function warmTextureAverages(scene, sliceMs = 6) {
     scene.traverse((o) => {
       for (const mt of [o.material].flat().filter(Boolean)) if (mt.map?.image) maps.add(mt.map);
     });
-    const slice = () => new Promise((r3) => window.requestIdleCallback ? requestIdleCallback(() => r3(), { timeout: 200 }) : setTimeout(r3, 16));
+    const slice = () => new Promise((r4) => window.requestIdleCallback ? requestIdleCallback(() => r4(), { timeout: 200 }) : setTimeout(r4, 16));
     let t = performance.now();
     for (const m of maps) {
       if (performance.now() - t > sliceMs) {
@@ -6415,26 +6415,26 @@ function createWorldTakeover(o) {
   const sampleVerts = (geo) => {
     const a = geo?.attributes?.color;
     if (!a) return null;
-    let r3 = 0, g = 0, b = 0, n = 0;
+    let r4 = 0, g = 0, b = 0, n = 0;
     const step = Math.max(1, Math.floor(a.count / 256));
     for (let i = 0; i < a.count; i += step) {
-      r3 += a.getX(i);
+      r4 += a.getX(i);
       g += a.getY(i);
       b += a.getZ(i);
       n++;
     }
-    return n ? new T.Color(r3 / n, g / n, b / n) : null;
+    return n ? new T.Color(r4 / n, g / n, b / n) : null;
   };
   const vcAttrs = /* @__PURE__ */ new Map();
   function recolourVertices() {
     const clusters = /* @__PURE__ */ new Map();
-    const keyOf2 = (r3, g, b) => `${Math.round(clamp4(r3, 0, 1) * 11)},${Math.round(clamp4(g, 0, 1) * 11)},${Math.round(clamp4(b, 0, 1) * 11)}`;
+    const keyOf2 = (r4, g, b) => `${Math.round(clamp4(r4, 0, 1) * 11)},${Math.round(clamp4(g, 0, 1) * 11)},${Math.round(clamp4(b, 0, 1) * 11)}`;
     for (const a of vcAttrs.keys()) {
       for (let i = 0; i < a.count; i++) {
-        const r3 = a.getX(i), g = a.getY(i), b = a.getZ(i), k2 = keyOf2(r3, g, b);
+        const r4 = a.getX(i), g = a.getY(i), b = a.getZ(i), k2 = keyOf2(r4, g, b);
         const c = clusters.get(k2) || { w: 0, r: 0, g: 0, b: 0 };
         c.w++;
-        c.r += r3;
+        c.r += r4;
         c.g += g;
         c.b += b;
         clusters.set(k2, c);
@@ -6455,8 +6455,8 @@ function createWorldTakeover(o) {
       e.from = new Float32Array(a.count * 3);
       e.to = new Float32Array(a.count * 3);
       for (let i = 0; i < a.count; i++) {
-        const r3 = a.getX(i), g = a.getY(i), b = a.getZ(i), t2 = target.get(keyOf2(r3, g, b));
-        e.from[i * 3] = r3;
+        const r4 = a.getX(i), g = a.getY(i), b = a.getZ(i), t2 = target.get(keyOf2(r4, g, b));
+        e.from[i * 3] = r4;
         e.from[i * 3 + 1] = g;
         e.from[i * 3 + 2] = b;
         e.to[i * 3] = t2.r;
@@ -6528,8 +6528,8 @@ function createWorldTakeover(o) {
         for (const [name, un] of Object.entries(mt.uniforms)) {
           const v = un?.value;
           if (!v?.isColor) continue;
-          const r3 = /top|sky|zenith|upper/i.test(name) ? "primary" : /bottom|horizon|ground|fog|lower/i.test(name) ? "secondary" : role;
-          addWrite(v, roles[r3], 0.85, false);
+          const r4 = /top|sky|zenith|upper/i.test(name) ? "primary" : /bottom|horizon|ground|fog|lower/i.test(name) ? "secondary" : role;
+          addWrite(v, roles[r4], 0.85, false);
           st.uniforms++;
         }
         continue;
@@ -6640,11 +6640,11 @@ function createWorldTakeover(o) {
     scene.traverse((x) => {
       if (dome || !x.isMesh || isOurs2(x)) return;
       const mt = Array.isArray(x.material) ? x.material[0] : x.material;
-      const r3 = geomRadius(x.geometry) * worldScale(x);
-      if (!(mt?.side === 1 && (r3 > 0.3 * far || r3 > 150 * u))) return;
+      const r4 = geomRadius(x.geometry) * worldScale(x);
+      if (!(mt?.side === 1 && (r4 > 0.3 * far || r4 > 150 * u))) return;
       const hasColours = mt.uniforms && Object.values(mt.uniforms).some((v) => v?.value?.isColor);
       if (mt.isShaderMaterial && !hasColours) {
-        const R = Math.min(r3 * 0.92, far * 0.85);
+        const R = Math.min(r4 * 0.92, far * 0.85);
         const tex = own(canvasTexture(T, skyCanvas(pal)));
         const geo = own(new T.SphereGeometry(1, 32, 16));
         const mat = own(new T.MeshBasicMaterial({ map: tex, side: T.BackSide, transparent: true, opacity: 0, depthWrite: false, fog: false, color: "#e6e6e6" }));
@@ -6769,7 +6769,7 @@ function createWorldTakeover(o) {
     for (const [x, z] of tries) {
       const g0 = level.raycast(x, feet.y + 6 * u, z, 0, -1, 0, 14 * u);
       if (!g0 || g0.ny < 0.9) continue;
-      let r3 = 30 * u;
+      let r4 = 30 * u;
       const rads = [];
       for (let a = 0; a < 8; a++) {
         const ang = a * 0.785;
@@ -6782,10 +6782,10 @@ function createWorldTakeover(o) {
         rads.push(rr);
       }
       rads.sort((a, b2) => a - b2);
-      r3 = rads[2];
-      if (r3 < 2.5 * u) continue;
-      if (decals.some((d0) => dist(d0.c, g0) < (d0.D + r3 * 1.8) * 0.5)) continue;
-      const D = clamp4(r3 * 1.8, 4 * u, 26 * u);
+      r4 = rads[2];
+      if (r4 < 2.5 * u) continue;
+      if (decals.some((d0) => dist(d0.c, g0) < (d0.D + r4 * 1.8) * 0.5)) continue;
+      const D = clamp4(r4 * 1.8, 4 * u, 26 * u);
       const tex = own(canvasTexture(
         T,
         decalCanvas(m, pal, logo)
@@ -6836,11 +6836,11 @@ function createWorldTakeover(o) {
         strip.rotation.y = s * Math.PI / 2;
         g.add(strip);
       }
-      for (const r3 of [0, Math.PI / 2]) {
+      for (const r4 of [0, Math.PI / 2]) {
         const fin = new T.Mesh(finGeo, finMat);
         fin.scale.setScalar(L);
         fin.position.z = -L * 0.45;
-        fin.rotation.z = r3;
+        fin.rotation.z = r4;
         g.add(fin);
       }
       g.position.set(p.x, p.y, p.z);
@@ -7216,7 +7216,7 @@ function createWorldTakeover(o) {
 }
 var clamp4, ease, texAvg;
 var init_takeover = __esm({
-  "sdk/inworld/takeover.js"() {
+  "../../sdk/inworld/takeover.js"() {
     init_builders();
     init_props();
     init_scan();
@@ -7226,7 +7226,7 @@ var init_takeover = __esm({
   }
 });
 
-// sdk/inworld/session.js
+// ../../sdk/inworld/session.js
 var session_exports = {};
 __export(session_exports, {
   INTERACTIONS: () => INTERACTIONS,
@@ -7237,10 +7237,10 @@ __export(session_exports, {
   isInWorld: () => isInWorld
 });
 function interactionOf(m) {
-  const r3 = m?.round || {};
-  const want = r3.inworld?.interaction || r3.takeover?.interaction;
+  const r4 = m?.round || {};
+  const want = r4.inworld?.interaction || r4.takeover?.interaction;
   if (INTERACTIONS.includes(want)) return want;
-  return r3.mechanic === "shoot" ? "projectile-hit" : r3.mechanic === "race" ? "drive-through" : "player-touch";
+  return r4.mechanic === "shoot" ? "projectile-hit" : r4.mechanic === "race" ? "drive-through" : "player-touch";
 }
 function directAdapter(scene) {
   return {
@@ -7350,8 +7350,8 @@ function createMood(T, scene, pal, takeover) {
           e.c0 = [e.color.r, e.color.g, e.color.b];
         }
         const a = e.amt * k;
-        const r3 = e.c0[0] + (e.target.r - e.c0[0]) * a, g = e.c0[1] + (e.target.g - e.c0[1]) * a, b = e.c0[2] + (e.target.b - e.c0[2]) * a;
-        e.color.setRGB(r3, g, b);
+        const r4 = e.c0[0] + (e.target.r - e.c0[0]) * a, g = e.c0[1] + (e.target.g - e.c0[1]) * a, b = e.c0[2] + (e.target.b - e.c0[2]) * a;
+        e.color.setRGB(r4, g, b);
         e.last = [e.color.r, e.color.g, e.color.b];
       }
     },
@@ -8377,19 +8377,19 @@ function createSession(o) {
       }
       const cx = (lo.x + hi.x) / 2, cz = (lo.z + hi.z) / 2;
       const tries = [[cx, cz]];
-      for (let r3 = 2; r3 <= 14; r3 += 3) for (let a = 0; a < 8; a++) tries.push([cx + Math.cos(a * 0.785) * r3 * u, cz + Math.sin(a * 0.785) * r3 * u]);
+      for (let r4 = 2; r4 <= 14; r4 += 3) for (let a = 0; a < 8; a++) tries.push([cx + Math.cos(a * 0.785) * r4 * u, cz + Math.sin(a * 0.785) * r4 * u]);
       const glows = [];
       scene.traverse((x) => {
         if (!x.isMesh || isOurs(x) || !x.geometry) return;
         const mt = Array.isArray(x.material) ? x.material[0] : x.material;
         if (!(mt?.transparent || mt?.blending === 2)) return;
-        const r3 = geomRadius(x.geometry) * worldScale(x);
+        const r4 = geomRadius(x.geometry) * worldScale(x);
         try {
           if (!x.geometry.boundingBox) x.geometry.computeBoundingBox?.();
         } catch {
         }
         const bb = x.geometry.boundingBox, tall = bb ? (bb.max.y - bb.min.y) * worldScale(x) : 0, wide = bb ? Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z) * worldScale(x) : 0;
-        if (r3 > 1.2 * u && r3 < 15 * u && tall > 2 * u && tall > wide * 0.5) glows.push({ c: worldPos(x, {}), r: Math.max(1.5 * u, wide / 2 + 1 * u) });
+        if (r4 > 1.2 * u && r4 < 15 * u && tall > 2 * u && tall > wide * 0.5) glows.push({ c: worldPos(x, {}), r: Math.max(1.5 * u, wide / 2 + 1 * u) });
       });
       const occupied = (g) => {
         for (let a = 0; a < 8; a++) {
@@ -8469,8 +8469,8 @@ function createSession(o) {
     let goal = null;
     scene.traverse((x) => {
       if (!goal && x.isMesh && !isOurs(x)) {
-        const r3 = mt?.(x);
-        if (r3) goal = r3;
+        const r4 = mt?.(x);
+        if (r4) goal = r4;
       }
     });
     if (!goal) scene.traverse((x) => {
@@ -8539,7 +8539,7 @@ function createSession(o) {
     const near = (p) => gc && distXZ(p, gc) < 5 * u;
     const hits = [];
     for (let a = 0; a < 360; a += 4) {
-      const r3 = a * Math.PI / 180, h = level.raycast(o0.x, o0.y, o0.z, Math.sin(r3), 0, -Math.cos(r3), 60 * u);
+      const r4 = a * Math.PI / 180, h = level.raycast(o0.x, o0.y, o0.z, Math.sin(r4), 0, -Math.cos(r4), 60 * u);
       if (!h || Math.abs(h.ny) > 0.3 || h.t < 3 * u || near(h)) continue;
       hits.push({ p: { x: h.x + h.nx * 0.04 * u, y: h.y, z: h.z + h.nz * 0.04 * u }, n: { x: h.nx, y: 0, z: h.nz }, d: h.t });
     }
@@ -8568,16 +8568,16 @@ function createSession(o) {
     if (!ballMatch) return;
     scene.traverse((x) => {
       if (!x.isMesh || isOurs(x)) return;
-      const r3 = ballMatch(x);
-      if (!r3 || balls.some((b) => b.root === r3)) return;
-      const rp = worldPos(r3, {}), g = x.geometry;
+      const r4 = ballMatch(x);
+      if (!r4 || balls.some((b) => b.root === r4)) return;
+      const rp = worldPos(r4, {}), g = x.geometry;
       try {
         if (!g.boundingSphere) g.computeBoundingSphere?.();
       } catch {
       }
       const bc = g.boundingSphere?.center || { x: 0, y: 0, z: 0 }, e = x.matrixWorld.elements;
       const c = { x: e[0] * bc.x + e[4] * bc.y + e[8] * bc.z + e[12], y: e[1] * bc.x + e[5] * bc.y + e[9] * bc.z + e[13], z: e[2] * bc.x + e[6] * bc.y + e[10] * bc.z + e[14] };
-      balls.push({ root: r3, off: { x: c.x - rp.x, y: c.y - rp.y, z: c.z - rp.z }, r: geomRadius(g) * worldScale(x), prev: null });
+      balls.push({ root: r4, off: { x: c.x - rp.x, y: c.y - rp.y, z: c.z - rp.z }, r: geomRadius(g) * worldScale(x), prev: null });
     });
     st.balls = balls.length;
   }
@@ -8597,10 +8597,10 @@ function createSession(o) {
     }
     return out;
   }
-  function segHitsVol(a, b, r3, v) {
+  function segHitsVol(a, b, r4, v) {
     const up = { x: 0, y: 1, z: 0 };
     let t0 = 0, t1 = 1;
-    for (const [ax, h] of [[v.t, v.hw + r3], [up, v.hh + r3], [v.n, v.hd + r3]]) {
+    for (const [ax, h] of [[v.t, v.hw + r4], [up, v.hh + r4], [v.n, v.hd + r4]]) {
       const pa = (a.x - v.c.x) * ax.x + (a.y - v.c.y) * ax.y + (a.z - v.c.z) * ax.z;
       const pb = (b.x - v.c.x) * ax.x + (b.y - v.c.y) * ax.y + (b.z - v.c.z) * ax.z;
       const d = pb - pa;
@@ -8630,7 +8630,7 @@ function createSession(o) {
     });
     st.spawned = items.filter((x) => x.our).length;
   }
-  const matchers = (spec.reskin || []).map((r3) => ({ match: entityMatcher(r3.entityMatch, hooks, scene), look: r3.look || "" })).filter((x) => x.match);
+  const matchers = (spec.reskin || []).map((r4) => ({ match: entityMatcher(r4.entityMatch, hooks, scene), look: r4.look || "" })).filter((x) => x.match);
   function tintOf(mat, mesh) {
     const key = mat;
     if (tintCache.has(key)) return tintCache.get(key);
@@ -8701,8 +8701,8 @@ function createSession(o) {
       c.y += q.y / cs.length;
       c.z += q.z / cs.length;
     }
-    const r3 = Math.max(...cs.map((q) => dist(q, c) + q.r));
-    return { c, r: r3, meshes: ms };
+    const r4 = Math.max(...cs.map((q) => dist(q, c) + q.r));
+    return { c, r: r4, meshes: ms };
   }
   function reskin(root2, look, byName, over = null) {
     if (entities.has(root2)) return;
@@ -8842,8 +8842,8 @@ function createSession(o) {
     });
     const f = player?.feet?.() || viewRef.feet || worldPos(camera, {});
     const H0 = measure().H * upm;
-    const d = (r3) => {
-      const q = worldPos(r3, {});
+    const d = (r4) => {
+      const q = worldPos(r4, {});
       return Math.hypot(q.x - f.x, (q.y - f.y) * 2.5, q.z - f.z) + (Math.abs(q.y - f.y) > 2.5 * H0 ? 1e3 : 0);
     };
     if (!viewRef.route && player?.feet) {
@@ -8854,12 +8854,12 @@ function createSession(o) {
       }
     }
     const route = viewRef.route?.length > 1 ? viewRef.route : null;
-    const dRoute = (r3) => {
-      if (!route) return d(r3);
-      const q = worldPos(r3, {});
+    const dRoute = (r4) => {
+      if (!route) return d(r4);
+      const q = worldPos(r4, {});
       let best = Infinity;
       for (let k = 1; k < route.length; k++) best = Math.min(best, segPointDist(route[k - 1], route[k], q));
-      return best * 1.5 + d(r3) * 0.25;
+      return best * 1.5 + d(r4) * 0.25;
     };
     cand.sort((a, b) => dRoute(a.root) - dRoute(b.root));
     if (!capFixed && interaction === "player-touch" && route) {
@@ -8917,8 +8917,8 @@ function createSession(o) {
     let best = null, bd = 0.8 * upm;
     scene.traverse((x) => {
       if (!x.isMesh || isOurs(x) || player?.root && under(x, player.root) || x.isInstancedMesh) return;
-      const r3 = geomRadius(x.geometry) * worldScale(x);
-      if (!(r3 > 0.05 * upm && r3 < 0.8 * upm)) return;
+      const r4 = geomRadius(x.geometry) * worldScale(x);
+      if (!(r4 > 0.05 * upm && r4 < 0.8 * upm)) return;
       const p = worldPos(x, {});
       const d = distXZ(p, it.at);
       if (d < bd && Math.abs(p.y - (it.at.y ?? p.y)) < 2.5 * upm) {
@@ -9050,8 +9050,8 @@ function createSession(o) {
     for (const it of items) {
       if (it.gone || it.pending && !it.at || it.down || it.kind === "gate") continue;
       centerOf(it, tmp);
-      const r3 = Math.max(0.9 * upm, it.reachR || 0, it.hitR + num3(hooks.player?.radiusM, fastPlayer() || o.live ? 2.2 : 0.4) * upm);
-      const near = distXZ(feet, tmp) < r3 && tmp.y > feet.y - 0.6 * H && tmp.y < feet.y + 1.4 * H;
+      const r4 = Math.max(0.9 * upm, it.reachR || 0, it.hitR + num3(hooks.player?.radiusM, fastPlayer() || o.live ? 2.2 : 0.4) * upm);
+      const near = distXZ(feet, tmp) < r4 && tmp.y > feet.y - 0.6 * H && tmp.y < feet.y + 1.4 * H;
       if (it.entity) {
         const vis = shown(it.entity.root) && under(it.entity.root, scene);
         if (!vis) {
@@ -9196,24 +9196,24 @@ function createSession(o) {
     /** → { ok, reason? } */
     build() {
       const it = buildSteps();
-      let r3 = it.next();
-      while (!r3.done) r3 = it.next();
-      return r3.value;
+      let r4 = it.next();
+      while (!r4.done) r4 = it.next();
+      return r4.value;
     },
     /** the same build in stages, one frame apart (next() → Promise, e.g. the next animation frame), so a big level never
      *  stalls a frame: nothing of ours is drawn until the runner shows it (sdk/inworld/round.js warmOurs). → { ok, reason? } */
     async buildAsync(next) {
       const it = buildSteps();
-      let r3 = it.next();
-      while (!r3.done) {
+      let r4 = it.next();
+      while (!r4.done) {
         await next();
         if (failed === "disposed") {
           it.return();
           return { ok: false, reason: "disposed" };
         }
-        r3 = it.next();
+        r4 = it.next();
       }
-      return r3.value;
+      return r4.value;
     },
     /** dt in seconds; phase: 'intro' | 'playing' | 'leaderboard' */
     update(dt, phase = "playing") {
@@ -9395,7 +9395,7 @@ function createSession(o) {
 }
 var clamp5, num3, INTERACTIONS, isInWorld, isOurs;
 var init_session = __esm({
-  "sdk/inworld/session.js"() {
+  "../../sdk/inworld/session.js"() {
     init_scan();
     init_props();
     init_builders();
@@ -9411,7 +9411,7 @@ var init_session = __esm({
   }
 });
 
-// sdk/three-shim.js
+// ../../sdk/three-shim.js
 function threeShim(THREE) {
   if (shimUrl && shimFor === THREE) return shimUrl;
   globalThis.__BONUSROUND_THREE__ = THREE;
@@ -9454,14 +9454,14 @@ function gltfLoaderFor(base, THREE) {
 }
 var blobs, shimUrl, shimFor;
 var init_three_shim = __esm({
-  "sdk/three-shim.js"() {
+  "../../sdk/three-shim.js"() {
     blobs = /* @__PURE__ */ new Map();
     shimUrl = null;
     shimFor = null;
   }
 });
 
-// sdk/host-three.js
+// ../../sdk/host-three.js
 function ourThree(base) {
   return ourP || (ourP = (async () => {
     const prev = window.__THREE__;
@@ -9478,8 +9478,8 @@ function ourThree(base) {
 }
 function hookRecords() {
   const h = window.__THREE_DEVTOOLS__;
-  const r3 = h?.__bonusround || h?.records || null;
-  return { scenes: [...r3?.scenes || h?.scenes || []], renderers: [...r3?.renderers || h?.renderers || []], revision: r3?.revision || window.__THREE__ || null };
+  const r4 = h?.__bonusround || h?.records || null;
+  return { scenes: [...r4?.scenes || h?.scenes || []], renderers: [...r4?.renderers || h?.renderers || []], revision: r4?.revision || window.__THREE__ || null };
 }
 function watchRenderer(renderer) {
   if (!renderer || typeof renderer.render !== "function") return null;
@@ -9543,10 +9543,43 @@ function watchRenderer(renderer) {
 }
 async function warmProp(renderer, obj, scene, camera, maxMs = 3e3) {
   if (!renderer || !obj) return;
-  const cam = camera || watchRenderer(renderer)?.main()?.camera || null;
+  const w = watchRenderer(renderer);
+  const cam = camera || w?.main()?.camera || null;
+  const target = await new Promise((res) => {
+    if (!w || !scene) return res(void 0);
+    let done = false;
+    const cb = (s) => {
+      if (s !== scene || done) return;
+      done = true;
+      w.offFrame(cb);
+      res(renderer.getRenderTarget?.() ?? null);
+    };
+    w.onFrame(cb);
+    setTimeout(() => {
+      if (!done) {
+        done = true;
+        w.offFrame(cb);
+        res(void 0);
+      }
+    }, 600);
+  });
   try {
-    if (typeof renderer.compileAsync === "function" && cam) await Promise.race([renderer.compileAsync(obj, cam, scene || null).catch(() => {
-    }), new Promise((r3) => setTimeout(r3, maxMs))]);
+    if (typeof renderer.compileAsync === "function" && cam) {
+      const prev = renderer.getRenderTarget?.() ?? null, waits = [];
+      for (const t of target ? [target, null] : [null]) {
+        try {
+          renderer.setRenderTarget?.(t);
+          waits.push(renderer.compileAsync(obj, cam, scene || null).catch(() => {
+          }));
+        } catch {
+        }
+      }
+      try {
+        renderer.setRenderTarget?.(prev);
+      } catch {
+      }
+      await Promise.race([Promise.all(waits), new Promise((r4) => setTimeout(r4, maxMs))]);
+    }
   } catch {
   }
   if (typeof renderer.initTexture !== "function") return;
@@ -9558,10 +9591,14 @@ async function warmProp(renderer, obj, scene, camera, maxMs = 3e3) {
   });
   for (const t of tex) {
     try {
+      if (typeof t.image?.decode === "function") await t.image.decode();
+    } catch {
+    }
+    try {
       renderer.initTexture(t);
     } catch {
     }
-    await new Promise((r3) => requestAnimationFrame(r3));
+    await new Promise((r4) => requestAnimationFrame(r4));
   }
 }
 function baseOfType(C, want) {
@@ -9844,7 +9881,7 @@ async function hostAmbient(opts) {
 }
 var ourP, chain, tryNew;
 var init_host_three = __esm({
-  "sdk/host-three.js"() {
+  "../../sdk/host-three.js"() {
     init_three_shim();
     init_builders();
     init_spatial_ads();
@@ -9865,7 +9902,7 @@ var init_host_three = __esm({
   }
 });
 
-// sdk/inworld/round.js
+// ../../sdk/inworld/round.js
 var round_exports = {};
 __export(round_exports, {
   brandFlash: () => brandFlash,
@@ -9910,7 +9947,7 @@ function prepareInWorldRound(o) {
     const renderer = o.renderer || hookRecords().renderers.at(-1);
     const main = !o.scene && renderer ? watchRenderer(renderer)?.main?.() : null;
     const scene = o.scene || main?.scene, camera = o.camera || main?.camera;
-    const idle = () => new Promise((r3) => window.requestIdleCallback ? requestIdleCallback(() => r3(), { timeout: 400 }) : setTimeout(r3, 30));
+    const idle = () => new Promise((r4) => window.requestIdleCallback ? requestIdleCallback(() => r4(), { timeout: 400 }) : setTimeout(r4, 30));
     const p = (async () => {
       const A = await loadAssets(o, o.THREE || await ourThree(o.base));
       if (scene?.isScene) {
@@ -9978,13 +10015,13 @@ async function warmOurs(renderer, scene, camera, maxMs = 2500) {
   const t0 = performance.now();
   const roots = scene.children.filter((c) => c.userData?.__br && c.visible);
   if (!roots.length || !renderer?.compileAsync) return { ms: 0, skipped: true };
-  for (const r3 of roots) r3.visible = false;
+  for (const r4 of roots) r4.visible = false;
   let textures = 0;
   const out = {};
   try {
     out.target = await compileFor(renderer, scene, camera, maxMs);
     const tex = /* @__PURE__ */ new Set();
-    for (const r3 of roots) r3.traverse((x) => {
+    for (const r4 of roots) r4.traverse((x) => {
       for (const mt of [x.material].flat().filter(Boolean)) for (const v of Object.values(mt)) if (v?.isTexture && !v.isRenderTargetTexture) tex.add(v);
     });
     if (renderer.initTexture) {
@@ -10005,7 +10042,7 @@ async function warmOurs(renderer, scene, camera, maxMs = 2500) {
     }
   } catch {
   }
-  for (const r3 of roots) r3.visible = true;
+  for (const r4 of roots) r4.visible = true;
   return { ms: Math.round(performance.now() - t0), textures, ...out };
 }
 async function warmInWorldHost({ renderer, scene, camera }) {
@@ -10141,7 +10178,7 @@ async function playInWorldRound(opts) {
     if (cta.label) m.round.cta = String(cta.label).slice(0, 80);
     const rel = (p) => typeof p === "string" && p ? new URL(p, abs).href : null;
     let world = o.world || null;
-    if (!world && o.worldUrl) world = await within(fetch(new URL(o.worldUrl, location.href).href).then((r3) => r3.ok ? r3.json() : null), 4e3);
+    if (!world && o.worldUrl) world = await within(fetch(new URL(o.worldUrl, location.href).href).then((r4) => r4.ok ? r4.json() : null), 4e3);
     world || (world = {});
     const { logoImg, colGltf, heroGltf, productImg, brandTextures } = A;
     const staticModel = (g) => {
@@ -10269,8 +10306,8 @@ async function playInWorldRound(opts) {
       host: o.host || null,
       claimMode: "exclusive",
       claim,
-      onFail: (r3) => {
-        failReason || (failReason = r3);
+      onFail: (r4) => {
+        failReason || (failReason = r4);
       },
       log: warn2,
       heroGltf,
@@ -10296,8 +10333,8 @@ async function playInWorldRound(opts) {
     out.total = total0;
     const dur = Number.isFinite(+o.liveEndsInMs) && +o.liveEndsInMs > 4e3 ? Math.min(m.round.durationSec * 1e3, +o.liveEndsInMs) : m.round.durationSec * 1e3;
     let t0 = performance.now(), last = t0, playing = false, resolve;
-    const done = new Promise((r3) => {
-      resolve = r3;
+    const done = new Promise((r4) => {
+      resolve = r4;
     });
     let voTimer = 0;
     let exiting = false;
@@ -10444,7 +10481,7 @@ async function playInWorldRound(opts) {
 }
 var INTRO_MS, sleep, within, loadImage, prepared, warmed, decoded, keyOf, warmInWorldObjects, nextFrame;
 var init_round = __esm({
-  "sdk/inworld/round.js"() {
+  "../../sdk/inworld/round.js"() {
     init_host_three();
     init_three_shim();
     init_spatial_ads();
@@ -10457,7 +10494,7 @@ var init_round = __esm({
     init_takeover();
     init_click();
     INTRO_MS = 2e3;
-    sleep = (ms) => new Promise((r3) => setTimeout(r3, ms));
+    sleep = (ms) => new Promise((r4) => setTimeout(r4, ms));
     within = (p, ms, v = null) => Promise.race([Promise.resolve(p).catch(() => v), sleep(ms).then(() => v)]);
     loadImage = (url) => new Promise((res) => {
       if (!url) return res(null);
@@ -10472,12 +10509,12 @@ var init_round = __esm({
     decoded = (img) => img?.decode ? img.decode().then(() => img, () => img) : img;
     keyOf = (o) => `${new URL(o.manifestUrl, location.href).href}|${o.THREE ? "host" : "ours"}`;
     warmInWorldObjects = (renderer, scene, camera, maxMs) => warmOurs(renderer, scene, camera, maxMs);
-    nextFrame = () => new Promise((r3) => {
+    nextFrame = () => new Promise((r4) => {
       let done = false;
       const go = () => {
         if (!done) {
           done = true;
-          r3();
+          r4();
         }
       };
       requestAnimationFrame(() => setTimeout(go, 0));
@@ -10486,7 +10523,7 @@ var init_round = __esm({
   }
 });
 
-// sdk/spatial-ads.js
+// ../../sdk/spatial-ads.js
 function iigAccrue(acc, run, minMs) {
   if (run >= minMs) {
     acc.ms += acc.prevRun < minMs ? run : run - acc.prevRun;
@@ -10517,21 +10554,21 @@ function normalizeManifest(THREE, raw) {
   a.radius = num5(a.radius, 16, 6, 60);
   a.fogDensity = num5(a.fogDensity, 0.015, 0, 0.08);
   a.lightIntensity = num5(a.lightIntensity, 1, 0.2, 3);
-  const r3 = m.round;
-  r3.durationSec = num5(r3.durationSec, 15, 5, 60);
-  r3.hero.heightM = num5(r3.hero.heightM, 4, 0.5, 20);
-  r3.collectible.heightM = num5(r3.collectible.heightM, 0.9, 0.2, 3);
-  if (!Array.isArray(r3.hero.position) || r3.hero.position.length < 3) r3.hero.position = [0, 0, -9];
-  r3.hero.animations = r3.hero.animations || {};
-  r3.hero.none = r3.hero.none === true || r3.hero.kind === "none";
-  if (!Array.isArray(r3.banners)) r3.banners = [];
+  const r4 = m.round;
+  r4.durationSec = num5(r4.durationSec, 15, 5, 60);
+  r4.hero.heightM = num5(r4.hero.heightM, 4, 0.5, 20);
+  r4.collectible.heightM = num5(r4.collectible.heightM, 0.9, 0.2, 3);
+  if (!Array.isArray(r4.hero.position) || r4.hero.position.length < 3) r4.hero.position = [0, 0, -9];
+  r4.hero.animations = r4.hero.animations || {};
+  r4.hero.none = r4.hero.none === true || r4.hero.kind === "none";
+  if (!Array.isArray(r4.banners)) r4.banners = [];
   m.audio.volume = num5(m.audio.volume, 0.5, 0, 1);
   m.audio.sfx = m.audio.sfx || {};
   return m;
 }
 var inWorldMod, inWorldRun, VERSION, ARENA_CENTER, INTRO_MS2, log, DEFAULTS, withTimeout, loadImage2, gltfLoaderP, defaultGltfLoader, Runtime, SpatialAds;
 var init_spatial_ads = __esm({
-  "sdk/spatial-ads.js"() {
+  "../../sdk/spatial-ads.js"() {
     init_builders();
     init_overlay();
     init_audio();
@@ -10653,9 +10690,9 @@ var init_spatial_ads = __esm({
       _safe(fn) {
         if (this.disposed) return void 0;
         try {
-          const r3 = fn();
-          if (r3 && typeof r3.catch === "function") r3.catch((e) => this._err("async", e));
-          return r3;
+          const r4 = fn();
+          if (r4 && typeof r4.catch === "function") r4.catch((e) => this._err("async", e));
+          return r4;
         } catch (e) {
           this._err("sync", e);
           return void 0;
@@ -10970,7 +11007,7 @@ var init_spatial_ads = __esm({
         const run = await inWorldRun().catch(() => null);
         const [heroGltf, productImg] = await this._iwExtras(ad, true);
         if (token !== this.roundToken || this.disposed) return;
-        const r3 = {
+        const r4 = {
           ad,
           msg,
           offset,
@@ -10987,11 +11024,11 @@ var init_spatial_ads = __esm({
           met: { impressionMs: 0, viewableMs: 0, run: 0, impressed: false, pickups: 0, moved: 0, last: null },
           sent: false
         };
-        this.round = r3;
-        r3.ctx = this._mechCtx(r3);
-        const c = r3.center, host = new Set(msg.inWorld?.hostItems || []);
-        const items = r3.ctx.items.map(([x, z, y], i) => ({ x: c.x + x, y: c.y + (y ?? 0), z: c.z + z, host: host.has(i) }));
-        r3.iw = createSession2({
+        this.round = r4;
+        r4.ctx = this._mechCtx(r4);
+        const c = r4.center, host = new Set(msg.inWorld?.hostItems || []);
+        const items = r4.ctx.items.map(([x, z, y], i) => ({ x: c.x + x, y: c.y + (y ?? 0), z: c.z + z, host: host.has(i) }));
+        r4.iw = createSession2({
           T,
           adapter: directAdapter2(this.scene),
           scene: this.scene,
@@ -11004,15 +11041,15 @@ var init_spatial_ads = __esm({
           host: this.host,
           items,
           claimMode: msg.claimMode || ad.mech.claimMode || "exclusive",
-          claim: (i) => r3.ctx.claim(i),
+          claim: (i) => r4.ctx.claim(i),
           onFail: (why) => this._err("in-world", why),
           log: (m) => log(m),
           heroGltf,
           productImg
         });
         try {
-          if (r3.iw.buildAsync && run?.nextFrame) await r3.iw.buildAsync(run.nextFrame);
-          else r3.iw.build();
+          if (r4.iw.buildAsync && run?.nextFrame) await r4.iw.buildAsync(run.nextFrame);
+          else r4.iw.build();
         } catch (e) {
           this._err("in-world build", e);
         }
@@ -11022,24 +11059,24 @@ var init_spatial_ads = __esm({
           } catch {
           }
         }
-        if (token !== this.roundToken || this.disposed || this.round !== r3) {
+        if (token !== this.roundToken || this.disposed || this.round !== r4) {
           try {
-            r3.iw.dispose();
+            r4.iw.dispose();
           } catch {
           }
           return;
         }
-        for (const i of r3.picked) r3.iw.claimed(i, false);
+        for (const i of r4.picked) r4.iw.claimed(i, false);
         ad.overlay.total?.(items.length);
         ad.overlay.count(0);
-        if (r3.iw.full) {
+        if (r4.iw.full) {
           if (run?.brandFlash) run.brandFlash(ad.overlay, ad.pal, T, () => this._safe(() => {
-            if (this.round === r3) ad.overlay.intro(true);
+            if (this.round === r4) ad.overlay.intro(true);
           }));
           else {
             ad.overlay.fade(true, 140);
             setTimeout(() => this._safe(() => {
-              if (this.round === r3) {
+              if (this.round === r4) {
                 ad.overlay.fade(false, 320);
                 ad.overlay.intro(true);
               }
@@ -11047,19 +11084,19 @@ var init_spatial_ads = __esm({
           }
         }
         ad.overlay.showHud(true);
-        if (!r3.iw.full) ad.overlay.intro(true);
+        if (!r4.iw.full) ad.overlay.intro(true);
         ad.audio.play("start");
         ad.audio.startMusic();
-        r3.active = true;
-        r3.met.last = this.host.getPlayerPosition?.()?.clone?.() ?? null;
+        r4.active = true;
+        r4.met.last = this.host.getPlayerPosition?.()?.clone?.() ?? null;
         this._emit("roundStart", { late: (msg.picked || []).length > 0, inWorld: true });
         const vo = ad.m.audio.voiceover;
         if (vo && Array.isArray(vo.tracks) && vo.tracks.length) {
-          r3.voTimer = setTimeout(() => this._safe(() => {
-            if (this.round !== r3 || r3.phase === "leaderboard") return;
-            const track = ad.audio.pickVoiceover((r3.msg.endsAt - (Date.now() + r3.offset)) / 1e3);
+          r4.voTimer = setTimeout(() => this._safe(() => {
+            if (this.round !== r4 || r4.phase === "leaderboard") return;
+            const track = ad.audio.pickVoiceover((r4.msg.endsAt - (Date.now() + r4.offset)) / 1e3);
             if (!track) return;
-            r3.voState = ad.audio.playVoiceover(track);
+            r4.voState = ad.audio.playVoiceover(track);
             ad.overlay.caption(track.text || "", track.durationSec * 1e3);
           }), Math.max(0, (Number.isFinite(+vo.startAfterSec) ? +vo.startAfterSec : 1.2) * 1e3));
         }
@@ -11067,7 +11104,7 @@ var init_spatial_ads = __esm({
       _enterRound(ad, msg, offset) {
         const T = this.THREE;
         const center = Array.isArray(msg.arenaCenter) ? new T.Vector3(...msg.arenaCenter) : this.center.clone();
-        const r3 = {
+        const r4 = {
           ad,
           msg,
           offset,
@@ -11083,10 +11120,10 @@ var init_spatial_ads = __esm({
           met: { impressionMs: 0, viewableMs: 0, run: 0, impressed: false, pickups: 0, moved: 0, last: null },
           sent: false
         };
-        this.round = r3;
+        this.round = r4;
         ad.overlay.fade(true, 280).then(() => this._safe(() => {
-          if (this.round !== r3) return;
-          r3.saved = { visible: this.worldRoot.visible, fog: this.scene.fog, bg: this.scene.background, env: this.scene.environment };
+          if (this.round !== r4) return;
+          r4.saved = { visible: this.worldRoot.visible, fog: this.scene.fog, bg: this.scene.background, env: this.scene.environment };
           this.worldRoot.visible = false;
           ad.arena.group.visible = true;
           this.scene.fog = ad.arena.fog;
@@ -11103,16 +11140,16 @@ var init_spatial_ads = __esm({
           const hp = ad.m.round.hero.position, hr = Math.max(1.2, ad.arena.hero.heightM * 0.36) + 0.2;
           const obstacles = ad.m.round.hero.none ? [] : [{ x: center.x + hp[0], z: center.z + hp[2], r: hr }];
           this.host.setBounds?.({ center: center.clone(), radius: ad.m.round.arena.radius - 0.8, obstacles });
-          r3.ctx = this._mechCtx(r3);
+          r4.ctx = this._mechCtx(r4);
           try {
-            r3.mstate = ad.mech.build(r3.ctx) || {};
+            r4.mstate = ad.mech.build(r4.ctx) || {};
           } catch (e) {
             this._err("mechanic build", e);
-            r3.mstate = {};
+            r4.mstate = {};
           }
           this.host.setSupport?.(ad.mech.supportAt ? (x, z, y) => {
             try {
-              return ad.mech.supportAt(x, z, y, r3.ctx, r3.mstate);
+              return ad.mech.supportAt(x, z, y, r4.ctx, r4.mstate);
             } catch {
               return null;
             }
@@ -11121,23 +11158,23 @@ var init_spatial_ads = __esm({
           ad.overlay.count(0);
           ad.audio.play("start");
           ad.audio.startMusic();
-          r3.active = true;
-          r3.met.last = this.host.getPlayerPosition?.()?.clone?.() ?? null;
+          r4.active = true;
+          r4.met.last = this.host.getPlayerPosition?.()?.clone?.() ?? null;
           setTimeout(() => this._safe(() => {
-            if (this.round !== r3) return;
+            if (this.round !== r4) return;
             ad.overlay.fade(false, 450);
             ad.overlay.showHud(true);
             ad.overlay.intro(true);
-            r3.startedAt = performance.now();
+            r4.startedAt = performance.now();
             this._emit("roundStart", { late: (msg.picked || []).length > 0 });
             const vo = ad.m.audio.voiceover;
             if (vo && Array.isArray(vo.tracks) && vo.tracks.length) {
-              r3.voTimer = setTimeout(() => this._safe(() => {
-                if (this.round !== r3 || r3.phase === "leaderboard") return;
-                const left = (r3.msg.endsAt - (Date.now() + r3.offset)) / 1e3;
+              r4.voTimer = setTimeout(() => this._safe(() => {
+                if (this.round !== r4 || r4.phase === "leaderboard") return;
+                const left = (r4.msg.endsAt - (Date.now() + r4.offset)) / 1e3;
                 const track = ad.audio.pickVoiceover(left);
                 if (!track) return;
-                r3.voState = ad.audio.playVoiceover(track);
+                r4.voState = ad.audio.playVoiceover(track);
                 ad.overlay.caption(track.text || "", track.durationSec * 1e3);
               }), Math.max(0, (Number.isFinite(+vo.startAfterSec) ? +vo.startAfterSec : 1.2) * 1e3));
             }
@@ -11145,9 +11182,9 @@ var init_spatial_ads = __esm({
         }));
       }
       /** the context handed to mechanics plugins (CONTRACT.md "Mechanics plugins") */
-      _mechCtx(r3) {
-        const T = this.THREE, ad = r3.ad, g = ad.arena.group;
-        const items = (Array.isArray(r3.msg.items) ? r3.msg.items : []).map((it) => [+it[0] || 0, +it[1] || 0, Number.isFinite(+it[2]) && it.length > 2 ? +it[2] : void 0]);
+      _mechCtx(r4) {
+        const T = this.THREE, ad = r4.ad, g = ad.arena.group;
+        const items = (Array.isArray(r4.msg.items) ? r4.msg.items : []).map((it) => [+it[0] || 0, +it[1] || 0, Number.isFinite(+it[2]) && it.length > 2 ? +it[2] : void 0]);
         return {
           THREE: T,
           mechanic: ad.mech.name,
@@ -11157,9 +11194,9 @@ var init_spatial_ads = __esm({
           course: ad.m.round.course || null,
           palette: ad.pal,
           items,
-          picked: r3.picked,
+          picked: r4.picked,
           world: this.world,
-          arena: { group: g, center: r3.center.clone(), radius: ad.m.round.arena.radius, local: (x, y, z) => new T.Vector3(r3.center.x - g.position.x + x, r3.center.y - g.position.y + y, r3.center.z - g.position.z + z) },
+          arena: { group: g, center: r4.center.clone(), radius: ad.m.round.arena.radius, local: (x, y, z) => new T.Vector3(r4.center.x - g.position.x + x, r4.center.y - g.position.y + y, r4.center.z - g.position.z + z) },
           assets: { collectible: ad.collectible, hero: ad.arena.hero },
           scene: this.scene,
           camera: this.camera,
@@ -11170,7 +11207,7 @@ var init_spatial_ads = __esm({
             id: () => this.host.getPlayerId?.() ?? null,
             /** move the local player within the arena (soft respawn); world space. false when the host can't teleport */
             teleport: (v) => {
-              if (this.round !== r3 || !v || typeof this.host.teleport !== "function") return false;
+              if (this.round !== r4 || !v || typeof this.host.teleport !== "function") return false;
               this.host.teleport(v.clone ? v.clone() : new T.Vector3(v.x, v.y, v.z));
               return true;
             }
@@ -11178,116 +11215,116 @@ var init_spatial_ads = __esm({
           /** claim item i (a pickup, hit, gate, goal…); de-duplicated for 800 ms; the server's adPicked confirms it */
           claim: (i) => {
             const ms = performance.now();
-            if (r3.claimed.has(i) || r3.pending.has(i) && ms - r3.pending.get(i) < 800 || r3.phase === "leaderboard" || r3.iw && r3.phase === "intro") return false;
-            r3.pending.set(i, ms);
+            if (r4.claimed.has(i) || r4.pending.has(i) && ms - r4.pending.get(i) < 800 || r4.phase === "leaderboard" || r4.iw && r4.phase === "intro") return false;
+            r4.pending.set(i, ms);
             this.host.net?.send?.({ t: "adPickup", i });
             return true;
           },
-          isClaimed: (i) => r3.claimed.has(i),
+          isClaimed: (i) => r4.claimed.has(i),
           burst: (pos, color, n) => this._burst(pos, color || ad.collectible.color, n),
           audio: { play: (name) => ad.audio.play(name) },
           hud: { toast: (t) => ad.overlay.toast(t), count: (n) => ad.overlay.count(n), layer: ad.overlay.root },
-          time: { left: () => (r3.msg.endsAt - (Date.now() + r3.offset)) / 1e3, elapsed: () => (performance.now() - r3.startedAt) / 1e3 },
-          phase: () => r3.phase,
-          score: () => r3.score
+          time: { left: () => (r4.msg.endsAt - (Date.now() + r4.offset)) / 1e3, elapsed: () => (performance.now() - r4.startedAt) / 1e3 },
+          phase: () => r4.phase,
+          score: () => r4.score
         };
       }
       _onPicked(msg) {
-        const r3 = this.round;
-        if (!r3) return;
+        const r4 = this.round;
+        if (!r4) return;
         const myId = this.host.getPlayerId?.();
         const mine = myId != null && msg.by === myId;
-        const personal = (r3.ad.mech.claimMode || "exclusive") === "personal";
-        if (!personal) r3.picked.add(msg.i);
+        const personal = (r4.ad.mech.claimMode || "exclusive") === "personal";
+        if (!personal) r4.picked.add(msg.i);
         else if (!mine) return;
-        if (r3.claimed.has(msg.i)) return;
-        if (mine || !personal) r3.claimed.add(msg.i);
-        r3.pending.delete(msg.i);
-        if (r3.iw) {
+        if (r4.claimed.has(msg.i)) return;
+        if (mine || !personal) r4.claimed.add(msg.i);
+        r4.pending.delete(msg.i);
+        if (r4.iw) {
           try {
-            r3.iw.claimed(msg.i, mine);
+            r4.iw.claimed(msg.i, mine);
           } catch (e) {
             this._err("in-world claimed", e);
           }
-        } else if (r3.mstate) {
+        } else if (r4.mstate) {
           try {
-            r3.ad.mech.onClaimed?.(msg.i, msg.by, mine, r3.ctx, r3.mstate);
+            r4.ad.mech.onClaimed?.(msg.i, msg.by, mine, r4.ctx, r4.mstate);
           } catch (e) {
             this._err("mechanic onClaimed", e);
           }
         }
         if (mine) {
-          r3.score++;
-          r3.met.pickups++;
-          r3.ad.overlay.count(r3.score);
-          r3.ad.overlay.toast("+1");
-          r3.ad.audio.play("collect");
-          this._emit("pickup", { score: r3.score, first: r3.score === 1 });
+          r4.score++;
+          r4.met.pickups++;
+          r4.ad.overlay.count(r4.score);
+          r4.ad.overlay.toast("+1");
+          r4.ad.audio.play("collect");
+          this._emit("pickup", { score: r4.score, first: r4.score === 1 });
         }
       }
       endRound(msg) {
-        const r3 = this.round;
-        if (!r3) return;
-        this._sendMetrics(r3);
-        this._emit("roundEnd", { aborted: !!msg.aborted || !r3.active, score: r3.score, leaderboard: msg.leaderboard || [] });
-        if (msg.aborted || !r3.active) return this._exitRound(!r3.active);
-        r3.phase = "leaderboard";
-        r3.ad.overlay.caption(null);
-        r3.ad.overlay.intro(false);
-        r3.ad.overlay.showHud(false);
-        r3.ad.overlay.showBoard(
+        const r4 = this.round;
+        if (!r4) return;
+        this._sendMetrics(r4);
+        this._emit("roundEnd", { aborted: !!msg.aborted || !r4.active, score: r4.score, leaderboard: msg.leaderboard || [] });
+        if (msg.aborted || !r4.active) return this._exitRound(!r4.active);
+        r4.phase = "leaderboard";
+        r4.ad.overlay.caption(null);
+        r4.ad.overlay.intro(false);
+        r4.ad.overlay.showHud(false);
+        r4.ad.overlay.showBoard(
           Array.isArray(msg.leaderboard) ? msg.leaderboard : [],
           this.host.getPlayerId?.(),
           { ms: this.boardMs, onDone: () => this._safe(() => {
-            if (this.round === r3) this._exitRound(false);
+            if (this.round === r4) this._exitRound(false);
           }) }
         );
-        r3.ad.arena.hero.play("celebrate");
-        r3.ad.audio.play("win");
-        r3.boardTimer = setTimeout(() => this._safe(() => {
-          if (this.round === r3) this._exitRound(false);
+        r4.ad.arena.hero.play("celebrate");
+        r4.ad.audio.play("win");
+        r4.boardTimer = setTimeout(() => this._safe(() => {
+          if (this.round === r4) this._exitRound(false);
         }), this.boardMs + 6e3);
       }
       _exitRound(immediate) {
-        const r3 = this.round;
-        if (!r3) return;
+        const r4 = this.round;
+        if (!r4) return;
         this.round = null;
-        clearTimeout(r3.boardTimer);
-        clearTimeout(r3.voTimer);
-        r3.ad.audio.stopVoiceover();
-        r3.ad.overlay.caption(null);
-        this._sendMetrics(r3);
-        const ad = r3.ad;
+        clearTimeout(r4.boardTimer);
+        clearTimeout(r4.voTimer);
+        r4.ad.audio.stopVoiceover();
+        r4.ad.overlay.caption(null);
+        this._sendMetrics(r4);
+        const ad = r4.ad;
         const restore = () => {
           try {
-            r3.iw?.dispose();
-            if (r3.iw) this.lastInWorldStats = { ...r3.iw.stats };
+            r4.iw?.dispose();
+            if (r4.iw) this.lastInWorldStats = { ...r4.iw.stats };
           } catch (e) {
             this._err("in-world dispose", e);
           }
           try {
-            if (r3.mstate) ad.mech.dispose?.(r3.ctx, r3.mstate);
+            if (r4.mstate) ad.mech.dispose?.(r4.ctx, r4.mstate);
           } catch (e) {
             this._err("mechanic dispose", e);
           }
-          r3.mstate = null;
+          r4.mstate = null;
           this.host.setSupport?.(null);
           ad.arena.group.visible = false;
-          if (r3.saved) {
-            this.worldRoot.visible = r3.saved.visible;
-            this.scene.fog = r3.saved.fog;
-            this.scene.background = r3.saved.bg;
-            this.scene.environment = r3.saved.env;
+          if (r4.saved) {
+            this.worldRoot.visible = r4.saved.visible;
+            this.scene.fog = r4.saved.fog;
+            this.scene.background = r4.saved.bg;
+            this.scene.environment = r4.saved.env;
             this.host.setBounds?.(null);
-            this.host.teleport?.(r3.home);
+            this.host.teleport?.(r4.home);
           }
           ad.overlay.hideAll();
           ad.overlay.total?.(null);
           ad.audio.stopMusic();
           ad.arena.hero.play("idle");
         };
-        const done = () => this._emit("roundExit", { score: r3.score });
-        if (immediate || !r3.saved) {
+        const done = () => this._emit("roundExit", { score: r4.score });
+        if (immediate || !r4.saved) {
           restore();
           ad.overlay.fade(false, 200);
           done();
@@ -11299,13 +11336,13 @@ var init_spatial_ads = __esm({
           ad.overlay.fade(false, 420).then(done);
         }));
       }
-      _sendMetrics(r3) {
-        if (r3.sent) return;
-        r3.sent = true;
-        const mt = r3.met;
+      _sendMetrics(r4) {
+        if (r4.sent) return;
+        r4.sent = true;
+        const mt = r4.met;
         this.host.net?.send?.({
           t: "adMetrics",
-          manifestUrl: r3.ad.url,
+          manifestUrl: r4.ad.url,
           impressionMs: Math.round(mt.impressionMs),
           viewableMs: Math.round(mt.viewableMs),
           impression: mt.impressed,
@@ -11313,7 +11350,7 @@ var init_spatial_ads = __esm({
           interacted: mt.pickups > 0 || mt.moved > 3,
           inWorldViewableMs: Math.round(this.inWorldViewMs),
           // IAB/MRC IIG 2.0 (sdk/viewability.js), alongside the legacy >= 2% fields above (kept for history)
-          iig: { std: IIG_STD, viewable: !!r3.iig?.viewable, viewableMs: Math.round(r3.iig?.ms || 0), inWorldViewable: this.iigWorld.viewable, inWorldViewableMs: Math.round(this.iigWorld.ms) }
+          iig: { std: IIG_STD, viewable: !!r4.iig?.viewable, viewableMs: Math.round(r4.iig?.ms || 0), inWorldViewable: this.iigWorld.viewable, inWorldViewableMs: Math.round(this.iigWorld.ms) }
         });
         this.inWorldViewMs = 0;
         this.iigWorld = { ms: 0, prevRun: this.iigWorld.prevRun, viewable: false };
@@ -11356,39 +11393,39 @@ var init_spatial_ads = __esm({
             this._err("proximity", e);
           }
         }
-        const r3 = this.round;
-        if (!r3 || !r3.active) return;
-        if (!r3.iw) ad.arena.update(dt);
-        const now2 = Date.now() + r3.offset;
-        const left = (r3.msg.endsAt - now2) / 1e3;
-        if (r3.phase !== "leaderboard") ad.overlay.timer(left);
-        if (r3.phase === "intro" && performance.now() - r3.startedAt > INTRO_MS2) {
-          r3.phase = "playing";
+        const r4 = this.round;
+        if (!r4 || !r4.active) return;
+        if (!r4.iw) ad.arena.update(dt);
+        const now2 = Date.now() + r4.offset;
+        const left = (r4.msg.endsAt - now2) / 1e3;
+        if (r4.phase !== "leaderboard") ad.overlay.timer(left);
+        if (r4.phase === "intro" && performance.now() - r4.startedAt > INTRO_MS2) {
+          r4.phase = "playing";
           ad.overlay.intro(false);
         }
-        if (left < -6 && r3.phase !== "leaderboard") return this._exitRound(false);
-        if (r3.iw) {
+        if (left < -6 && r4.phase !== "leaderboard") return this._exitRound(false);
+        if (r4.iw) {
           try {
-            r3.iw.update(dt, r3.phase);
+            r4.iw.update(dt, r4.phase);
           } catch (e) {
             this._err("in-world update", e);
           }
         } else {
           try {
-            ad.mech.update(dt, r3.ctx, r3.mstate);
+            ad.mech.update(dt, r4.ctx, r4.mstate);
           } catch (e) {
             this._err("mechanic update", e);
           }
         }
         this._updateBursts(dt);
         const p = this.host.getPlayerPosition?.();
-        if (p && r3.phase !== "leaderboard" && r3.met.last) {
-          r3.met.moved += Math.hypot(p.x - r3.met.last.x, p.z - r3.met.last.z);
-          r3.met.last.copy(p);
+        if (p && r4.phase !== "leaderboard" && r4.met.last) {
+          r4.met.moved += Math.hypot(p.x - r4.met.last.x, p.z - r4.met.last.z);
+          r4.met.last.copy(p);
         }
-        let best = ad.targets.length && !r3.iw ? 0 : 0.25;
-        if (!r3.iw) for (const b of ad.targets) best = Math.max(best, this._screenFraction(b));
-        const mt = r3.met, ms = dt * 1e3;
+        let best = ad.targets.length && !r4.iw ? 0 : 0.25;
+        if (!r4.iw) for (const b of ad.targets) best = Math.max(best, this._screenFraction(b));
+        const mt = r4.met, ms = dt * 1e3;
         if (best >= 0.02) {
           mt.viewableMs += ms;
           mt.run += ms;
@@ -11400,9 +11437,9 @@ var init_spatial_ads = __esm({
             mt.impressionMs += ms;
           }
         } else mt.run = 0;
-        r3.iig || (r3.iig = { ms: 0, prevRun: 0, viewable: false, tracker: createTracker(RULES.takeover) });
-        r3.iig.tracker.sample(performance.now(), takeoverSample(true, document.visibilityState === "visible"));
-        iigAccrue(r3.iig, r3.iig.tracker.runMs, RULES.takeover.minMs);
+        r4.iig || (r4.iig = { ms: 0, prevRun: 0, viewable: false, tracker: createTracker(RULES.takeover) });
+        r4.iig.tracker.sample(performance.now(), takeoverSample(true, document.visibilityState === "visible"));
+        iigAccrue(r4.iig, r4.iig.tracker.runMs, RULES.takeover.minMs);
       }
       _screenFraction(box) {
         const cam = this.camera;
@@ -11463,10 +11500,10 @@ var init_spatial_ads = __esm({
       }
       // ---------- agent hooks ----------
       debug() {
-        const ad = this.ad, r3 = this.round;
+        const ad = this.ad, r4 = this.round;
         let phase = "idle";
         if (this.loading) phase = "loading";
-        if (r3) phase = r3.phase === "leaderboard" ? "leaderboard" : r3.active ? r3.phase : "loading";
+        if (r4) phase = r4.phase === "leaderboard" ? "leaderboard" : r4.active ? r4.phase : "loading";
         const hero = ad?.arena.hero;
         const st = ad?.status || {};
         return JSON.parse(JSON.stringify({
@@ -11487,20 +11524,20 @@ var init_spatial_ads = __esm({
           inWorld: ad?.inWorld ? { kind: ad.inWorld.kind, visible: this.worldRoot.visible } : null,
           itemsLeft: (() => {
             try {
-              return r3?.iw ? r3.iw.live().length : r3 && r3.mstate ? r3.ad.mech.itemsLeft?.(r3.mstate) ?? 0 : 0;
+              return r4?.iw ? r4.iw.live().length : r4 && r4.mstate ? r4.ad.mech.itemsLeft?.(r4.mstate) ?? 0 : 0;
             } catch {
               return 0;
             }
           })(),
           // the in-world round (Hop Isle's server-coordinated rounds), in the same shape the injector's handle reports
-          inworld: !!r3?.iw,
-          stats: r3?.iw ? r3.iw.stats : null,
-          total: r3?.iw ? r3.iw.items.filter((x) => !x.cosmetic).length : null,
+          inworld: !!r4?.iw,
+          stats: r4?.iw ? r4.iw.stats : null,
+          total: r4?.iw ? r4.iw.items.filter((x) => !x.cosmetic).length : null,
           mechanic: ad ? { name: ad.mech.name, requested: ad.mech.requested } : null,
           voiceover: ad?.audio.voiceover || null,
-          score: r3?.score ?? 0,
-          inWorldRound: r3?.iw ? { stats: r3.iw.stats, live: r3.iw.live().length, mood: r3.iw.mood(), failed: r3.iw.failed } : null,
-          metrics: r3 ? { impressionMs: Math.round(r3.met.impressionMs), viewableMs: Math.round(r3.met.viewableMs), pickups: r3.met.pickups, iigViewable: !!r3.iig?.viewable, iigViewableMs: Math.round(r3.iig?.ms || 0) } : null,
+          score: r4?.score ?? 0,
+          inWorldRound: r4?.iw ? { stats: r4.iw.stats, live: r4.iw.live().length, mood: r4.iw.mood(), failed: r4.iw.failed } : null,
+          metrics: r4 ? { impressionMs: Math.round(r4.met.impressionMs), viewableMs: Math.round(r4.met.viewableMs), pickups: r4.met.pickups, iigViewable: !!r4.iig?.viewable, iigViewableMs: Math.round(r4.iig?.ms || 0) } : null,
           inWorldViewability: ad?.inWorldVw ? ad.inWorldVw.debug() : null,
           fps: this.fps.v
         }));
@@ -11538,11 +11575,11 @@ var init_spatial_ads = __esm({
   }
 });
 
-// sdk/br-core.js
+// ../../sdk/br-core.js
 init_spatial_ads();
 init_builders();
 
-// sdk/round-layout.js
+// ../../sdk/round-layout.js
 var WALK_R = 23.2;
 var ARENA_CENTER2 = [0, 0, 2e3];
 function rng2(seed) {
@@ -11598,7 +11635,7 @@ function freeSpot(rand, maxR, clearance = 0.9) {
   return [0, 0];
 }
 
-// sdk/mechanics/bot-brains.js
+// ../../sdk/mechanics/bot-brains.js
 init_physics();
 init_race_rules();
 init_platform_rules();
@@ -11622,31 +11659,31 @@ var claimOf2 = (c, el) => c.ci.byEl.get(c.layout.elements.indexOf(el));
 function offHero(c, me) {
   const h = c.layout.meta?.hero;
   if (!h) return;
-  const r3 = num2(h.clearanceM, 0) - 0.1, dx = me.x - h.position[0], dz = me.z - h.position[2], d = Math.hypot(dx, dz);
-  if (d < r3 && d > 1e-6) {
-    me.x = h.position[0] + dx / d * r3;
-    me.z = h.position[2] + dz / d * r3;
+  const r4 = num2(h.clearanceM, 0) - 0.1, dx = me.x - h.position[0], dz = me.z - h.position[2], d = Math.hypot(dx, dz);
+  if (d < r4 && d > 1e-6) {
+    me.x = h.position[0] + dx / d * r4;
+    me.z = h.position[2] + dz / d * r4;
   }
 }
 function raceBot(c) {
   const T = trackFrom(c.layout);
   const pace = 0.8 + c.rand() * 0.12, lane = (c.rand() - 0.5) * T.width * 0.45;
-  const r3 = makeRacer(c.spawn[0], c.spawn[2], num2(c.layout.meta?.spawnRotY, 0), { lane, pace });
-  const bot = { kind: "race", x: r3.x, y: 0, z: r3.z, ry: r3.ry, racer: r3, track: T, get done() {
-    return r3.done;
+  const r4 = makeRacer(c.spawn[0], c.spawn[2], num2(c.layout.meta?.spawnRotY, 0), { lane, pace });
+  const bot = { kind: "race", x: r4.x, y: 0, z: r4.z, ry: r4.ry, racer: r4, track: T, get done() {
+    return r4.done;
   } };
   bot.step = (dt) => {
     c.t += dt;
     const claims = [];
-    if (c.t < c.startDelay || r3.done) return { claims };
-    const crossed = stepRacer(r3, T, dt, c.P, { pace, lane, sprint: true });
+    if (c.t < c.startDelay || r4.done) return { claims };
+    const crossed = stepRacer(r4, T, dt, c.P, { pace, lane, sprint: true });
     if (crossed) {
       const i = claimOf2(c, crossed.el);
       if (i !== void 0) claims.push(i);
     }
-    bot.x = r3.x;
-    bot.z = r3.z;
-    bot.ry = r3.ry;
+    bot.x = r4.x;
+    bot.z = r4.z;
+    bot.ry = r4.ry;
     return { claims };
   };
   return bot;
@@ -11796,7 +11833,7 @@ function smashBot(c) {
   return bot;
 }
 
-// sdk/round-core.js
+// ../../sdk/round-core.js
 var COLORS = ["#ff5d8f", "#4cc9f0", "#ffd23f", "#7ae582", "#b392f0", "#ff8c42", "#2ec4b6", "#f15bb5", "#9bf6ff", "#c0fdfb"];
 var BOT_NAMES = ["Bloop", "Wobbles", "Jellybean", "Squish"];
 var r2 = (v) => Math.round(v * 100) / 100;
@@ -12637,7 +12674,7 @@ var GameCore = class {
   }
 };
 
-// sdk/local-net.js
+// ../../sdk/local-net.js
 function relay() {
   const handlers = /* @__PURE__ */ new Map();
   return {
@@ -12657,7 +12694,7 @@ function relay() {
   };
 }
 function createLocalNet(manifestUrl, opts = {}) {
-  const r3 = relay();
+  const r4 = relay();
   let paused = false, pausedAt = 0, shift = 0;
   const held = [];
   const clock = opts.now || (() => Date.now());
@@ -12672,7 +12709,7 @@ function createLocalNet(manifestUrl, opts = {}) {
     now: now2,
     send: (_cid, s) => {
       if (paused) held.push(s);
-      else queueMicrotask(() => r3.emit(JSON.parse(s)));
+      else queueMicrotask(() => r4.emit(JSON.parse(s)));
     },
     loadManifest: async (url) => {
       try {
@@ -12686,13 +12723,13 @@ function createLocalNet(manifestUrl, opts = {}) {
   const timer = setInterval(() => {
     if (!paused) core.tick();
   }, 50);
-  queueMicrotask(() => r3.emit({ t: "open" }));
+  queueMicrotask(() => r4.emit({ t: "open" }));
   if (manifestUrl) core.setAd(manifestUrl).then((out) => {
     if (out.error) console.warn("[bonusround]", out.error);
   });
   return {
     core,
-    on: r3.on,
+    on: r4.on,
     send(msg) {
       queueMicrotask(() => core.handle(1, JSON.parse(JSON.stringify(msg))));
     },
@@ -12708,7 +12745,7 @@ function createLocalNet(manifestUrl, opts = {}) {
       if (!paused) return;
       shift += clock() - pausedAt;
       paused = false;
-      for (const s of held.splice(0)) queueMicrotask(() => r3.emit(JSON.parse(s)));
+      for (const s of held.splice(0)) queueMicrotask(() => r4.emit(JSON.parse(s)));
       queueMicrotask(() => {
         try {
           core._broadcastPhase();
@@ -12722,10 +12759,10 @@ function createLocalNet(manifestUrl, opts = {}) {
   };
 }
 
-// sdk/br-core.js
+// ../../sdk/br-core.js
 init_three_shim();
 
-// sdk/br-ui.js
+// ../../sdk/br-ui.js
 init_click();
 var CSS4 = `
 :host{all:initial}
@@ -12787,7 +12824,7 @@ function createUi() {
   function gameCanvas() {
     let best = null, area = 0;
     for (const c of document.querySelectorAll("canvas")) {
-      const r3 = c.getBoundingClientRect(), a = r3.width * r3.height;
+      const r4 = c.getBoundingClientRect(), a = r4.width * r4.height;
       if (a > area) {
         area = a;
         best = c;
@@ -12921,7 +12958,7 @@ function createUi() {
   };
 }
 
-// sdk/bots.js
+// ../../sdk/bots.js
 function tag(THREE, name, color) {
   const c = document.createElement("canvas"), g = c.getContext("2d");
   g.font = "800 44px system-ui, sans-serif";
@@ -13071,7 +13108,7 @@ function createTracers(THREE, scene) {
   };
 }
 
-// sdk/host-session.js
+// ../../sdk/host-session.js
 var CHIP_CSS = `:host{all:initial}
 button{all:unset;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483647;cursor:pointer;
   display:flex;align-items:center;gap:10px;padding:12px 20px 12px 14px;border-radius:999px;background:rgba(20,16,40,.86);color:#fff;
@@ -13146,16 +13183,17 @@ function createHostSession() {
   };
 }
 
-// sdk/br-core.js
+// ../../sdk/br-core.js
 init_host_three();
 init_countdown();
 init_proximity();
 init_viewability();
 init_click();
 
-// sdk/ivt.js
+// ../../sdk/ivt.js
 var now = () => performance.now();
-var S2 = { on: false, inputs: [], holds: [], down: /* @__PURE__ */ new Map(), vis: [], foc: [], ratio: null, ov: null, rounds: /* @__PURE__ */ new Map(), gl: void 0 };
+var S2 = { on: false, inputs: [], holds: [], down: /* @__PURE__ */ new Map(), vis: [], foc: [], ratio: null, ov: null, rounds: /* @__PURE__ */ new Map(), gl: void 0, glv: null, px: 0, py: 0, np: null, cdp: false };
+var MOVE_KEYS = /* @__PURE__ */ new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "ShiftLeft", "ShiftRight"]);
 function glRenderer() {
   if (S2.gl !== void 0) return S2.gl;
   S2.gl = null;
@@ -13164,6 +13202,7 @@ function glRenderer() {
     const g = c.getContext("webgl") || c.getContext("experimental-webgl");
     const ext = g && g.getExtension("WEBGL_debug_renderer_info");
     S2.gl = g ? String(g.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : g.RENDERER) || "").slice(0, 120) : null;
+    S2.glv = g ? String(g.getParameter(ext ? ext.UNMASKED_VENDOR_WEBGL : g.VENDOR) || "").slice(0, 60) : null;
     g?.getExtension("WEBGL_lose_context")?.loseContext();
   } catch {
     S2.gl = null;
@@ -13196,8 +13235,14 @@ function startIvt() {
   S2.vis.push([t, document.visibilityState === "visible"]);
   S2.foc.push([t, document.hasFocus ? document.hasFocus() : true]);
   const add = (k) => (e) => {
-    const x = e.clientX ?? e.touches?.[0]?.clientX ?? null, y = e.clientY ?? e.touches?.[0]?.clientY ?? null;
-    S2.inputs.push({ t: now(), k, x, y });
+    if (k === "m" && document.pointerLockElement) {
+      S2.px += e.movementX || 0;
+      S2.py += e.movementY || 0;
+    }
+    const locked = k === "m" && !!document.pointerLockElement;
+    const x = locked ? S2.px : e.clientX ?? e.touches?.[0]?.clientX ?? null, y = locked ? S2.py : e.clientY ?? e.touches?.[0]?.clientY ?? null;
+    const kc = k === "k" ? MOVE_KEYS.has(e.code) ? "v" : "o" : k;
+    S2.inputs.push({ t: now(), k: kc, x, y, tr: e.isTrusted !== false });
     if (S2.inputs.length > 1500) S2.inputs.splice(0, 500);
   };
   const opt = { passive: true, capture: true };
@@ -13234,6 +13279,22 @@ function startIvt() {
     io.observe(document.documentElement);
   } catch {
   }
+  try {
+    if (typeof Notification !== "undefined" && navigator.permissions?.query) navigator.permissions.query({ name: "notifications" }).then((p) => {
+      S2.np = Notification.permission === "denied" && p.state === "prompt";
+    }, () => {
+    });
+  } catch {
+  }
+  try {
+    const e = new Error("");
+    Object.defineProperty(e, "stack", { get() {
+      S2.cdp = true;
+      return "";
+    } });
+    console.debug(e);
+  } catch {
+  }
 }
 function onMs(log2, from, to) {
   let ms = 0, state = log2.length ? log2[0][1] : true, at = from;
@@ -13250,45 +13311,79 @@ function onMs(log2, from, to) {
   if (state) ms += to - at;
   return Math.max(0, ms);
 }
+var changes = (log2, from, to) => log2.filter(([t]) => t > from && t < to).length;
+var r3 = (v) => Math.round(v * 1e3) / 1e3;
 var cvOf = (xs) => {
   if (xs.length < 4) return null;
   const m = xs.reduce((a, b) => a + b, 0) / xs.length;
   if (!(m > 0)) return 0;
   const sd = Math.sqrt(xs.reduce((a, b) => a + (b - m) ** 2, 0) / xs.length);
-  return Math.round(sd / m * 1e3) / 1e3;
+  return r3(sd / m);
 };
-function inputStats(from) {
+var mean = (xs) => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
+function inputStats(from, full) {
   const ev = S2.inputs.filter((e) => e.t >= from);
-  const discrete = ev.filter((e) => e.k === "k" || e.k === "d").map((e) => e.t);
+  const discrete = ev.filter((e) => e.k === "v" || e.k === "o" || e.k === "d").map((e) => e.t);
   const gaps = discrete.slice(1).map((t, i) => t - discrete[i]).filter((g) => g < 5e3);
   const holds = S2.holds.filter((h) => h.t >= from).map((h) => h.ms);
   const mv = ev.filter((e) => e.k === "m" && e.x != null);
-  let path = 0, disp = 0, bins = new Array(8).fill(0), turns = 0;
+  let path = 0, disp = 0, turns = 0, pauses = 0, jitter = 0, curv = 0;
+  const bins = new Array(8).fill(0), speeds = [];
   for (let i = 1, start = mv[0]; i < mv.length; i++) {
-    const a = mv[i - 1], b = mv[i];
-    if (b.t - a.t > 250) {
+    const a = mv[i - 1], b = mv[i], dt = b.t - a.t;
+    if (dt > 250) {
+      pauses++;
       disp += start ? Math.hypot(a.x - start.x, a.y - start.y) : 0;
       start = b;
       continue;
     }
-    path += Math.hypot(b.x - a.x, b.y - a.y);
+    const step = Math.hypot(b.x - a.x, b.y - a.y);
+    path += step;
+    if (dt > 0) speeds.push(step / dt);
     if (i >= 2 && mv[i - 2]) {
       const p = mv[i - 2];
       const a1 = Math.atan2(a.y - p.y, a.x - p.x), a2 = Math.atan2(b.y - a.y, b.x - a.x);
       let d = a2 - a1;
       while (d > Math.PI) d -= 2 * Math.PI;
       while (d < -Math.PI) d += 2 * Math.PI;
-      if (Math.hypot(b.x - a.x, b.y - a.y) > 0.5) {
+      if (step > 0.5) {
         bins[Math.min(7, Math.floor((d + Math.PI) / (2 * Math.PI) * 8))]++;
         turns++;
+        curv += Math.abs(d);
+        if (Math.abs(d) > 1.2 && step < 4) jitter++;
       }
     }
     if (i === mv.length - 1) disp += start ? Math.hypot(b.x - start.x, b.y - start.y) : 0;
   }
   const ent = turns ? -bins.filter(Boolean).reduce((s, c) => s + c / turns * Math.log2(c / turns), 0) : null;
-  return { n: ev.length, cv: cvOf(gaps), kv: holds.length >= 4 ? cvOf(holds) : null, mv: path > 50 ? Math.round(Math.min(1, disp / path) * 1e3) / 1e3 : null, ang: ent == null || turns < 20 ? null : Math.round(ent * 100) / 100 };
+  const med = holds.length >= 4 ? [...holds].sort((a, b) => a - b)[holds.length >> 1] : null;
+  const out = {
+    n: ev.length,
+    cv: cvOf(gaps),
+    kv: holds.length >= 4 ? cvOf(holds) : null,
+    kh: med == null ? null : Math.round(med),
+    mv: path > 50 ? r3(Math.min(1, disp / path)) : null,
+    ang: ent == null || turns < 20 ? null : Math.round(ent * 100) / 100,
+    tr: ev.length ? r3(ev.filter((e) => e.tr).length / ev.length) : null
+  };
+  if (!full) return out;
+  const counts = {};
+  for (const e of ev) counts[e.k] = (counts[e.k] || 0) + 1;
+  let last = from;
+  const tl = ev.slice(-400).map((e) => {
+    const d = Math.max(0, Math.round(e.t - last));
+    last = e.t;
+    return `${e.k}${d}`;
+  }).join(" ");
+  return {
+    ...out,
+    counts,
+    gapMean: gaps.length ? Math.round(mean(gaps)) : null,
+    path: { len: Math.round(path), speed: speeds.length ? r3(mean(speeds)) : null, speedCv: cvOf(speeds), curv: turns ? r3(curv / turns) : null, jitter, pauses },
+    tl
+  };
 }
-function ivtSignals(key = null) {
+function ivtSignals(key = null, { full = false } = {}) {
   startIvt();
   let fr = false;
   try {
@@ -13296,7 +13391,14 @@ function ivtSignals(key = null) {
   } catch {
     fr = true;
   }
-  const nav = navigator;
+  const nav = navigator, uad = nav.userAgentData;
+  const tz = (() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch {
+      return null;
+    }
+  })();
   const base = {
     wd: nav.webdriver === true,
     au: automationCount(),
@@ -13308,18 +13410,47 @@ function ivtSignals(key = null) {
     sh: screen?.height || null,
     vis: fr && S2.ratio != null ? Math.round(S2.ratio * 100) / 100 : null,
     ov: fr ? S2.ov : null,
-    fp: fnv([glRenderer(), screen?.width, screen?.height, devicePixelRatio, Intl.DateTimeFormat().resolvedOptions().timeZone, nav.language, nav.hardwareConcurrency, nav.deviceMemory, nav.platform, nav.maxTouchPoints].join("|"))
+    pl: nav.plugins?.length ?? null,
+    ch: typeof window.chrome === "object",
+    np: S2.np,
+    cdp: S2.cdp,
+    uab: uad?.brands ? uad.brands.map((b) => b.brand).join(",").slice(0, 120) : null,
+    fp: fnv([glRenderer(), screen?.width, screen?.height, devicePixelRatio, tz, nav.language, nav.hardwareConcurrency, nav.deviceMemory, nav.platform, nav.maxTouchPoints].join("|"))
   };
+  if (full) Object.assign(base, {
+    glv: S2.glv,
+    dpr: devicePixelRatio,
+    tz,
+    lang: nav.language,
+    cores: nav.hardwareConcurrency ?? null,
+    mem: nav.deviceMemory ?? null,
+    uap: uad?.platform ?? null,
+    uam: uad?.mobile ?? null,
+    ref: (() => {
+      try {
+        return document.referrer ? new URL(document.referrer).hostname : null;
+      } catch {
+        return null;
+      }
+    })()
+  });
   if (!key) return base;
   if (!S2.rounds.has(key)) {
     S2.rounds.set(key, now());
     if (S2.rounds.size > 20) S2.rounds.delete(S2.rounds.keys().next().value);
   }
   const from = S2.rounds.get(key), to = now();
-  return { ...base, rm: Math.round(to - from), hid: Math.round(to - from - onMs(S2.vis, from, to)), foc: Math.round(onMs(S2.foc, from, to)), ...inputStats(from) };
+  return {
+    ...base,
+    rm: Math.round(to - from),
+    hid: Math.round(to - from - onMs(S2.vis, from, to)),
+    foc: Math.round(onMs(S2.foc, from, to)),
+    ...full ? { visChanges: changes(S2.vis, from, to), focChanges: changes(S2.foc, from, to) } : {},
+    ...inputStats(from, full)
+  };
 }
 
-// sdk/br-core.js
+// ../../sdk/br-core.js
 var ctaAs = (cta, fm) => cta ? { ...cta, url: withFormat(cta.url, fm) } : null;
 var DEFAULT_SETTINGS = {
   formats: { takeover: { enabled: true, triggers: ["intermission", "rewarded"], intervalSec: 300 }, ambient: { enabled: true } },
@@ -13327,7 +13458,7 @@ var DEFAULT_SETTINGS = {
 };
 var unfilled = (reason, extra = {}) => ({ filled: false, completed: false, reason, ...extra });
 var clamp7 = (v, a, b) => Math.max(a, Math.min(b, v));
-var sleep2 = (ms) => new Promise((r3) => setTimeout(r3, ms));
+var sleep2 = (ms) => new Promise((r4) => setTimeout(r4, ms));
 var timeout = (p, ms, v) => Promise.race([p, sleep2(ms).then(() => v)]);
 var WARNINGS = [];
 function warn(msg, err) {
@@ -13474,7 +13605,7 @@ var Core = class {
     this.attaching = this._attach(o).finally(() => {
       this.attaching = null;
     });
-    return this.attaching.then((r3) => ({ ...r3, takeover: true }));
+    return this.attaching.then((r4) => ({ ...r4, takeover: true }));
   }
   _dropAmbient() {
     try {
@@ -13500,7 +13631,7 @@ var Core = class {
     if (!o.__auto) this.tagOnlyCtl?.stop("attach");
     if (this.attached && this.autoAttached && !o.__auto) return this._takeOver(o);
     if (this.attached) return Promise.resolve({ mode: this.mode, already: true });
-    if (this.attaching) return this.attaching.then((r3) => ({ ...r3, already: true }));
+    if (this.attaching) return this.attaching.then((r4) => ({ ...r4, already: true }));
     this.attaching = this._attach(o).finally(() => {
       this.attaching = null;
     });
@@ -13730,7 +13861,7 @@ var Core = class {
     const key = `${token}:${type}`;
     if (once && this.sentOnce.has(key)) return;
     this.sentOnce.add(key);
-    const body = { token, type, value: value ?? null, playerId: this.playerId, ...extra || {}, iv: this._iv(token) };
+    const body = { token, type, value: value ?? null, playerId: this.playerId, ...extra || {}, iv: this._iv(token, type) };
     this.beacons.push({ at: Date.now(), type, value: body.value });
     if (this.beacons.length > 50) this.beacons.shift();
     this.emitter.emit("event", { type, value: body.value });
@@ -13741,10 +13872,11 @@ var Core = class {
     }
   }
   /** invalid-traffic signals (sdk/ivt.js); no device-trait hash on contextual-only inventory */
-  _iv(key) {
+  _iv(key, type = null) {
     try {
-      const iv = ivtSignals(key);
-      if (this.contextualOnly()) delete iv.fp;
+      const ctxOnly = this.contextualOnly();
+      const iv = ivtSignals(key, { full: type === "complete" && !ctxOnly });
+      if (ctxOnly) delete iv.fp;
       return iv;
     } catch {
       return null;
@@ -13813,15 +13945,15 @@ var Core = class {
     }
     const why = unreachable ? `${server}/v1/ad is unreachable (network, DNS or firewall)` : `the ad server answered "${ad.reason}"`;
     const who = placeholder ? `${this.pub ? `"${this.pub}" is a placeholder publisher id` : "no publisher id is set"}; get yours at https://bonusround.io/app/games/ (BonusRound.init({ pub }) or the script tag's data-pub)` : "this is a test break";
-    console.info(`[bonusround] ${why} and ${who}. Playing the bundled ${mod.label || "bonusround.io test round"} locally (a TEST round): not an ad, nothing is requested or billed. Live ads always come from the ad server.`);
+    console.info(`[bonusround] ${why} and ${who}. Playing the bundled ${String(mod.label || "bonusround.io test round").replace(/^the /, "")} locally (a TEST round): not an ad, nothing is requested or billed. Live ads always come from the ad server.`);
     const off = await mod.offlineTestAd({ trigger });
     this.requests.push({ at: Date.now(), format: "takeover", trigger, fill: true, requestId: null, reason: "offline_test_round", test: true, offline: true });
     return off;
   }
   _newRun(ad, trigger) {
     let resolve;
-    const done = new Promise((r3) => {
-      resolve = r3;
+    const done = new Promise((r4) => {
+      resolve = r4;
     });
     this.run = { ad, trigger, token: ad?.token || null, started: false, completed: false, engaged: false, score: 0, viewMs: 0, resolve, done };
     const run = this.run;
@@ -13865,7 +13997,7 @@ var Core = class {
       this.local.core.forceAd();
       return null;
     };
-    const raw = await timeout(fetch(ad.manifestUrl, { cache: "no-cache" }).then((r3) => r3.ok ? r3.json() : null).catch(() => null), 4e3, null);
+    const raw = await timeout(fetch(ad.manifestUrl, { cache: "no-cache" }).then((r4) => r4.ok ? r4.json() : null).catch(() => null), 4e3, null);
     this._prepInWorld(ad, raw);
     const bwBreak = raw?.round?.format === "brandworld" && this.state.brandworld !== false;
     if (bwBreak) pageBreak("start", Math.round(((+raw.round.durationSec || 15) + 24) * 1e3 + 8e3));
@@ -13882,13 +14014,13 @@ var Core = class {
       const err = await pocket();
       if (err) return err;
     }
-    return timeout(run.done, maxMs, null).then((r3) => r3 || (this._finish(run, { timedOut: true }), run.done));
+    return timeout(run.done, maxMs, null).then((r4) => r4 || (this._finish(run, { timedOut: true }), run.done));
   }
   /** the learned world manifest (gameplayHooks, scale, movement) from the ping's worldUrl, fetched once */
   async _worldManifest() {
     if (this.worldFull !== void 0) return this.worldFull;
     const u = this.world?.worldUrl ? new URL(this.world.worldUrl, this.base + "/").href : null;
-    this.worldFull = u ? await timeout(fetch(u).then((r3) => r3.ok ? r3.json() : null).catch(() => null), 4e3, null) : null;
+    this.worldFull = u ? await timeout(fetch(u).then((r4) => r4.ok ? r4.json() : null).catch(() => null), 4e3, null) : null;
     return this.worldFull;
   }
   /** in-world creative: start sdk/inworld/round.js prepareInWorldRound() now (same options _inWorldRound passes) */
@@ -13919,7 +14051,7 @@ var Core = class {
     if (!mod) return pocket();
     const world = { ...this.world || {}, ...await this._worldManifest() || {} };
     run.session = "inworld";
-    const r3 = await mod.playInWorldRound({
+    const r4 = await mod.playInWorldRound({
       // a scene/camera the developer passed are used as given; a guessed one (attach({}): the last scene created, which can
       // be a weapon-viewmodel or HUD scene) is left to the runner, which picks the main scene from the render calls
       base: this.base,
@@ -13962,16 +14094,16 @@ var Core = class {
       }
     });
     this.inWorldHandle = null;
-    this.lastInWorld = { fallback: r3.fallback || null, score: r3.score, stats: r3.stats || null };
-    if (r3.fallback) {
-      warn(`in-world round fell back to the pocket arena (${r3.fallback})`);
+    this.lastInWorld = { fallback: r4.fallback || null, score: r4.score, stats: r4.stats || null };
+    if (r4.fallback) {
+      warn(`in-world round fell back to the pocket arena (${r4.fallback})`);
       run.visible = false;
       run.session = null;
       const err = await pocket();
       if (err) this._finish(run, { filled: false, reason: "manifest_error" });
       return;
     }
-    run.score = r3.score;
+    run.score = r4.score;
     this._finish(run, { inWorld: true });
   }
   // ---------- personal rounds in a server-coordinated game (native-net): the player's own in-world round ----------
@@ -13994,7 +14126,7 @@ var Core = class {
     }, () => {
       this.personalRewarded = false;
     });
-    const raw = await timeout(fetch(ad.manifestUrl, { cache: "no-cache" }).then((r3) => r3.ok ? r3.json() : null).catch(() => null), 4e3, null);
+    const raw = await timeout(fetch(ad.manifestUrl, { cache: "no-cache" }).then((r4) => r4.ok ? r4.json() : null).catch(() => null), 4e3, null);
     if (!raw) {
       this._finish(run, { filled: false, reason: "manifest_error" });
       return run.done;
@@ -14010,7 +14142,7 @@ var Core = class {
       this._finish(run, { filled: false, reason: "inworld_unavailable" });
       return null;
     });
-    return timeout(run.done, 6e4, null).then((r3) => r3 || (this._finish(run, { timedOut: true }), run.done));
+    return timeout(run.done, 6e4, null).then((r4) => r4 || (this._finish(run, { timedOut: true }), run.done));
   }
   // ---------- priming: the ambient prop/portal shows the brand of the player's NEXT takeover ----------
   _noteTakeover(ad, source) {
@@ -14021,7 +14153,7 @@ var Core = class {
   /** brand name of a manifest (cached) */
   async _manifestBrand(url) {
     this._brandCache || (this._brandCache = /* @__PURE__ */ new Map());
-    if (!this._brandCache.has(url)) this._brandCache.set(url, timeout(fetch(url, { cache: "no-cache" }).then((r3) => r3.ok ? r3.json() : null).then((j) => j ? { name: j.brand?.name || null, raw: j } : null).catch(() => null), 4e3, null));
+    if (!this._brandCache.has(url)) this._brandCache.set(url, timeout(fetch(url, { cache: "no-cache" }).then((r4) => r4.ok ? r4.json() : null).then((j) => j ? { name: j.brand?.name || null, raw: j } : null).catch(() => null), 4e3, null));
     return this._brandCache.get(url);
   }
   /**
@@ -14146,7 +14278,7 @@ var Core = class {
       return unfilled(ad.reason);
     }
     const run = this._newRun(ad, "zone");
-    const raw = await timeout(fetch(ad.manifestUrl, { cache: "no-cache" }).then((r4) => r4.ok ? r4.json() : null).catch(() => null), 4e3, null);
+    const raw = await timeout(fetch(ad.manifestUrl, { cache: "no-cache" }).then((r5) => r5.ok ? r5.json() : null).catch(() => null), 4e3, null);
     if (!raw?.round || !(raw.round.inworld || raw.round.takeover?.mode === "in-world")) {
       this._finish(run, { filled: false, reason: "not_zone_capable" });
       return run.done;
@@ -14169,7 +14301,7 @@ var Core = class {
     const { renderer } = this.attached;
     run.session = "inworld";
     const native = this.mode !== "overlay";
-    const r3 = await mod.runZoneRound({
+    const r4 = await mod.runZoneRound({
       base: this.base,
       manifestUrl: ad.manifestUrl,
       raw,
@@ -14217,14 +14349,14 @@ var Core = class {
       return { played: false, reason: "error" };
     });
     this.inWorldHandle = null;
-    this.lastInWorld = { zone, played: !!r3.played, reason: r3.reason || r3.fallback || null, score: r3.score ?? 0, endReason: r3.endReason || null, stats: r3.stats || null };
-    if (!r3.played) {
+    this.lastInWorld = { zone, played: !!r4.played, reason: r4.reason || r4.fallback || null, score: r4.score ?? 0, endReason: r4.endReason || null, stats: r4.stats || null };
+    if (!r4.played) {
       run.started = false;
-      this._finish(run, { filled: false, reason: r3.reason || r3.fallback || "zone_not_played", zone });
+      this._finish(run, { filled: false, reason: r4.reason || r4.fallback || "zone_not_played", zone });
       return run.done;
     }
-    run.score = r3.score;
-    this._finish(run, { inWorld: true, zone, live: true, endReason: r3.endReason || null });
+    run.score = r4.score;
+    this._finish(run, { inWorld: true, zone, live: true, endReason: r4.endReason || null });
     return run.done;
   }
   async _brandWorldRound(run, raw, pocket) {
@@ -14239,7 +14371,7 @@ var Core = class {
     if (!mod) return pocket();
     const world = { ...this.world || {}, ...await this._worldManifest() || {} };
     run.session = "inworld";
-    const r3 = await mod.playBrandWorldRound({
+    const r4 = await mod.playBrandWorldRound({
       base: this.base,
       manifestUrl: ad.manifestUrl,
       raw,
@@ -14283,16 +14415,16 @@ var Core = class {
       }
     });
     this.brandWorldHandle = null;
-    this.lastBrandWorld = { fallback: r3.fallback || null, score: r3.score, stats: r3.stats || null };
-    if (r3.fallback) {
-      warn(`Brand World fell back to the pocket arena (${r3.fallback})`);
+    this.lastBrandWorld = { fallback: r4.fallback || null, score: r4.score, stats: r4.stats || null };
+    if (r4.fallback) {
+      warn(`Brand World fell back to the pocket arena (${r4.fallback})`);
       run.visible = false;
       run.session = null;
       const err = await pocket();
       if (err) this._finish(run, { filled: false, reason: "manifest_error" });
       return;
     }
-    run.score = r3.score;
+    run.score = r4.score;
     this._finish(run, { brandWorld: true });
   }
   async _serverRound(trigger) {
@@ -14304,7 +14436,7 @@ var Core = class {
     this.busy = true;
     const run = this.run && !this.run.finished ? this.run : this._newRun(null, trigger);
     run.trigger = trigger;
-    return timeout(run.done, 6e4, null).then((r3) => r3 || (this._finish(run, { timedOut: true }), run.done));
+    return timeout(run.done, 6e4, null).then((r4) => r4 || (this._finish(run, { timedOut: true }), run.done));
   }
   /** Native runtime lifecycle → events/beacons. data.extra carries the ad server's token/cta for this ad. */
   _roundEvent(type, data) {
@@ -14460,21 +14592,21 @@ var Core = class {
     return Promise.resolve({ shown: true, hide: () => b.remove(), start: () => this._rewardedRun(onReward) });
   }
   async _rewardedRun(onReward) {
-    const r3 = this.mode === "native-net" ? await this._personalRound("rewarded") : await this.breakRound("rewarded", { __internal: true });
-    if (!r3.filled) {
-      if (r3.reason !== "busy") this.ui?.toast("No Bonus Round available right now. Try again soon.");
-      return { ...r3, rewarded: false };
+    const r4 = this.mode === "native-net" ? await this._personalRound("rewarded") : await this.breakRound("rewarded", { __internal: true });
+    if (!r4.filled) {
+      if (r4.reason !== "busy") this.ui?.toast("No Bonus Round available right now. Try again soon.");
+      return { ...r4, rewarded: false };
     }
-    if (r3.completed) {
+    if (r4.completed) {
       try {
-        onReward?.(r3);
+        onReward?.(r4);
       } catch (e) {
         warn("onReward threw", e);
       }
-      this._beacon(r3.token || this.lastToken, "reward", 1);
-      this.emitter.emit("reward", r3);
+      this._beacon(r4.token || this.lastToken, "reward", 1);
+      this.emitter.emit("reward", r4);
     }
-    return { ...r3, rewarded: r3.completed };
+    return { ...r4, rewarded: r4.completed };
   }
   // ---------- loop: frames, viewability, interval, ambient ----------
   _loop() {
