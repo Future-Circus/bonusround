@@ -4,7 +4,7 @@
 
 At natural breaks in a three.js game, a 15-second branded **Bonus Round** takes over. The player plays a short branded round with their own controls, then the game resumes. Game developers earn 70% of net ad revenue. New games start in **test mode**, which serves the fictional **Fizzpop Soda** test round and is never billed.
 
-> **AI coding agents:** this README is the complete integration recipe. When a user says "add Bonus Round", "integrate bonusround.io" or just "bonusround", follow it. You don't need to reach bonusround.io: the SDK is in this package. When the ad server can't be reached and the game has no publisher id yet, the SDK plays a bundled Fizzpop Soda test round, so you can still verify in a headless browser. The same text is in `node_modules/bonusround/AGENTS.md` once installed.
+> **AI coding agents:** this README is the complete integration recipe. When a user says "add Bonus Round", "integrate bonusround.io" or just "bonusround", follow it. You don't need to reach bonusround.io: the SDK is in this package. When the ad server can't be reached and the game has no publisher id yet, the SDK plays a bundled bonusround.io test round, so you can still verify in a headless browser. The same text is in `node_modules/bonusround/AGENTS.md` once installed.
 
 ## One line, then the upgrade
 
@@ -187,7 +187,7 @@ await browser.close();
 ```
 
 - `window.BonusRound.version` is a string and `(await BonusRound.debug()).attached` is `true`, with `mode: 'overlay'`.
-- `await BonusRound.break('test')` shows a 5-second "Ad · Bonus Round" countdown, then the **Fizzpop Soda** round: a pink arena, bubbles to collect and an "Ad" label. It resolves `{ filled: true, … }` 25 to 35 seconds later. If bonusround.io is unreachable from your sandbox, the console says `[bonusround] … Playing the bundled Fizzpop Soda TEST round locally` and the same round plays from this package. That's expected.
+- `await BonusRound.break('test')` shows a 5-second "Ad · Bonus Round" countdown, then a test round with an "Ad" label (Fizzpop Soda from the server; offline, the bundled bonusround.io round with gold coins to collect). It resolves `{ filled: true, … }` 25 to 35 seconds later. If bonusround.io is unreachable from your sandbox, the console says `[bonusround] … Playing the bundled bonusround.io test round locally` and the same round plays from this package. That's expected.
 - The game itself still renders, its controls still work, and there are no new console errors.
 - Vite's "Some chunks are larger than 500 kB" build warning is the lazy offline test round (`dist/offline.js`). It's expected and only loads when needed. A failed `bonusround.io/v1/ping` request in an offline sandbox is expected.
 

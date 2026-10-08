@@ -40,7 +40,7 @@ If none of those can be reached, the summary below is enough.
    - If bonusround.io is unreachable, keep `pub_XXXXXXXX`.
    - Unclaimed games on a public host show free house ads (unpaid). Creating an account at `claimUrl` turns on paid ads and payouts. Dev and temporary hosts only show the test ad.
    - Never put a `br_sk_` or `br_pk_` key in game code.
-5. **Verify:** run the game. Check that `(await BonusRound.debug()).attached` is `true`, and that `await BonusRound.break('test')` shows the "Ad · Bonus Round" countdown and then the Fizzpop Soda round. If bonusround.io is unreachable, the npm package plays its bundled copy of that round and logs `[bonusround] … Playing the bundled Fizzpop Soda TEST round locally`.
+5. **Verify:** run the game. Check that `(await BonusRound.debug()).attached` is `true`, and that `await BonusRound.break('test')` shows the "Ad · Bonus Round" countdown and then a test round labelled "Ad". If bonusround.io is unreachable, the npm package plays its bundled bonusround.io test round and logs `[bonusround] … Playing the bundled bonusround.io test round locally`.
 6. **Report:**
    - the files changed and the break call sites;
    - what you verified;

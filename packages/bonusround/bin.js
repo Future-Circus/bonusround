@@ -101,10 +101,20 @@ async function cmdWhoami() {
   } catch (err) { die(err.message); }
 }
 
+// The shared status shape (sdk/status.js; the server sends it as sdkStatus): { mode, learning, next, claimUrl, … }.
+// The agent API's older mode names (dev/house) map onto the same labels.
+const MODE_LABEL = { dev: 'dev host (test ad only)', test: 'test mode (bonusround.io test ad)', 'free-house': 'free house ads (unpaid)', house: 'free house ads (unpaid)', paid: 'paid ads' };
+const modeLabel = (g) => MODE_LABEL[g.sdkStatus?.mode || g.mode] || (g.testMode ? MODE_LABEL.test : 'live');
+const nextLine = (g) => { const n = g.sdkStatus?.next ?? (typeof g.next === 'string' ? g.next : g.nextStep); return n ? `\n  Next: ${n}` : ''; };
+// The claim agent's two founder-approved lines (its tellTheHuman), for when a response doesn't carry one.
+const claimLine = (url, live) => live
+  ? `Bonus Round is live in your game (free house ads). Create your account to turn on paid ads and get paid: ${url}`
+  : `Bonus Round is in your game (test ad now; free house ads once it's on your public site). Create your account to turn on paid ads and get paid: ${url}`;
 const statusLine = (g) => {
   const seen = g.integration?.lastSeenAt ?? g.lastSeenAt;
-  return `${c.b(g.name || g.url)}  ${c.dim(`${g.id} · ${g.pubId}`)}\n  status ${g.status} · ${g.testMode ? 'test mode (bonusround.io test ad)' : 'live'} · SDK ${seen ? c.g(`seen ${new Date(seen).toLocaleString()}`) : c.y('not seen yet')}`
-    + (g.integration?.sdkVersion ? ` · br.js ${g.integration.sdkVersion} · three r${g.integration.threeRevision}` : '');
+  const learning = g.sdkStatus?.learning ? ` · learning: ${g.sdkStatus.learning}` : '';
+  return `${c.b(g.name || g.url)}  ${c.dim(`${g.id} · ${g.pubId}`)}\n  status ${g.status} · ${modeLabel(g)}${learning} · SDK ${seen ? c.g(`seen ${new Date(seen).toLocaleString()}`) : c.y('not seen yet')}`
+    + (g.integration?.sdkVersion ? ` · br.js ${g.integration.sdkVersion} · three r${g.integration.threeRevision}` : '') + nextLine(g);
 };
 
 async function cmdStatus() {
@@ -113,11 +123,10 @@ async function cmdStatus() {
     const { api: agentApi } = makeClient({ baseUrl: reg.server || server, apiKey: reg.provisionalKey, userAgent: `bonusround-cli/${VERSION}` });
     try {
       const g = args.wait ? await agentApi(`/api/agent/games/${reg.pubId}/verify`, { method: 'POST', body: { waitSeconds: Math.min(60, Number(args.wait) || 0) } }) : await agentApi(`/api/agent/games/${reg.pubId}`);
-      const MODES = { dev: 'dev host (test ad only)', test: 'test mode (bonusround.io test ad)', house: 'free house ads (unpaid)', paid: 'paid ads' };
-      const mode = MODES[g.mode] || (g.testMode ? MODES.test : 'live');
-      const next = typeof g.next === 'string' ? g.next : g.nextStep;
-      say(`${c.b(g.name || g.url)}  ${c.dim(g.pubId)}\n  ${g.claimed ? 'claimed' : 'not claimed yet'} · ${mode}${g.learning ? ' · learning' : ''} · SDK ${g.integration?.lastSeenAt ? c.g(`seen ${new Date(g.integration.lastSeenAt).toLocaleString()}`) : c.y('not seen yet')}${next ? `\n  Next: ${next}` : ''}${!g.claimed && g.unclaimedDeleteAt ? `\n  ${c.dim('Unclaimed games are removed after 90 days.')}` : ''}`);
-      if (g.claimUrl) say(g.tellTheHuman || `Bonus Round is live in your game (free house ads). Create your account to turn on paid ads and get paid: ${g.claimUrl}`);
+      const mode = modeLabel(g);
+      const learn = g.sdkStatus?.learning || (g.learning === true ? 'learning' : '');
+      say(`${c.b(g.name || g.url)}  ${c.dim(g.pubId)}\n  ${g.claimed ? 'claimed' : 'not claimed yet'} · ${mode}${learn ? ` · ${learn}` : ''} · SDK ${g.integration?.lastSeenAt ? c.g(`seen ${new Date(g.integration.lastSeenAt).toLocaleString()}`) : c.y('not seen yet')}${nextLine(g)}${!g.claimed && g.unclaimedDeleteAt ? `\n  ${c.dim('Unclaimed games are removed after 90 days.')}` : ''}`);
+      if (g.claimUrl) say(g.tellTheHuman || claimLine(g.claimUrl, ['house', 'free-house'].includes(g.sdkStatus?.mode || g.mode)));
     } catch (err) { die(err.message); }
     return;
   }
@@ -334,7 +343,7 @@ async function cmdInit() {
 function printNext(game, style = 'queue') {
   const call = style === 'import' ? "await BonusRound.break('intermission')" : "await window.BonusRound?.break('intermission')";
   const placeholder = !game.pub || game.pub === 'pub_XXXXXXXX';
-  const claim = game.claimUrl ? `\n${game.tellTheHuman || `Bonus Round is live in your game (free house ads). Create your account to turn on paid ads and get paid: ${game.claimUrl}`}` : '';
+  const claim = game.claimUrl ? `\n${game.tellTheHuman || claimLine(game.claimUrl, false)}` : '';
   say(`
 ${c.b('Next')}
   1. Find the TODO(bonusround) comment and put ${call} at your natural breaks

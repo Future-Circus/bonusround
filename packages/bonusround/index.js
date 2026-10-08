@@ -202,7 +202,7 @@ if (!BR_SSR) {
        *  nothing plays. Resolves { filled, completed, zone, score?, reason? } when the zone round is over. */
       zone: function (name, opts) { counts.breaks++; return core().then(function (c) { return c.zoneRound ? c.zoneRound(name, opts || {}) : unfilled('unsupported'); }, function () { return unfilled('sdk_unavailable'); }); },
       /** rewarded({ onReward, label, button }) → button:false starts now (from your own UI); otherwise shows the entry button */
-      rewarded: function (opts) { counts.breaks++; return core().then(function (c) { return c.rewarded(opts || {}); }, function () { return unfilled('sdk_unavailable'); }); },
+      rewarded: function (opts) { return core().then(function (c) { return c.rewarded(opts || {}); }, function () { return unfilled('sdk_unavailable'); }); },
       /** safe(true|false|null): mark whether an interval round may interrupt right now (null = auto: 1.5 s without input) */
       safe: function (v) { state.safe = v === undefined ? true : v; return BR; },
       placeAmbient: function (hint) { state.ambientHint = hint || null; core().then(function (c) { c.placeAmbient(hint || null); }); return BR; },
